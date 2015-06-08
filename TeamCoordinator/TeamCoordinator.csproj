@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,6 +71,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -87,6 +89,12 @@
     <Compile Include="StageEditDlg.Designer.cs">
       <DependentUpon>StageEditDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="Team.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\ArrowLeft.png" />
+    <Content Include="Resources\ArrowRight.png" />
+    <Content Include="Resources\SettingsPic.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

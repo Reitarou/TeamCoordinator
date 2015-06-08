@@ -28,22 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.panelStages = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
-            // panel1
+            // panelStages
             // 
-            this.panel1.Location = new System.Drawing.Point(12, 12);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(598, 820);
-            this.panel1.TabIndex = 0;
+            this.panelStages.BackColor = System.Drawing.SystemColors.Control;
+            this.panelStages.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelStages.Location = new System.Drawing.Point(12, 12);
+            this.panelStages.Name = "panelStages";
+            this.panelStages.Size = new System.Drawing.Size(598, 820);
+            this.panelStages.TabIndex = 0;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1264, 986);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.panelStages);
             this.Name = "MainForm";
             this.Text = "Form1";
             this.ResumeLayout(false);
@@ -52,7 +54,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panelStages;
     }
 }
 
