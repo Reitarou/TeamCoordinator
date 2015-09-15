@@ -89,11 +89,15 @@
     <Compile Include="StageEditDlg.Designer.cs">
       <DependentUpon>StageEditDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="Storage.cs" />
     <Compile Include="Team.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Add.png" />
     <Content Include="Resources\ArrowLeft.png" />
     <Content Include="Resources\ArrowRight.png" />
+    <None Include="Resources\Remove.png" />
+    <None Include="Resources\Settings.png" />
     <Content Include="Resources\SettingsPic.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -60,23 +60,23 @@ namespace TeamCoordinator.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap ArrowLeft {
+        internal static System.Drawing.Bitmap Add {
             get {
-                object obj = ResourceManager.GetObject("ArrowLeft", resourceCulture);
+                object obj = ResourceManager.GetObject("Add", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap ArrowRight {
+        internal static System.Drawing.Bitmap Remove {
             get {
-                object obj = ResourceManager.GetObject("ArrowRight", resourceCulture);
+                object obj = ResourceManager.GetObject("Remove", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap SettingsPic {
+        internal static System.Drawing.Bitmap Settings {
             get {
-                object obj = ResourceManager.GetObject("SettingsPic", resourceCulture);
+                object obj = ResourceManager.GetObject("Settings", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

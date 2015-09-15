@@ -13,8 +13,26 @@ namespace TeamCoordinator
         public AI()
         {
             m_Stages = new List<Stage>();
+            FillPreparedStages();
 
-            var stage = new Stage();
+            m_Teams = new List<Team>();
+            FillPreparedTeams();
+        }
+
+        public List<Stage> Stages
+        {
+            get
+            {
+                return m_Stages;
+            }
+        }
+
+        private void FillPreparedStages()
+        {
+            m_Stages.Clear();
+            Stage stage;
+            
+            stage = new Stage();
             stage.Name = "01";
             stage.Desription = "Пожар";
             AddStage(stage);
@@ -58,24 +76,17 @@ namespace TeamCoordinator
             stage.Name = "03";
             stage.Desription = "Перелом";
             AddStage(stage);
-
-            m_Teams = new List<Team>();
         }
 
-        public List<Stage> Stages
+        private void FillPreparedTeams()
         {
-            get
-            {
-                return PreparedStages;
-            }
-        }
+            m_Teams.Clear();
+            Team team;
 
-        private List<Stage> PreparedStages
-        {
-            get
-            {
-                return m_Stages;
-            }
+            team = new Team();
+            team.Name = "1-1";
+            team.Stages.Add(1, false);
+            AddTeam(team);
         }
 
         public void AddStage(Stage newStage)
@@ -97,6 +108,27 @@ namespace TeamCoordinator
             }
             newStage.ID = id;
             m_Stages.Add(newStage);
+        }
+
+        public void AddTeam(Team newTeam)
+        {
+            var id = 0;
+            bool changed = true;
+            while (changed)
+            {
+                changed = false;
+                foreach (var team in m_Teams)
+                {
+                    if (team.ID == id)
+                    {
+                        changed = true;
+                        id++;
+                        break;
+                    }
+                }
+            }
+            newTeam.ID = id;
+            m_Teams.Add(newTeam);
         }
     }
 }

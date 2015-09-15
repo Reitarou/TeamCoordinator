@@ -15,14 +15,12 @@ namespace TeamCoordinator
     class Stage
     {
         public int ID;
-        public string Name;
-        public string Desription;
+        public string Name = "";
+        public string Desription = "";
         public StageState State = StageState.Open;
-        public List<Team> Teams;
 
         public Stage()
         {
-            Teams = new List<Team>();
         }
     }
 }

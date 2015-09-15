@@ -20,6 +20,9 @@ namespace TeamCoordinator
         {
             using (var dlg = new StageEditDlg())
             {
+                dlg.Top = MousePosition.Y;
+                dlg.Left = Math.Max(0, (int)(MousePosition.X - dlg.Width * 0.5));
+
                 dlg.tbName.Text = stage.Name;
                 dlg.rtbDescription.Text = stage.Desription;
 

@@ -104,6 +104,7 @@
             this.Controls.Add(this.tbName);
             this.Controls.Add(this.rtbDescription);
             this.Name = "StageEditDlg";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "StageEditDlg";
             this.ResumeLayout(false);
             this.PerformLayout();
