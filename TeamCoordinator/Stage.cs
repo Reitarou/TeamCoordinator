@@ -14,13 +14,21 @@ namespace TeamCoordinator
 
     class Stage
     {
-        public int ID;
-        public string Name = "";
-        public string Desription = "";
+        private string m_Name;
+        public string Description = "";
         public StageState State = StageState.Open;
 
-        public Stage()
+        public Stage(string name)
         {
+            m_Name = name;
+        }
+
+        public string Name
+        {
+            get
+            {
+                return m_Name;
+            }
         }
     }
 }

@@ -2,24 +2,64 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
+using TeamCoordinator.Properties;
+using System.Xml.Linq;
+using System.IO;
 
 namespace TeamCoordinator
 {
     class AI
     {
-        private List<Stage> m_Stages;
-        private List<Team> m_Teams;
+        private string m_Path;
+        private Dictionary<string, Stage> m_Stages;
+        private Dictionary<string, Team> m_Teams;
 
-        public AI()
+        public AI(string path)
         {
-            m_Stages = new List<Stage>();
-            FillPreparedStages();
-
-            m_Teams = new List<Team>();
-            FillPreparedTeams();
+            if (path != null)
+            {
+                m_Path = path;
+                if (!File.Exists(path))
+                {
+                    MessageBox.Show(string.Format(Resources.eNoFile, path));
+                }
+                else
+                {
+                    var doc = XDocument.Load(path);
+                    LoadFromStg(doc);
+                }
+            }
         }
 
-        public List<Stage> Stages
+        public bool Valid
+        {
+            get
+            {
+                if (m_Path != null)
+                {
+                    return File.Exists(m_Path);
+                }
+                return false;
+            }
+        }
+
+        public string FileName
+        {
+            get
+            {
+                if (!File.Exists(m_Path))
+                {
+                    return "No File";
+                }
+                else
+                {
+                    return System.IO.Path.GetFileNameWithoutExtension(m_Path);
+                }
+            }
+        }
+
+        public Dictionary<string, Stage> Stages
         {
             get
             {
@@ -27,108 +67,69 @@ namespace TeamCoordinator
             }
         }
 
-        private void FillPreparedStages()
+        public void LoadFromStg(XDocument doc)
         {
-            m_Stages.Clear();
-            Stage stage;
-            
-            stage = new Stage();
-            stage.Name = "01";
-            stage.Desription = "Пожар";
-            AddStage(stage);
+            m_Stages = new Dictionary<string, Stage>();
 
-            stage = new Stage();
-            stage.Name = "02";
-            stage.Desription = "ДТП";
-            AddStage(stage);
-
-            stage = new Stage();
-            stage.Name = "03";
-            stage.Desription = "Перелом";
-            AddStage(stage);
-
-            stage = new Stage();
-            stage.Name = "03";
-            stage.Desription = "Перелом";
-            AddStage(stage);
-
-            stage = new Stage();
-            stage.Name = "03";
-            stage.Desription = "Перелом";
-            AddStage(stage);
-
-            stage = new Stage();
-            stage.Name = "03";
-            stage.Desription = "Перелом";
-            AddStage(stage);
-
-            stage = new Stage();
-            stage.Name = "03";
-            stage.Desription = "Перелом";
-            AddStage(stage);
-
-            stage = new Stage();
-            stage.Name = "03";
-            stage.Desription = "Перелом";
-            AddStage(stage);
-
-            stage = new Stage();
-            stage.Name = "03";
-            stage.Desription = "Перелом";
-            AddStage(stage);
-        }
-
-        private void FillPreparedTeams()
-        {
-            m_Teams.Clear();
-            Team team;
-
-            team = new Team();
-            team.Name = "1-1";
-            team.Stages.Add(1, false);
-            AddTeam(team);
-        }
-
-        public void AddStage(Stage newStage)
-        {
-            var id = 0;
-            bool changed = true;
-            while (changed)
+            var stages = doc.Element("AI").Element("Stages").Elements("Stage");
+            foreach (var xStage in stages)
             {
-                changed = false;
-                foreach (var stage in m_Stages)
+                var xName = xStage.Attribute("Name");
+                if (xName != null && !m_Stages.ContainsKey(xName.Value))
                 {
-                    if (stage.ID == id)
-                    {
-                        changed = true;
-                        id++;
-                        break;
-                    }
+                    var stage = new Stage(xName.Value);
+                    var xDescription = xStage.Attribute("Description");
+                    stage.Description = (xDescription == null)? "" : xDescription.Value;
+                    m_Stages.Add(stage.Name, stage);
                 }
             }
-            newStage.ID = id;
-            m_Stages.Add(newStage);
-        }
 
-        public void AddTeam(Team newTeam)
-        {
-            var id = 0;
-            bool changed = true;
-            while (changed)
+            m_Teams = new Dictionary<string, Team>();
+            var teams = doc.Element("AI").Element("Teams").Elements("Team");
+
+            foreach (var xTeam in teams)
             {
-                changed = false;
-                foreach (var team in m_Teams)
+                var xName = xTeam.Attribute("Name");
+                if (xName != null && !m_Teams.ContainsKey(xName.Value))
                 {
-                    if (team.ID == id)
-                    {
-                        changed = true;
-                        id++;
-                        break;
-                    }
+                    var team = new Team(xName.Value);
+                    var xDescription = xTeam.Attribute("Description");
+                    team.Desription = (xDescription == null) ? "" : xDescription.Value;
+                    m_Teams.Add(team.Name, team);
                 }
             }
-            newTeam.ID = id;
-            m_Teams.Add(newTeam);
+        }
+
+        public void SaveToStg()
+        {
+            if (!File.Exists(m_Path))
+            {
+                File.Create(m_Path);
+            }
+
+            var doc = new XDocument(new XElement("AI",
+                new XElement("Stages"),
+                new XElement("Teams")));
+
+            foreach (var pair in m_Stages)
+            {
+                var stage = pair.Value;
+                var xStage = new XElement("Stage");
+                xStage.Add(new XAttribute("Name", stage.Name));
+                xStage.Add(new XAttribute("Description", stage.Description));
+                doc.Element("AI").Element("Stages").Add(xStage);
+            }
+
+            foreach (var pair in m_Teams)
+            {
+                var team = pair.Value;
+                var xTeam = new XElement("Team");
+                xTeam.Add(new XAttribute("Name", team.Name));
+                xTeam.Add(new XAttribute("Description", team.Desription));
+                doc.Element("AI").Element("Teams").Add(xTeam);
+            }
+
+            doc.Save(m_Path);
         }
     }
 }

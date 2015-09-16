@@ -16,20 +16,20 @@ namespace TeamCoordinator
             InitializeComponent();
         }
 
-        public static bool Execute(Stage stage)
+        public static bool Execute(ref string name, ref string description)
         {
             using (var dlg = new StageEditDlg())
             {
                 dlg.Top = MousePosition.Y;
                 dlg.Left = Math.Max(0, (int)(MousePosition.X - dlg.Width * 0.5));
 
-                dlg.tbName.Text = stage.Name;
-                dlg.rtbDescription.Text = stage.Desription;
+                dlg.tbName.Text = name;
+                dlg.rtbDescription.Text = description;
 
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
-                    stage.Name = dlg.tbName.Text;
-                    stage.Desription = dlg.rtbDescription.Text;
+                    name = dlg.tbName.Text;
+                    description = dlg.rtbDescription.Text;
                     return true;
                 }
             }

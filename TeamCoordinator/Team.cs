@@ -7,8 +7,21 @@ namespace TeamCoordinator
 {
     class Team
     {
-        public int ID;
-        public string Name;
-        public Dictionary<int, bool> Stages = new Dictionary<int, bool>();
+        public string m_Name;
+        public string Desription = "";
+        public Dictionary<string, bool> Stages = new Dictionary<string, bool>();
+
+        public Team(string name)
+        {
+            m_Name = name;
+        }
+
+        public string Name
+        {
+            get
+            {
+                return m_Name;
+            }
+        }
     }
 }

@@ -7,24 +7,33 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using TeamCoordinator.Properties;
+using System.Xml.Linq;
+using System.IO;
 
 namespace TeamCoordinator
 {
     public partial class MainForm : Form
     {
-        private AI Gantaro;
+        private AI m_AI;
 
         private bool m_EditMode = true;
 
         public MainForm()
         {
             InitializeComponent();
-            Gantaro = new AI();
+            m_AI = new AI(null);
             UpdateControls();
         }
 
         private void UpdateControls()
         {
+            panelStages.Controls.Clear();
+            this.Text = m_AI.FileName;
+            if (!m_AI.Valid)
+            {
+                return;
+            }
+
             if (m_EditMode)
             {
                 miEditMode.Text = "Сохранить";
@@ -34,16 +43,23 @@ namespace TeamCoordinator
                 miEditMode.Text = "Редактировать";
             }
 
-            panelStages.Controls.Clear();
 
-            var stages = Gantaro.Stages;
+            var stages = m_AI.Stages;
 
             var columns = 3;
 
             int x = 8, y = 8;
-            for (int i = 0; i < stages.Count; i++)
+            var list = new List<Stage>();
+            foreach (var pair in stages)
             {
-                var stage = stages[i];
+                list.Add(pair.Value);
+            }
+
+            //list.Sort
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                var stage = list[i];
 
                 var panel = new Panel();
                 panel.Location = new Point(x, y);
@@ -62,7 +78,7 @@ namespace TeamCoordinator
 
                 var descriptionLabel = new Label();
                 descriptionLabel.Font = font;
-                descriptionLabel.Text = stage.Desription;
+                descriptionLabel.Text = stage.Description;
                 descriptionLabel.AutoSize = true;
                 descriptionLabel.Location = new Point(8, 28);
                 panel.Controls.Add(descriptionLabel);
@@ -159,22 +175,42 @@ namespace TeamCoordinator
                 ImgControl.Size = new Size(16, 16);
                 ImgControl.Image = Resources.Add;
                 ImgControl.Location = new Point((int)(panel.Width * 0.5 - ImgControl.Height * 0.5), (int)(panel.Height * 0.5 - ImgControl.Height * 0.5));
+                ImgControl.MouseClick += AddStage_MouseClick;
                 panel.Controls.Add(ImgControl);
 
                 panel.MouseClick += AddStage_MouseClick;
 
                 panelStages.Controls.Add(panel);
             }
+
+            m_AI.SaveToStg();
         }
 
         private void AddStage_MouseClick(object sender, MouseEventArgs e)
         {
-            var stage = new Stage();
-
-            if (StageEditDlg.Execute(stage))
+            var name = "";
+            var description = "";
+            while (true)
             {
-                Gantaro.AddStage(stage);
-                UpdateControls();
+                if (StageEditDlg.Execute(ref name, ref description))
+                {
+                    if (!m_AI.Stages.ContainsKey(name))
+                    {
+                        var stage = new Stage(name);
+                        stage.Description = description;
+                        m_AI.Stages.Add(name, stage);
+                        UpdateControls();
+                        return;
+                    }
+                    else
+                    {
+                        MessageBox.Show(Resources.eStageAlreadyExist);
+                    }
+                }
+                else
+                {
+                    return;
+                }
             }
         }
 
@@ -188,10 +224,24 @@ namespace TeamCoordinator
             if (stage == null)
                 return;
 
-
-            if (StageEditDlg.Execute(stage))
+            var name = stage.Name;
+            var description = stage.Description;
+            if (StageEditDlg.Execute(ref name, ref description))
             {
-                UpdateControls();
+                if (m_AI.Stages.ContainsKey(name))
+                {
+                    MessageBox.Show(Resources.eStageAlreadyExist);
+                    return;
+                }
+                else
+                {
+                    m_AI.Stages.Remove(stage.Name);
+                    var newStage = new Stage(name);
+                    newStage.Description = description;
+                    newStage.State = stage.State;
+                    m_AI.Stages.Add(name, newStage);
+                    UpdateControls();
+                }
             }
         }
 
@@ -205,7 +255,7 @@ namespace TeamCoordinator
             if (stage == null)
                 return;
 
-            Gantaro.Stages.Remove(stage);
+            m_AI.Stages.Remove(stage.Name);
 
             UpdateControls();
         }
@@ -216,5 +266,59 @@ namespace TeamCoordinator
             UpdateControls();
         }
 
+        private void miCreate_Click(object sender, EventArgs e)
+        {
+            var day = DateTime.Today.Day.ToString();
+            var month = DateTime.Today.Month.ToString();
+            var year = DateTime.Today.Year.ToString();
+
+            var fileName = string.Format("{0}-{1}-{2}", day, month, year);
+
+            fileName = Microsoft.VisualBasic.Interaction.InputBox("Укажите имя файла", "Создать новую базу", fileName, (int)(DisplayRectangle.Width * 0.5), (int)(DisplayRectangle.Height * 0.5));
+            if (fileName == "")
+            {
+                return;
+            }
+            fileName += ".xml";
+
+            var folderName = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+            var pathString = System.IO.Path.Combine(folderName, fileName);
+
+            if (System.IO.File.Exists(pathString))
+            {
+                var result = MessageBox.Show(Resources.eFileAlreadyExists, Resources.mWarning, MessageBoxButtons.OKCancel);
+                if (result != DialogResult.OK)
+                {
+                    return;
+                }
+            }
+
+            var ms = File.Create(pathString);
+            ms.Close();
+            var doc = new XDocument(new XElement("AI",
+                new XElement("Stages"), 
+                new XElement("Teams")));
+            doc.Save(pathString);
+            m_AI = new AI(pathString);
+
+            UpdateControls();
+        }
+
+        private void miOpen_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.InitialDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            openFileDialog.Filter = "XML file|*.xml";
+            openFileDialog.Title = "Выберите файл базы";
+
+            if (openFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+            {
+                return;
+            }
+
+            m_AI = new AI(openFileDialog.FileName);
+            UpdateControls();
+        }
     }
 }

@@ -67,6 +67,52 @@ namespace TeamCoordinator.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Файл с данным именем уже существует.
+        ///Перезаписать?.
+        /// </summary>
+        internal static string eFileAlreadyExists {
+            get {
+                return ResourceManager.GetString("eFileAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не существует указанного файла.
+        /// </summary>
+        internal static string eNoFile {
+            get {
+                return ResourceManager.GetString("eNoFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Этап с заданным именем уже существует.
+        /// </summary>
+        internal static string eStageAlreadyExist {
+            get {
+                return ResourceManager.GetString("eStageAlreadyExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Команда с заданным именем уже существует.
+        /// </summary>
+        internal static string eTeamAlreadyExist {
+            get {
+                return ResourceManager.GetString("eTeamAlreadyExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Внимание!.
+        /// </summary>
+        internal static string mWarning {
+            get {
+                return ResourceManager.GetString("mWarning", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap Remove {
             get {
                 object obj = ResourceManager.GetObject("Remove", resourceCulture);
