@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AI>
+  <Stages>
+    <Stage Name="2" Description="ДТП" />
+    <Stage Name="3" Description="" />
+    <Stage Name="4" Description="Перелом" />
+    <Stage Name="5" Description="" />
+    <Stage Name="6" Description="Перелом" />
+    <Stage Name="7" Description="Перелом" />
+    <Stage Name="8" Description="Перелом" />
+  </Stages>
+  <Teams>
+    <Team Name="1" Description="" />
+    <Team Name="2" Description="" />
+  </Teams>
+</AI>
