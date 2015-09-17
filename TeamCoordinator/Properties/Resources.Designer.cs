@@ -126,5 +126,23 @@ namespace TeamCoordinator.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Этап свободен.
+        /// </summary>
+        internal static string sStageFree {
+            get {
+                return ResourceManager.GetString("sStageFree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} - &quot;{1}&quot; ({2}).
+        /// </summary>
+        internal static string sStageHeader {
+            get {
+                return ResourceManager.GetString("sStageHeader", resourceCulture);
+            }
+        }
     }
 }

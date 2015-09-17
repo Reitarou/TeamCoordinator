@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.panelStages = new System.Windows.Forms.Panel();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.panelTeams = new System.Windows.Forms.Panel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.miFile = new System.Windows.Forms.ToolStripMenuItem();
             this.miCreate = new System.Windows.Forms.ToolStripMenuItem();
@@ -37,27 +37,35 @@
             this.miExit = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.miEditMode = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.miEditGroups = new System.Windows.Forms.ToolStripMenuItem();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tpStages = new System.Windows.Forms.TabPage();
+            this.tpTeams = new System.Windows.Forms.TabPage();
             this.menuStrip1.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tpStages.SuspendLayout();
+            this.tpTeams.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelStages
             // 
             this.panelStages.BackColor = System.Drawing.SystemColors.Control;
             this.panelStages.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelStages.Location = new System.Drawing.Point(12, 27);
+            this.panelStages.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelStages.Location = new System.Drawing.Point(3, 3);
             this.panelStages.Name = "panelStages";
-            this.panelStages.Size = new System.Drawing.Size(598, 820);
+            this.panelStages.Size = new System.Drawing.Size(563, 566);
             this.panelStages.TabIndex = 0;
             // 
-            // panel1
+            // panelTeams
             // 
-            this.panel1.BackColor = System.Drawing.SystemColors.Control;
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Location = new System.Drawing.Point(616, 27);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(319, 820);
-            this.panel1.TabIndex = 1;
+            this.panelTeams.BackColor = System.Drawing.SystemColors.Control;
+            this.panelTeams.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelTeams.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelTeams.Location = new System.Drawing.Point(3, 3);
+            this.panelTeams.Name = "panelTeams";
+            this.panelTeams.Size = new System.Drawing.Size(542, 551);
+            this.panelTeams.TabIndex = 1;
             // 
             // menuStrip1
             // 
@@ -65,10 +73,10 @@
             this.miFile,
             this.toolStripMenuItem2,
             this.miEditMode,
-            this.toolStripMenuItem4});
+            this.miEditGroups});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(950, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(577, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -115,24 +123,62 @@
             this.miEditMode.Text = "<>";
             this.miEditMode.Click += new System.EventHandler(this.miEditMode_Click);
             // 
-            // toolStripMenuItem4
+            // miEditGroups
             // 
-            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(125, 20);
-            this.toolStripMenuItem4.Text = "toolStripMenuItem4";
+            this.miEditGroups.Name = "miEditGroups";
+            this.miEditGroups.Size = new System.Drawing.Size(61, 20);
+            this.miEditGroups.Text = "Группы";
+            this.miEditGroups.Click += new System.EventHandler(this.miEditGroups_Click);
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tpStages);
+            this.tabControl1.Controls.Add(this.tpTeams);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(0, 24);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(577, 598);
+            this.tabControl1.TabIndex = 3;
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
+            // 
+            // tpStages
+            // 
+            this.tpStages.Controls.Add(this.panelStages);
+            this.tpStages.Location = new System.Drawing.Point(4, 22);
+            this.tpStages.Name = "tpStages";
+            this.tpStages.Padding = new System.Windows.Forms.Padding(3);
+            this.tpStages.Size = new System.Drawing.Size(569, 572);
+            this.tpStages.TabIndex = 0;
+            this.tpStages.Text = "Этапы";
+            this.tpStages.UseVisualStyleBackColor = true;
+            // 
+            // tpTeams
+            // 
+            this.tpTeams.Controls.Add(this.panelTeams);
+            this.tpTeams.Location = new System.Drawing.Point(4, 22);
+            this.tpTeams.Name = "tpTeams";
+            this.tpTeams.Padding = new System.Windows.Forms.Padding(3);
+            this.tpTeams.Size = new System.Drawing.Size(548, 557);
+            this.tpTeams.TabIndex = 1;
+            this.tpTeams.Text = "Команды";
+            this.tpTeams.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(950, 986);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.panelStages);
+            this.ClientSize = new System.Drawing.Size(577, 622);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStrip1);
             this.Name = "MainForm";
             this.Text = "Form1";
+            this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.tpStages.ResumeLayout(false);
+            this.tpTeams.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -141,15 +187,18 @@
         #endregion
 
         private System.Windows.Forms.Panel panelStages;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panelTeams;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem miFile;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem miEditMode;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
+        private System.Windows.Forms.ToolStripMenuItem miEditGroups;
         private System.Windows.Forms.ToolStripMenuItem miCreate;
         private System.Windows.Forms.ToolStripMenuItem miOpen;
         private System.Windows.Forms.ToolStripMenuItem miExit;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tpStages;
+        private System.Windows.Forms.TabPage tpTeams;
     }
 }
 
