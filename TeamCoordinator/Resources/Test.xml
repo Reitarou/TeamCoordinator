@@ -1,16 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<AI>
+<AI CurrentGroupID="3" CurrentStageID="8" CurrentTeamID="3">
   <Stages>
-    <Stage Name="2" Description="ДТП" />
-    <Stage Name="3" Description="" />
-    <Stage Name="4" Description="Перелом" />
-    <Stage Name="5" Description="" />
-    <Stage Name="6" Description="Перелом" />
-    <Stage Name="7" Description="Перелом" />
-    <Stage Name="8" Description="Перелом" />
+    <Stage ID="3" Number="01" Name="Осмотр" Coach="" IsClosed="False">
+      <AvailableGroup>1</AvailableGroup>
+    </Stage>
+    <Stage ID="2" Number="02" Name="Перелом" Coach="" IsClosed="False">
+      <AvailableGroup>2</AvailableGroup>
+    </Stage>
+    <Stage ID="5" Number="03" Name="Ожог" Coach="" IsClosed="False">
+      <AvailableGroup>1</AvailableGroup>
+      <AvailableGroup>2</AvailableGroup>
+    </Stage>
+    <Stage ID="6" Number="04" Name="ДТП" Coach="" IsClosed="False">
+      <AvailableGroup>2</AvailableGroup>
+    </Stage>
+    <Stage ID="1" Number="05" Name="Вывих" Coach="" IsClosed="False">
+      <AvailableGroup>1</AvailableGroup>
+      <AvailableGroup>2</AvailableGroup>
+    </Stage>
+    <Stage ID="7" Number="06" Name="Растяжение" Coach="" IsClosed="False">
+      <AvailableGroup>1</AvailableGroup>
+      <AvailableGroup>2</AvailableGroup>
+    </Stage>
+    <Stage ID="0" Number="07" Name="Сжатие" Coach="" IsClosed="False">
+      <AvailableGroup>1</AvailableGroup>
+      <AvailableGroup>2</AvailableGroup>
+    </Stage>
   </Stages>
   <Teams>
-    <Team Name="1" Description="" />
-    <Team Name="2" Description="" />
+    <Team ID="0" Name="1" Description="" IsReady="True" />
+    <Team ID="1" Name="2" Description="" IsReady="True" />
+    <Team ID="2" Name="03-14" Description="" IsReady="True" />
   </Teams>
+  <Groups>
+    <Group ID="1" Name="Первая помощь" ShortName="ПП" />
+    <Group ID="2" Name="Про Курс" ShortName="Про" />
+  </Groups>
 </AI>
