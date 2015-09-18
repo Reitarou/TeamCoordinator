@@ -240,7 +240,6 @@ namespace TeamCoordinator
 
                 var descriptionLabel = new Label();
                 descriptionLabel.Font = font;
-                descriptionLabel.Text = team.Description;
                 descriptionLabel.AutoSize = true;
                 descriptionLabel.Location = new Point(8, 28);
                 panel.Controls.Add(descriptionLabel);

@@ -28,10 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.rtbDescription = new System.Windows.Forms.RichTextBox();
             this.tbName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
@@ -39,14 +37,6 @@
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.listBox2 = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
-            // 
-            // rtbDescription
-            // 
-            this.rtbDescription.Location = new System.Drawing.Point(12, 236);
-            this.rtbDescription.Name = "rtbDescription";
-            this.rtbDescription.Size = new System.Drawing.Size(301, 50);
-            this.rtbDescription.TabIndex = 0;
-            this.rtbDescription.Text = "";
             // 
             // tbName
             // 
@@ -63,15 +53,6 @@
             this.label1.Size = new System.Drawing.Size(57, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "Название";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 220);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(57, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Описание";
             // 
             // btnOk
             // 
@@ -142,10 +123,8 @@
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tbName);
-            this.Controls.Add(this.rtbDescription);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -159,10 +138,8 @@
 
         #endregion
 
-        private System.Windows.Forms.RichTextBox rtbDescription;
         private System.Windows.Forms.TextBox tbName;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.ComboBox comboBox1;

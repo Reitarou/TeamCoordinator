@@ -24,12 +24,10 @@ namespace TeamCoordinator
                 dlg.Left = Math.Max(0, (int)(MousePosition.X - dlg.Width * 0.5));
 
                 dlg.tbName.Text = team.Name;
-                dlg.rtbDescription.Text = team.Description;
 
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     team.Name = dlg.tbName.Text;
-                    team.Description = dlg.rtbDescription.Text;
                     return true;
                 }
             }

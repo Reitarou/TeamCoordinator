@@ -9,7 +9,7 @@ namespace TeamCoordinator
     {
         private int m_ID = -1;
         public string Name = "";
-        public string Description = "";
+        public int Group = -1;
         public List<KeyValuePair<int, int>> Stages = new List<KeyValuePair<int, int>>();
         public bool IsReady = true;
 
@@ -21,7 +21,6 @@ namespace TeamCoordinator
         {
             m_ID = node.GetInt("ID", -1);
             Name = node.GetString("Name", "");
-            Description = node.GetString("Description", "");
             IsReady = node.GetBoolean("IsReady", true);
         }
 
@@ -58,7 +57,6 @@ namespace TeamCoordinator
         {
             node.AddInt("ID", m_ID);
             node.AddString("Name", Name);
-            node.AddString("Description", Description);
             node.AddBoolean("IsReady", IsReady);
         }
     }
