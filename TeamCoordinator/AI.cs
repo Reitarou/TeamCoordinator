@@ -150,12 +150,9 @@ namespace TeamCoordinator
             var name = stage.Number;
             foreach (var team in m_Teams)
             {
-                foreach (var currentStage in team.CurrentStages)
+                if (team.CurrentStage == stage.ID)
                 {
-                    if (currentStage == stage.ID)
-                    {
-                        s += team.Name + ", ";
-                    }
+                    s += team.Name + ", ";
                 }
             }
             if (s == "")

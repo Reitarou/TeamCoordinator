@@ -41,10 +41,14 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpStages = new System.Windows.Forms.TabPage();
             this.tpTeams = new System.Windows.Forms.TabPage();
+            this.tpGrid = new System.Windows.Forms.TabPage();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tpStages.SuspendLayout();
             this.tpTeams.SuspendLayout();
+            this.tpGrid.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // panelStages
@@ -64,7 +68,7 @@
             this.panelTeams.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelTeams.Location = new System.Drawing.Point(3, 3);
             this.panelTeams.Name = "panelTeams";
-            this.panelTeams.Size = new System.Drawing.Size(542, 551);
+            this.panelTeams.Size = new System.Drawing.Size(563, 566);
             this.panelTeams.TabIndex = 1;
             // 
             // menuStrip1
@@ -134,6 +138,7 @@
             // 
             this.tabControl1.Controls.Add(this.tpStages);
             this.tabControl1.Controls.Add(this.tpTeams);
+            this.tabControl1.Controls.Add(this.tpGrid);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 24);
             this.tabControl1.Name = "tabControl1";
@@ -159,10 +164,30 @@
             this.tpTeams.Location = new System.Drawing.Point(4, 22);
             this.tpTeams.Name = "tpTeams";
             this.tpTeams.Padding = new System.Windows.Forms.Padding(3);
-            this.tpTeams.Size = new System.Drawing.Size(548, 557);
+            this.tpTeams.Size = new System.Drawing.Size(569, 572);
             this.tpTeams.TabIndex = 1;
             this.tpTeams.Text = "Команды";
             this.tpTeams.UseVisualStyleBackColor = true;
+            // 
+            // tpGrid
+            // 
+            this.tpGrid.Controls.Add(this.dataGridView1);
+            this.tpGrid.Location = new System.Drawing.Point(4, 22);
+            this.tpGrid.Name = "tpGrid";
+            this.tpGrid.Size = new System.Drawing.Size(569, 572);
+            this.tpGrid.TabIndex = 2;
+            this.tpGrid.Text = "Сетка";
+            this.tpGrid.UseVisualStyleBackColor = true;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.Size = new System.Drawing.Size(569, 572);
+            this.dataGridView1.TabIndex = 1;
             // 
             // MainForm
             // 
@@ -179,6 +204,8 @@
             this.tabControl1.ResumeLayout(false);
             this.tpStages.ResumeLayout(false);
             this.tpTeams.ResumeLayout(false);
+            this.tpGrid.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -199,6 +226,8 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tpStages;
         private System.Windows.Forms.TabPage tpTeams;
+        private System.Windows.Forms.TabPage tpGrid;
+        private System.Windows.Forms.DataGridView dataGridView1;
     }
 }
 

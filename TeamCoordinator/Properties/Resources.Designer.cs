@@ -128,6 +128,15 @@ namespace TeamCoordinator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Пройден.
+        /// </summary>
+        internal static string sStageComplete {
+            get {
+                return ResourceManager.GetString("sStageComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Этап свободен.
         /// </summary>
         internal static string sStageFree {
@@ -142,6 +151,24 @@ namespace TeamCoordinator.Properties {
         internal static string sStageHeader {
             get {
                 return ResourceManager.GetString("sStageHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не пройден.
+        /// </summary>
+        internal static string sStageIncomplete {
+            get {
+                return ResourceManager.GetString("sStageIncomplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Пропускается.
+        /// </summary>
+        internal static string sStagePass {
+            get {
+                return ResourceManager.GetString("sStagePass", resourceCulture);
             }
         }
     }

@@ -250,7 +250,7 @@ namespace TeamCoordinator
                 }
                 else
                 {
-                    if (team.CurrentStages.Count > 0)
+                    if (team.CurrentStage == -1)
                     {
                         panel.BackColor = c_Red;
                     }
@@ -394,7 +394,7 @@ namespace TeamCoordinator
         private void AddTeam_MouseClick(object sender, MouseEventArgs e)
         {
             var team = new Team();
-            if (TeamEditDlg.Execute(team))
+            if (TeamEditDlg.Execute(m_AI, team))
             {
                 m_AI.AddTeam(team);
                 UpdateControls();
@@ -411,7 +411,7 @@ namespace TeamCoordinator
             if (team == null)
                 return;
 
-            if (TeamEditDlg.Execute(team))
+            if (TeamEditDlg.Execute(m_AI, team))
             {
                 UpdateControls();
             }

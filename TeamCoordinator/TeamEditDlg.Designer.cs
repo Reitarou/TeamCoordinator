@@ -34,8 +34,14 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            this.listBox2 = new System.Windows.Forms.ListBox();
+            this.dgvStages = new System.Windows.Forms.DataGridView();
+            this.clStage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clUsage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnStagePass = new System.Windows.Forms.Button();
+            this.btnStageIncomplete = new System.Windows.Forms.Button();
+            this.btnStageComplete = new System.Windows.Forms.Button();
+            this.btnAuto = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvStages)).BeginInit();
             this.SuspendLayout();
             // 
             // tbName
@@ -94,21 +100,82 @@
             this.label3.TabIndex = 7;
             this.label3.Text = "Группа";
             // 
-            // listBox1
+            // dgvStages
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(12, 98);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(120, 121);
-            this.listBox1.TabIndex = 8;
+            this.dgvStages.AllowUserToAddRows = false;
+            this.dgvStages.AllowUserToDeleteRows = false;
+            this.dgvStages.AllowUserToResizeColumns = false;
+            this.dgvStages.AllowUserToResizeRows = false;
+            this.dgvStages.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvStages.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvStages.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.clStage,
+            this.clUsage});
+            this.dgvStages.Location = new System.Drawing.Point(17, 75);
+            this.dgvStages.MultiSelect = false;
+            this.dgvStages.Name = "dgvStages";
+            this.dgvStages.RowHeadersVisible = false;
+            this.dgvStages.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvStages.Size = new System.Drawing.Size(296, 150);
+            this.dgvStages.TabIndex = 8;
+            this.dgvStages.SelectionChanged += new System.EventHandler(this.dgvStages_SelectionChanged);
             // 
-            // listBox2
+            // clStage
             // 
-            this.listBox2.FormattingEnabled = true;
-            this.listBox2.Location = new System.Drawing.Point(193, 72);
-            this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(120, 147);
-            this.listBox2.TabIndex = 9;
+            this.clStage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.clStage.HeaderText = "Этап";
+            this.clStage.Name = "clStage";
+            this.clStage.ReadOnly = true;
+            // 
+            // clUsage
+            // 
+            this.clUsage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.clUsage.FillWeight = 200F;
+            this.clUsage.HeaderText = "Состояние";
+            this.clUsage.Name = "clUsage";
+            this.clUsage.ReadOnly = true;
+            // 
+            // btnStagePass
+            // 
+            this.btnStagePass.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnStagePass.Location = new System.Drawing.Point(17, 231);
+            this.btnStagePass.Name = "btnStagePass";
+            this.btnStagePass.Size = new System.Drawing.Size(75, 23);
+            this.btnStagePass.TabIndex = 9;
+            this.btnStagePass.Text = "Удалить";
+            this.btnStagePass.UseVisualStyleBackColor = true;
+            this.btnStagePass.Click += new System.EventHandler(this.btnStagePass_Click);
+            // 
+            // btnStageIncomplete
+            // 
+            this.btnStageIncomplete.Location = new System.Drawing.Point(98, 231);
+            this.btnStageIncomplete.Name = "btnStageIncomplete";
+            this.btnStageIncomplete.Size = new System.Drawing.Size(75, 23);
+            this.btnStageIncomplete.TabIndex = 10;
+            this.btnStageIncomplete.Text = "Добавить";
+            this.btnStageIncomplete.UseVisualStyleBackColor = true;
+            this.btnStageIncomplete.Click += new System.EventHandler(this.btnStageIncomplete_Click);
+            // 
+            // btnStageComplete
+            // 
+            this.btnStageComplete.Location = new System.Drawing.Point(179, 231);
+            this.btnStageComplete.Name = "btnStageComplete";
+            this.btnStageComplete.Size = new System.Drawing.Size(75, 23);
+            this.btnStageComplete.TabIndex = 11;
+            this.btnStageComplete.Text = "<>";
+            this.btnStageComplete.UseVisualStyleBackColor = true;
+            this.btnStageComplete.Click += new System.EventHandler(this.btnStageComplete_Click);
+            // 
+            // btnAuto
+            // 
+            this.btnAuto.Location = new System.Drawing.Point(279, 231);
+            this.btnAuto.Name = "btnAuto";
+            this.btnAuto.Size = new System.Drawing.Size(34, 23);
+            this.btnAuto.TabIndex = 12;
+            this.btnAuto.Text = "A";
+            this.btnAuto.UseVisualStyleBackColor = true;
             // 
             // TeamEditDlg
             // 
@@ -117,8 +184,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(325, 327);
-            this.Controls.Add(this.listBox2);
-            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.btnAuto);
+            this.Controls.Add(this.btnStageComplete);
+            this.Controls.Add(this.btnStageIncomplete);
+            this.Controls.Add(this.btnStagePass);
+            this.Controls.Add(this.dgvStages);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.btnCancel);
@@ -131,6 +201,7 @@
             this.Name = "TeamEditDlg";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Правка команды";
+            ((System.ComponentModel.ISupportInitialize)(this.dgvStages)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -144,7 +215,12 @@
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ListBox listBox1;
-        private System.Windows.Forms.ListBox listBox2;
+        private System.Windows.Forms.DataGridView dgvStages;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clStage;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clUsage;
+        private System.Windows.Forms.Button btnStagePass;
+        private System.Windows.Forms.Button btnStageIncomplete;
+        private System.Windows.Forms.Button btnStageComplete;
+        private System.Windows.Forms.Button btnAuto;
     }
 }

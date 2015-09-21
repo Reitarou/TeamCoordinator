@@ -149,4 +149,13 @@
   <data name="sStageHeader" xml:space="preserve">
     <value>{0} - "{1}" ({2})</value>
   </data>
+  <data name="sStageComplete" xml:space="preserve">
+    <value>Пройден</value>
+  </data>
+  <data name="sStageIncomplete" xml:space="preserve">
+    <value>Не пройден</value>
+  </data>
+  <data name="sStagePass" xml:space="preserve">
+    <value>Пропускается</value>
+  </data>
 </root>
