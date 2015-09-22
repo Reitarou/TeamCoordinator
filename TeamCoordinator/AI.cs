@@ -120,6 +120,18 @@ namespace TeamCoordinator
             return null;
         }
 
+        public Stage GetStage(string name)
+        {
+            foreach (var stage in m_Stages)
+            {
+                if (stage.Name == name)
+                {
+                    return stage;
+                }
+            }
+            return null;
+        }
+
         public Team GetTeam(int id)
         {
             foreach (var team in m_Teams)
@@ -144,26 +156,47 @@ namespace TeamCoordinator
             return null;
         }
 
-        public string GetStageState(Stage stage)
+        public List<int> GetStageState(Stage stage)
         {
-            var s = "";
-            var name = stage.Number;
+            if (stage.IsClosed)
+            {
+                return null;
+            }
+            var res = new List<int>();
+
             foreach (var team in m_Teams)
             {
-                if (team.CurrentStage == stage.ID)
+                var index = team.CurrentStages.BinarySearch(stage.ID);
+                if (index >= 0)
                 {
-                    s += team.Name + ", ";
+                    res.Add(team.ID);
                 }
             }
-            if (s == "")
+
+            return res;
+        }
+
+        public int GetState(Stage stage, Team team)
+        {
+            if (team.Stages.ContainsKey(stage.Name))
             {
-                s = Resources.sStageFree;
+                return team.Stages[stage.Name];
             }
-            else
+            return -1;
+        }
+
+        public void CheckTeams()
+        {
+            foreach (var team in m_Teams)
             {
-                s = s.Remove(s.Length - 2);
+                foreach (var stage in m_Stages)
+                {
+                    if (!team.Stages.ContainsKey(stage.Name))
+                    {
+                        team.Stages.Add(stage.Name, -1);
+                    }
+                }
             }
-            return s;
         }
 
         public void LoadFromStg(XDocument doc)

@@ -41,5 +41,10 @@ namespace TeamCoordinator
             node.AddString("Name", Name);
             node.AddString("ShortName", ShortName);
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panelStages = new System.Windows.Forms.Panel();
             this.panelTeams = new System.Windows.Forms.Panel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -39,16 +41,16 @@
             this.miEditMode = new System.Windows.Forms.ToolStripMenuItem();
             this.miEditGroups = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tpGrid = new System.Windows.Forms.TabPage();
+            this.dgvGrid = new System.Windows.Forms.DataGridView();
             this.tpStages = new System.Windows.Forms.TabPage();
             this.tpTeams = new System.Windows.Forms.TabPage();
-            this.tpGrid = new System.Windows.Forms.TabPage();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
+            this.tpGrid.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvGrid)).BeginInit();
             this.tpStages.SuspendLayout();
             this.tpTeams.SuspendLayout();
-            this.tpGrid.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // panelStages
@@ -136,9 +138,9 @@
             // 
             // tabControl1
             // 
+            this.tabControl1.Controls.Add(this.tpGrid);
             this.tabControl1.Controls.Add(this.tpStages);
             this.tabControl1.Controls.Add(this.tpTeams);
-            this.tabControl1.Controls.Add(this.tpGrid);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 24);
             this.tabControl1.Name = "tabControl1";
@@ -146,6 +148,52 @@
             this.tabControl1.Size = new System.Drawing.Size(577, 598);
             this.tabControl1.TabIndex = 3;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
+            // 
+            // tpGrid
+            // 
+            this.tpGrid.Controls.Add(this.dgvGrid);
+            this.tpGrid.Location = new System.Drawing.Point(4, 22);
+            this.tpGrid.Name = "tpGrid";
+            this.tpGrid.Size = new System.Drawing.Size(569, 572);
+            this.tpGrid.TabIndex = 2;
+            this.tpGrid.Text = "Сетка";
+            this.tpGrid.UseVisualStyleBackColor = true;
+            // 
+            // dgvGrid
+            // 
+            this.dgvGrid.AllowUserToAddRows = false;
+            this.dgvGrid.AllowUserToDeleteRows = false;
+            this.dgvGrid.AllowUserToResizeColumns = false;
+            this.dgvGrid.AllowUserToResizeRows = false;
+            this.dgvGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.dgvGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvGrid.EnableHeadersVisualStyles = false;
+            this.dgvGrid.Location = new System.Drawing.Point(0, 0);
+            this.dgvGrid.MultiSelect = false;
+            this.dgvGrid.Name = "dgvGrid";
+            this.dgvGrid.ReadOnly = true;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            this.dgvGrid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
+            this.dgvGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvGrid.Size = new System.Drawing.Size(569, 572);
+            this.dgvGrid.TabIndex = 1;
+            this.dgvGrid.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dgvGrid_MouseClick);
             // 
             // tpStages
             // 
@@ -169,26 +217,6 @@
             this.tpTeams.Text = "Команды";
             this.tpTeams.UseVisualStyleBackColor = true;
             // 
-            // tpGrid
-            // 
-            this.tpGrid.Controls.Add(this.dataGridView1);
-            this.tpGrid.Location = new System.Drawing.Point(4, 22);
-            this.tpGrid.Name = "tpGrid";
-            this.tpGrid.Size = new System.Drawing.Size(569, 572);
-            this.tpGrid.TabIndex = 2;
-            this.tpGrid.Text = "Сетка";
-            this.tpGrid.UseVisualStyleBackColor = true;
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(569, 572);
-            this.dataGridView1.TabIndex = 1;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -202,10 +230,10 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
+            this.tpGrid.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvGrid)).EndInit();
             this.tpStages.ResumeLayout(false);
             this.tpTeams.ResumeLayout(false);
-            this.tpGrid.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -227,7 +255,7 @@
         private System.Windows.Forms.TabPage tpStages;
         private System.Windows.Forms.TabPage tpTeams;
         private System.Windows.Forms.TabPage tpGrid;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dgvGrid;
     }
 }
 

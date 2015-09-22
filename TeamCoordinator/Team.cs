@@ -11,8 +11,8 @@ namespace TeamCoordinator
         public string Name = "";
         public int Group = -1;
         public Dictionary<string, int> Stages = new Dictionary<string, int>();
+        public List<int> CurrentStages = new List<int>();
         public bool IsReady = true;
-        public int CurrentStage = -1;
 
         public Team()
         {
@@ -24,7 +24,7 @@ namespace TeamCoordinator
             Name = node.GetString("Name", "");
             Group = node.GetInt("Group", -1);
             IsReady = node.GetBoolean("IsReady", true);
-            
+
             var stageNodes = node.GetNodes("Stage");
             foreach (var stageNode in stageNodes)
             {
@@ -33,6 +33,20 @@ namespace TeamCoordinator
                 {
                     var state = stageNode.GetInt("State", -1);
                     Stages.Add(name, state);
+                }
+            }
+
+            var cStageNodes = node.GetNodes("CurrentStage");
+            foreach (var cStageNode in cStageNodes)
+            {
+                var cStageID = cStageNode.GetInt("ID", -1);
+                if (cStageID > 0)
+                {
+                    var index = CurrentStages.BinarySearch(cStageID);
+                    if (index < 0)
+                    {
+                        CurrentStages.Insert(~index, cStageID);
+                    }
                 }
             }
         }
@@ -78,6 +92,12 @@ namespace TeamCoordinator
                 stageNode.AddString("Name", stage.Key);
                 stageNode.AddInt("State", stage.Value);
                 node.AddNode(stageNode);
+            }
+            foreach (var cstage in CurrentStages)
+            {
+                var cstageNode = new StgNode("CurrentStage");
+                cstageNode.AddInt("ID", cstage);
+                node.AddNode(cstageNode);
             }
         }
     }

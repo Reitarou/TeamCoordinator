@@ -32,7 +32,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cmbGroup = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.dgvStages = new System.Windows.Forms.DataGridView();
             this.clStage = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -83,13 +83,14 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // comboBox1
+            // cmbGroup
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(75, 32);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(238, 21);
-            this.comboBox1.TabIndex = 6;
+            this.cmbGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbGroup.FormattingEnabled = true;
+            this.cmbGroup.Location = new System.Drawing.Point(75, 32);
+            this.cmbGroup.Name = "cmbGroup";
+            this.cmbGroup.Size = new System.Drawing.Size(238, 21);
+            this.cmbGroup.TabIndex = 6;
             // 
             // label3
             // 
@@ -176,6 +177,7 @@
             this.btnAuto.TabIndex = 12;
             this.btnAuto.Text = "A";
             this.btnAuto.UseVisualStyleBackColor = true;
+            this.btnAuto.Click += new System.EventHandler(this.btnAuto_Click);
             // 
             // TeamEditDlg
             // 
@@ -190,7 +192,7 @@
             this.Controls.Add(this.btnStagePass);
             this.Controls.Add(this.dgvStages);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.cmbGroup);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.label1);
@@ -213,7 +215,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cmbGroup;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.DataGridView dgvStages;
         private System.Windows.Forms.DataGridViewTextBoxColumn clStage;
