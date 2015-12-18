@@ -36,49 +36,49 @@ namespace TeamCoordinator
         {
             using (var dlg = new TeamEditDlg(ai, team))
             {
-                dlg.Top = MousePosition.Y;
-                dlg.Left = Math.Max(0, (int)(MousePosition.X - dlg.Width * 0.5));
+                //dlg.Top = MousePosition.Y;
+                //dlg.Left = Math.Max(0, (int)(MousePosition.X - dlg.Width * 0.5));
 
-                dlg.tbName.Text = team.Name;
-                dlg.cmbGroup.SelectedIndex = 0;
-                if (team.Group != -1)
-                {
-                    for (int i = 1; i < dlg.cmbGroup.Items.Count; i++)
-                    {
-                        var group = dlg.cmbGroup.Items[i] as Group;
-                        if (group != null)
-                        {
-                            if (team.Group == group.ID)
-                            {
-                                dlg.cmbGroup.SelectedIndex = i;
-                                break;
-                            }
-                        }
-                    }
-                }
+                //dlg.tbName.Text = team.Name;
+                //dlg.cmbGroup.SelectedIndex = 0;
+                //if (team.Group != -1)
+                //{
+                //    for (int i = 1; i < dlg.cmbGroup.Items.Count; i++)
+                //    {
+                //        var group = dlg.cmbGroup.Items[i] as Group;
+                //        if (group != null)
+                //        {
+                //            if (team.Group == group.ID)
+                //            {
+                //                dlg.cmbGroup.SelectedIndex = i;
+                //                break;
+                //            }
+                //        }
+                //    }
+                //}
 
-                dlg.UpdateControls();
-                if (dlg.ShowDialog() == DialogResult.OK)
-                {
-                    team.Name = dlg.tbName.Text;
-                    if (dlg.cmbGroup.SelectedIndex == 0)
-                    {
-                        team.Group = -1;
-                    }
-                    else
-                    {
-                        var group = dlg.cmbGroup.Items[dlg.cmbGroup.SelectedIndex] as Group;
-                        if (group == null)
-                        {
-                            team.Group = -1;
-                        }
-                        else
-                        {
-                            team.Group = group.ID;
-                        }
-                    }
-                    return true;
-                }
+                //dlg.UpdateControls();
+                //if (dlg.ShowDialog() == DialogResult.OK)
+                //{
+                //    team.Name = dlg.tbName.Text;
+                //    if (dlg.cmbGroup.SelectedIndex == 0)
+                //    {
+                //        team.Group = -1;
+                //    }
+                //    else
+                //    {
+                //        var group = dlg.cmbGroup.Items[dlg.cmbGroup.SelectedIndex] as Group;
+                //        if (group == null)
+                //        {
+                //            team.Group = -1;
+                //        }
+                //        else
+                //        {
+                //            team.Group = group.ID;
+                //        }
+                //    }
+                //    return true;
+                //}
             }
             return false;
         }
@@ -246,28 +246,28 @@ namespace TeamCoordinator
 
         private void btnAuto_Click(object sender, EventArgs e)
         {
-            if (cmbGroup.SelectedIndex != 0)
-            {
-                var group = cmbGroup.Items[cmbGroup.SelectedIndex] as Group;
-                if (group != null)
-                {
-                    foreach (var stage in m_AI.Stages)
-                    {
-                        if (m_Team.Stages.ContainsKey(stage.Name))
-                        {
-                            if (stage.AvaliableGroups.Contains(group.ID))
-                            {
-                                m_Team.Stages[stage.Name] = 0;
-                            }
-                            else
-                            {
-                                m_Team.Stages[stage.Name] = -1;
-                            }
-                        }
-                    }
-                    UpdateControls();
-                }
-            }
+            //if (cmbGroup.SelectedIndex != 0)
+            //{
+            //    var group = cmbGroup.Items[cmbGroup.SelectedIndex] as Group;
+            //    if (group != null)
+            //    {
+            //        foreach (var stage in m_AI.Stages)
+            //        {
+            //            if (m_Team.Stages.ContainsKey(stage.Name))
+            //            {
+            //                if (stage.AvaliableGroups.Contains(group.ID))
+            //                {
+            //                    m_Team.Stages[stage.Name] = 0;
+            //                }
+            //                else
+            //                {
+            //                    m_Team.Stages[stage.Name] = -1;
+            //                }
+            //            }
+            //        }
+            //        UpdateControls();
+            //    }
+            //}
         }
     }
 }

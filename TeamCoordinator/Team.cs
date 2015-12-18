@@ -2,66 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Stg;
 
 namespace TeamCoordinator
 {
-    class Team
+    class Team : Item
     {
-        private int m_ID = -1;
         public string Name = "";
         public int Group = -1;
         public Dictionary<string, int> Stages = new Dictionary<string, int>();
         public List<int> CurrentStages = new List<int>();
         public bool IsReady = true;
 
-        public Team()
+        public Team(AI ai)
+            :base(ai)
         {
         }
 
-        public Team(StgNode node)
+        public Team(AI ai, StgNode node)
+            :base(ai, node)
         {
-            m_ID = node.GetInt("ID", -1);
-            Name = node.GetString("Name", "");
-            Group = node.GetInt("Group", -1);
-            IsReady = node.GetBoolean("IsReady", true);
-
-            var stageNodes = node.GetNodes("Stage");
-            foreach (var stageNode in stageNodes)
-            {
-                var name = stageNode.GetString("Name", "");
-                if (name != "")
-                {
-                    var state = stageNode.GetInt("State", -1);
-                    Stages.Add(name, state);
-                }
-            }
-
-            var cStageNodes = node.GetNodes("CurrentStage");
-            foreach (var cStageNode in cStageNodes)
-            {
-                var cStageID = cStageNode.GetInt("ID", -1);
-                if (cStageID > 0)
-                {
-                    var index = CurrentStages.BinarySearch(cStageID);
-                    if (index < 0)
-                    {
-                        CurrentStages.Insert(~index, cStageID);
-                    }
-                }
-            }
-        }
-
-        public int ID
-        {
-            get
-            {
-                return m_ID;
-            }
-        }
-
-        public void SetID(int id)
-        {
-            m_ID = id;
+            
         }
 
         //public List<int> CurrentStages
@@ -80,25 +41,63 @@ namespace TeamCoordinator
         //    }
         //}
 
-        public void SaveToStg(StgNode node)
+        #region IStgSerializable Members
+
+        public override void LoadFromStg(StgNode node)
         {
-            node.AddInt("ID", m_ID);
-            node.AddString("Name", Name);
-            node.AddInt("Group", Group);
-            node.AddBoolean("IsReady", IsReady);
-            foreach (var stage in Stages)
-            {
-                var stageNode = new StgNode("Stage");
-                stageNode.AddString("Name", stage.Key);
-                stageNode.AddInt("State", stage.Value);
-                node.AddNode(stageNode);
-            }
-            foreach (var cstage in CurrentStages)
-            {
-                var cstageNode = new StgNode("CurrentStage");
-                cstageNode.AddInt("ID", cstage);
-                node.AddNode(cstageNode);
-            }
+            m_ID = node.GetString("ID", "");
+            if (m_ID == "") m_ID = Guid.NewGuid().ToString();
+            Name = node.GetString("Name", "");
+            //Group = node.GetInt32("Group", -1);
+            //IsReady = node.GetBoolean("IsReady", true);
+
+            //var stageNodes = node.GetNodes("Stage");
+            //foreach (var stageNode in stageNodes)
+            //{
+            //    var name = stageNode.GetString("Name", "");
+            //    if (name != "")
+            //    {
+            //        var state = stageNode.GetInt("State", -1);
+            //        Stages.Add(name, state);
+            //    }
+            //}
+
+            //var cStageNodes = node.GetNodes("CurrentStage");
+            //foreach (var cStageNode in cStageNodes)
+            //{
+            //    var cStageID = cStageNode.GetInt("ID", -1);
+            //    if (cStageID > 0)
+            //    {
+            //        var index = CurrentStages.BinarySearch(cStageID);
+            //        if (index < 0)
+            //        {
+            //            CurrentStages.Insert(~index, cStageID);
+            //        }
+            //    }
+            //}
         }
+
+        public override void SaveToStg(StgNode node)
+        {
+            node.AddString("ID", m_ID);
+            node.AddString("Name", Name);
+            //node.AddInt32("Group", Group);
+            //node.AddBoolean("IsReady", IsReady);
+            //foreach (var stage in Stages)
+            //{
+            //    var stageNode = new StgNode("Stage");
+            //    stageNode.AddString("Name", stage.Key);
+            //    stageNode.AddInt("State", stage.Value);
+            //    node.AddNode(stageNode);
+            //}
+            //foreach (var cstage in CurrentStages)
+            //{
+            //    var cstageNode = new StgNode("CurrentStage");
+            //    cstageNode.AddInt("ID", cstage);
+            //    node.AddNode(cstageNode);
+            //}
+        }
+
+        #endregion
     }
 }

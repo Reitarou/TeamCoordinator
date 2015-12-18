@@ -2,61 +2,49 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml.Linq;
+using Stg;
 
 namespace TeamCoordinator
 {
-    class Stage
+    class Stage : Item
     {
-        private int m_ID = -1;
-        public string Number = "";
         public string Name = "";
-        public string Coach = "";
-        public bool IsClosed = false;
-        public List<int> AvaliableGroups = new List<int>();
+        public List<string> AvailableGroups = new List<string>();
 
-        public Stage()
+        public Stage(AI ai)
+            : base(ai)
         {
         }
 
-        public Stage(StgNode node)
+        public Stage(AI ai, StgNode node)
+            : base(ai, node)
         {
-            m_ID = node.GetInt("ID", -1);
-            Number = node.GetString("Number", "");
-            Name = node.GetString("Name", "");
-            Coach = node.GetString("Coach", "");
-            IsClosed = node.GetBoolean("IsClosed", false);
-            var avgs = node.GetInts("AvailableGroup");
-            foreach (var avg in avgs)
+        }
+
+        #region IStgSerializable Members
+
+        public override void SaveToStg(StgNode node)
+        {
+            var array = node.AddArray("AvailableGroups", StgType.String);
+            foreach (var item in AvailableGroups)
             {
-                AvaliableGroups.Add(avg);
+                array.AddString(item);
             }
         }
 
-        public int ID
+        public override void LoadFromStg(StgNode node)
         {
-            get
+            var array = node.GetArray("AvailableGroups", StgType.String);
+            for (int i = 0; i < array.Count; i++)
             {
-                return m_ID;
+                var s = array[i] as string;
+                if (s != string.Empty)
+                {
+                    AvailableGroups.Add(s);
+                }
             }
         }
 
-        public void SetID(int id)
-        {
-            m_ID = id;
-        }
-
-        public void SaveToStg(StgNode node)
-        {
-            node.AddInt("ID", m_ID);
-            node.AddString("Number", Number);
-            node.AddString("Name", Name);
-            node.AddString("Coach", Coach);
-            node.AddBoolean("IsClosed", IsClosed);
-            foreach (var avg in AvaliableGroups)
-            {
-                node.AddIntElement("AvailableGroup", avg);
-            }
-        }
+        #endregion
     }
 }

@@ -2,49 +2,47 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Stg;
 
 namespace TeamCoordinator
 {
-    class Group
+    class Group : Item, IStgSerializable
     {
-        private int m_ID = -1;
         public string Name = "";
         public string ShortName = "";
 
-        public Group()
+        public Group(AI ai)
+            :base(ai)
         {
         }
 
-        public Group(StgNode node)
+        public Group(AI ai, StgNode node)
+            :base(ai, node)
         {
-            m_ID = node.GetInt("ID", -1);
-            Name = node.GetString("Name", "");
-            ShortName = node.GetString("ShortName", "");
-        }
-
-        public int ID
-        {
-            get
-            {
-                return m_ID;
-            }
-        }
-
-        public void SetID(int id)
-        {
-            m_ID = id;
-        }
-
-        public void SaveToStg(StgNode node)
-        {
-            node.AddInt("ID", m_ID);
-            node.AddString("Name", Name);
-            node.AddString("ShortName", ShortName);
         }
 
         public override string ToString()
         {
             return Name;
         }
+
+        #region IStgSerializable Members
+
+        public override void LoadFromStg(StgNode node)
+        {
+            m_ID = node.GetString("ID", "");
+            if (m_ID == "") m_ID = Guid.NewGuid().ToString();
+            Name = node.GetString("Name", "");
+            ShortName = node.GetString("ShortName", "");
+        }
+        
+        public override void SaveToStg(StgNode node)
+        {
+            node.AddString("ID", m_ID);
+            node.AddString("Name", Name);
+            node.AddString("ShortName", ShortName);
+        }
+
+        #endregion
     }
 }
