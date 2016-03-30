@@ -10,6 +10,44 @@ using Stg;
 
 namespace TeamCoordinator
 {
+    class SceneComparer : IComparer<Scene>
+    {
+        private AI m_AI;
+
+        public SceneComparer(AI ai)
+        {
+            m_AI = ai;
+        }
+
+        public int Compare(Scene x, Scene y)
+        {
+            var xStage = m_AI.GetStageByID(x.StageID);
+            var yStage = m_AI.GetStageByID(y.StageID);
+
+            if (xStage == null && yStage == null)
+            {
+                return 0;
+            }
+            else if (xStage == null)
+            {
+                return -1;
+            }
+            else if (yStage == null)
+            {
+                return 1;
+            }
+            //else
+            var cStages = xStage.Name.CompareTo(yStage.Name);
+            if (cStages != 0)
+            {
+                return cStages;
+            }
+            //else
+            return x.Number.CompareTo(y.Number);
+        }
+    }
+
+
     class AI
     {
         private string m_Path;
@@ -63,22 +101,6 @@ namespace TeamCoordinator
             }
         }
 
-        public List<Stage> Stages
-        {
-            get
-            {
-                return m_Stages;
-            }
-        }
-
-        public List<Scene> Scenes
-        {
-            get
-            {
-                m_Scenes.Sort((a,b) => a.Number.CompareTo(b.Number));
-                return m_Scenes;
-            }
-        }
         
         public List<Team> Teams
         {
@@ -88,6 +110,14 @@ namespace TeamCoordinator
             }
         }
 
+        //public Team AddTeam()
+        //{
+        //    var team = new Team(this);
+        //    m_Teams.Add(team);
+        //    return team;
+        //}
+
+
         public List<Group> Groups
         {
             get
@@ -95,28 +125,133 @@ namespace TeamCoordinator
                 return m_Groups;
             }
         }
+
+        //public Group AddGroup()
+        //{
+        //    var group = new Group(this);
+        //    m_Groups.Add(group);
+        //    return group;
+        //}
+
+        public Group GetGroupByName(string name)
+        {
+            foreach (var group in m_Groups)
+            {
+                if (group.Name == name)
+                {
+                    return group;
+                }
+            }
+            return null;
+        }
+
+        public Group GetGroupByID(string id)
+        {
+            foreach (var group in m_Groups)
+            {
+                if (group.ID == id)
+                {
+                    return group;
+                }
+            }
+            return null;
+        }
+
+        public List<Stage> Stages
+        {
+            get
+            {
+                m_Stages.Sort((a, b) => a.Name.CompareTo(b.Name));
+                return m_Stages;
+            }
+        }
+
+        //public Stage AddStage()
+        //{
+        //    var stage = new Stage(this);
+        //    m_Stages.Add(stage);
+        //    return stage;
+        //}
+
+        public Stage GetStageByName(string name)
+        {
+            foreach (var stage in m_Stages)
+            {
+                if (stage.Name == name)
+                {
+                    return stage;
+                }
+            }
+            return null;
+        }
+
+        public Stage GetStageByID(string id)
+        {
+            foreach (var stage in m_Stages)
+            {
+                if (stage.ID == id)
+                {
+                    return stage;
+                }
+            }
+            return null;
+        }
+
+
+        public List<Scene> Scenes
+        {
+            get
+            {
+                var comparer = new SceneComparer(this);
+                m_Scenes.Sort(comparer);
+                return m_Scenes;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="team"></param>
+        /// <param name="scene"></param>
+        /// <returns>
+        /// -1 - Пропуск
+        /// 0 - Не пройден
+        /// 1 - На этапе
+        /// 2 - Пройден
+        /// </returns>
+        public int GetState(Team team, Scene scene)
+        {
+            if (team.Stages.ContainsKey(scene.StageID))
+            {
+                switch (team.Stages[scene.StageID])
+                {
+                    case -1:
+                        return -1;
+                    case 0:
+                        if (team.CurrentScene == scene.ID)
+                        {
+                            return 1;
+                        }
+                        else
+                        {
+                            return 0;
+                        }
+                    case 1:
+                        return 2;
+                }
+            }
+            return -1;
+        }
+
         
-        public void AddStage(Stage stage)
-        {
-            m_Stages.Add(stage);
-        }
+        //public Scene AddScene()
+        //{
+        //    var scene = new Scene(this);
+        //    m_Scenes.Add(scene);
+        //    return scene;
+        //}
 
-        public void AddScene(Scene scene)
-        {
-            m_Scenes.Add(scene);
-        }
 
-        public Team AddTeam()
-        {
-            var team = new Team(this);
-            m_Teams.Add(team);
-            return team;
-        }
-
-        public void AddGroup(Group group)
-        {
-            m_Groups.Add(group);
-        }
 
         //public Scene GetScene(string id)
         //{
@@ -130,17 +265,7 @@ namespace TeamCoordinator
         //    return null;
         //}
 
-        //public Scene GetStage(string name)
-        //{
-        //    foreach (var stage in m_Scenes)
-        //    {
-        //        if (stage.Name == name)
-        //        {
-        //            return stage;
-        //        }
-        //    }
-        //    return null;
-        //}
+        
 
         //public Team GetTeam(string id)
         //{

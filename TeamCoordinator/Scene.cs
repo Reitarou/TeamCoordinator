@@ -9,10 +9,11 @@ namespace TeamCoordinator
 {
     class Scene : Item
     {
-        public Stage m_Stage = null;
+        public string StageID = "";
         public string Number = "";
         public string Coach = "";
-        public DateTime? ClosedTime = null;
+        public bool IsReady = true;
+        public DateTime ChangeStateTime = DateTime.MinValue;
 
         public Scene(AI ai)
             :base(ai)
@@ -30,23 +31,25 @@ namespace TeamCoordinator
         {
             m_ID = node.GetString("ID", "");
             if (m_ID == "") m_ID = Guid.NewGuid().ToString();
-            //m_Stage = node.GetString("Stage", "");
+            StageID = node.GetString("StageID", "");
             Number = node.GetString("Number", "");
             Coach = node.GetString("Coach", "");
-            var closedTime = node.GetString("ClosedTime", null);
-            if (closedTime != "null")
+            IsReady = node.GetBoolean("IsReady", true);
+            var closedTime = node.GetString("ChangeStateTime", "");
+            if (closedTime != "")
             {
-                ClosedTime = DateTime.Parse(closedTime);
+                ChangeStateTime = DateTime.Parse(closedTime);
             }
         }
 
         public override void SaveToStg(StgNode node)
         {
             node.AddString("ID", m_ID);
-            //node.AddString("Stage", Stage);
+            node.AddString("StageID", StageID);
             node.AddString("Number", Number);
             node.AddString("Coach", Coach);
-            node.AddString("ClosedTime", (ClosedTime.HasValue)? ClosedTime.Value.ToShortTimeString() : "null");
+            node.AddBoolean("IsReady", IsReady);
+            node.AddString("ChangeStateTime", ChangeStateTime.ToShortTimeString());
         }
 
         #endregion

@@ -6,7 +6,7 @@ using Stg;
 
 namespace TeamCoordinator
 {
-    class Group : Item, IStgSerializable
+    class Group : Item
     {
         public string Name = "";
         public string ShortName = "";
@@ -19,11 +19,6 @@ namespace TeamCoordinator
         public Group(AI ai, StgNode node)
             :base(ai, node)
         {
-        }
-
-        public override string ToString()
-        {
-            return Name;
         }
 
         #region IStgSerializable Members

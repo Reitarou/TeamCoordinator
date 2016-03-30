@@ -47,5 +47,10 @@ namespace TeamCoordinator
         public abstract void SaveToStg(StgNode node);
 
         #endregion
+
+        public override string ToString()
+        {
+            return m_ID;
+        }
     }
 }

@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.miFile = new System.Windows.Forms.ToolStripMenuItem();
             this.miCreate = new System.Windows.Forms.ToolStripMenuItem();
@@ -41,31 +41,36 @@
             this.tpLists = new System.Windows.Forms.TabPage();
             this.pnlProps = new System.Windows.Forms.Panel();
             this.pnlStageProps = new System.Windows.Forms.Panel();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.tbStageShortname = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.button5 = new System.Windows.Forms.Button();
+            this.btnAcceptGroup = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button10 = new System.Windows.Forms.Button();
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            this.listBox2 = new System.Windows.Forms.ListBox();
+            this.btnUnacceptGroup = new System.Windows.Forms.Button();
+            this.tbStageName = new System.Windows.Forms.TextBox();
+            this.btnAcceptAllGroups = new System.Windows.Forms.Button();
+            this.btnStageOk = new System.Windows.Forms.Button();
+            this.btnUnacceptAllGroups = new System.Windows.Forms.Button();
+            this.lvOtherGroups = new System.Windows.Forms.ListBox();
+            this.lvAcceptedGroups = new System.Windows.Forms.ListBox();
             this.label5 = new System.Windows.Forms.Label();
             this.pnlSceneProps = new System.Windows.Forms.Panel();
-            this.tbCoach = new System.Windows.Forms.TextBox();
-            this.lbCall = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.tbSceneCoach = new System.Windows.Forms.TextBox();
+            this.cmbSceneStage = new System.Windows.Forms.ComboBox();
             this.lbDescription = new System.Windows.Forms.Label();
             this.lbName = new System.Windows.Forms.Label();
-            this.tbNumber = new System.Windows.Forms.TextBox();
+            this.tbSceneNumber = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.btnSceneOk = new System.Windows.Forms.Button();
             this.pnlGroupProps = new System.Windows.Forms.Panel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.tbGroupShortName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
+            this.tbGroupName = new System.Windows.Forms.TextBox();
+            this.btnGroupOk = new System.Windows.Forms.Button();
             this.pnlTeamProps = new System.Windows.Forms.Panel();
             this.btnAuto = new System.Windows.Forms.Button();
             this.btnStageComplete = new System.Windows.Forms.Button();
@@ -75,12 +80,11 @@
             this.clStage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clUsage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label3 = new System.Windows.Forms.Label();
-            this.cmbGroup = new System.Windows.Forms.ComboBox();
+            this.cmbTeamGroup = new System.Windows.Forms.ComboBox();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.btnOk = new System.Windows.Forms.Button();
+            this.btnTeamOk = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.tbName = new System.Windows.Forms.TextBox();
-            this.vScrollBarProps = new System.Windows.Forms.VScrollBar();
+            this.tbTeamName = new System.Windows.Forms.TextBox();
             this.tvList = new System.Windows.Forms.TreeView();
             this.menuStrip1.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -101,7 +105,7 @@
             this.miFile});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1650, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1717, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -143,7 +147,7 @@
             this.tabControl.Location = new System.Drawing.Point(0, 24);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(1650, 432);
+            this.tabControl.Size = new System.Drawing.Size(1717, 508);
             this.tabControl.TabIndex = 3;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -152,7 +156,7 @@
             this.tpGrid.Controls.Add(this.dgvGrid);
             this.tpGrid.Location = new System.Drawing.Point(4, 22);
             this.tpGrid.Name = "tpGrid";
-            this.tpGrid.Size = new System.Drawing.Size(1642, 406);
+            this.tpGrid.Size = new System.Drawing.Size(1709, 482);
             this.tpGrid.TabIndex = 2;
             this.tpGrid.Text = "Сетка";
             this.tpGrid.UseVisualStyleBackColor = true;
@@ -164,14 +168,14 @@
             this.dgvGrid.AllowUserToResizeColumns = false;
             this.dgvGrid.AllowUserToResizeRows = false;
             this.dgvGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
             this.dgvGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvGrid.EnableHeadersVisualStyles = false;
@@ -179,17 +183,17 @@
             this.dgvGrid.MultiSelect = false;
             this.dgvGrid.Name = "dgvGrid";
             this.dgvGrid.ReadOnly = true;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle12;
             this.dgvGrid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
             this.dgvGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgvGrid.Size = new System.Drawing.Size(1642, 406);
+            this.dgvGrid.Size = new System.Drawing.Size(1709, 482);
             this.dgvGrid.TabIndex = 1;
             this.dgvGrid.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dgvGrid_MouseClick);
             // 
@@ -200,42 +204,70 @@
             this.tpLists.Location = new System.Drawing.Point(4, 22);
             this.tpLists.Name = "tpLists";
             this.tpLists.Padding = new System.Windows.Forms.Padding(3);
-            this.tpLists.Size = new System.Drawing.Size(1642, 406);
+            this.tpLists.Size = new System.Drawing.Size(1709, 482);
             this.tpLists.TabIndex = 0;
             this.tpLists.Text = "Списки";
             this.tpLists.UseVisualStyleBackColor = true;
             // 
             // pnlProps
             // 
-            this.pnlProps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlProps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlProps.Controls.Add(this.pnlStageProps);
             this.pnlProps.Controls.Add(this.pnlSceneProps);
             this.pnlProps.Controls.Add(this.pnlGroupProps);
             this.pnlProps.Controls.Add(this.pnlTeamProps);
-            this.pnlProps.Controls.Add(this.vScrollBarProps);
-            this.pnlProps.Location = new System.Drawing.Point(292, 3);
+            this.pnlProps.Location = new System.Drawing.Point(412, 6);
             this.pnlProps.Name = "pnlProps";
-            this.pnlProps.Size = new System.Drawing.Size(1342, 395);
+            this.pnlProps.Size = new System.Drawing.Size(1288, 470);
             this.pnlProps.TabIndex = 1;
             // 
             // pnlStageProps
             // 
+            this.pnlStageProps.Controls.Add(this.label9);
+            this.pnlStageProps.Controls.Add(this.label8);
+            this.pnlStageProps.Controls.Add(this.tbStageShortname);
             this.pnlStageProps.Controls.Add(this.label4);
-            this.pnlStageProps.Controls.Add(this.button5);
+            this.pnlStageProps.Controls.Add(this.btnAcceptGroup);
             this.pnlStageProps.Controls.Add(this.button6);
-            this.pnlStageProps.Controls.Add(this.button7);
-            this.pnlStageProps.Controls.Add(this.textBox2);
-            this.pnlStageProps.Controls.Add(this.button8);
-            this.pnlStageProps.Controls.Add(this.button9);
-            this.pnlStageProps.Controls.Add(this.button10);
-            this.pnlStageProps.Controls.Add(this.listBox1);
-            this.pnlStageProps.Controls.Add(this.listBox2);
+            this.pnlStageProps.Controls.Add(this.btnUnacceptGroup);
+            this.pnlStageProps.Controls.Add(this.tbStageName);
+            this.pnlStageProps.Controls.Add(this.btnAcceptAllGroups);
+            this.pnlStageProps.Controls.Add(this.btnStageOk);
+            this.pnlStageProps.Controls.Add(this.btnUnacceptAllGroups);
+            this.pnlStageProps.Controls.Add(this.lvOtherGroups);
+            this.pnlStageProps.Controls.Add(this.lvAcceptedGroups);
             this.pnlStageProps.Controls.Add(this.label5);
             this.pnlStageProps.Location = new System.Drawing.Point(969, 3);
             this.pnlStageProps.Name = "pnlStageProps";
             this.pnlStageProps.Size = new System.Drawing.Size(316, 316);
             this.pnlStageProps.TabIndex = 40;
+            this.pnlStageProps.Visible = false;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(5, 32);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(71, 13);
+            this.label9.TabIndex = 29;
+            this.label9.Text = "Сокращение";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(2, 81);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(124, 13);
+            this.label8.TabIndex = 40;
+            this.label8.Text = "Недопущенные группы";
+            // 
+            // tbStageShortname
+            // 
+            this.tbStageShortname.Location = new System.Drawing.Point(82, 29);
+            this.tbStageShortname.Name = "tbStageShortname";
+            this.tbStageShortname.Size = new System.Drawing.Size(224, 20);
+            this.tbStageShortname.TabIndex = 28;
             // 
             // label4
             // 
@@ -246,14 +278,15 @@
             this.label4.TabIndex = 25;
             this.label4.Text = "Название";
             // 
-            // button5
+            // btnAcceptGroup
             // 
-            this.button5.Location = new System.Drawing.Point(127, 219);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(63, 29);
-            this.button5.TabIndex = 39;
-            this.button5.Text = ">>";
-            this.button5.UseVisualStyleBackColor = true;
+            this.btnAcceptGroup.Location = new System.Drawing.Point(127, 219);
+            this.btnAcceptGroup.Name = "btnAcceptGroup";
+            this.btnAcceptGroup.Size = new System.Drawing.Size(63, 29);
+            this.btnAcceptGroup.TabIndex = 39;
+            this.btnAcceptGroup.Text = ">>";
+            this.btnAcceptGroup.UseVisualStyleBackColor = true;
+            this.btnAcceptGroup.Click += new System.EventHandler(this.btnAcceptGroup_Click);
             // 
             // button6
             // 
@@ -266,70 +299,74 @@
             this.button6.Text = "Cancel";
             this.button6.UseVisualStyleBackColor = true;
             // 
-            // button7
+            // btnUnacceptGroup
             // 
-            this.button7.Location = new System.Drawing.Point(127, 132);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(63, 29);
-            this.button7.TabIndex = 38;
-            this.button7.Text = "<<";
-            this.button7.UseVisualStyleBackColor = true;
+            this.btnUnacceptGroup.Location = new System.Drawing.Point(127, 132);
+            this.btnUnacceptGroup.Name = "btnUnacceptGroup";
+            this.btnUnacceptGroup.Size = new System.Drawing.Size(63, 29);
+            this.btnUnacceptGroup.TabIndex = 38;
+            this.btnUnacceptGroup.Text = "<<";
+            this.btnUnacceptGroup.UseVisualStyleBackColor = true;
+            this.btnUnacceptGroup.Click += new System.EventHandler(this.btnUnacceptGroup_Click);
             // 
-            // textBox2
+            // tbStageName
             // 
-            this.textBox2.Location = new System.Drawing.Point(68, 3);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(238, 20);
-            this.textBox2.TabIndex = 24;
+            this.tbStageName.Location = new System.Drawing.Point(82, 3);
+            this.tbStageName.Name = "tbStageName";
+            this.tbStageName.Size = new System.Drawing.Size(224, 20);
+            this.tbStageName.TabIndex = 24;
             // 
-            // button8
+            // btnAcceptAllGroups
             // 
-            this.button8.Location = new System.Drawing.Point(127, 254);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(63, 29);
-            this.button8.TabIndex = 37;
-            this.button8.Text = ">> |";
-            this.button8.UseVisualStyleBackColor = true;
+            this.btnAcceptAllGroups.Location = new System.Drawing.Point(127, 254);
+            this.btnAcceptAllGroups.Name = "btnAcceptAllGroups";
+            this.btnAcceptAllGroups.Size = new System.Drawing.Size(63, 29);
+            this.btnAcceptAllGroups.TabIndex = 37;
+            this.btnAcceptAllGroups.Text = ">> |";
+            this.btnAcceptAllGroups.UseVisualStyleBackColor = true;
+            this.btnAcceptAllGroups.Click += new System.EventHandler(this.btnAcceptAllGroups_Click);
             // 
-            // button9
+            // btnStageOk
             // 
-            this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button9.Location = new System.Drawing.Point(3, 289);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(75, 23);
-            this.button9.TabIndex = 12;
-            this.button9.Text = "OK";
-            this.button9.UseVisualStyleBackColor = true;
+            this.btnStageOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnStageOk.Location = new System.Drawing.Point(3, 290);
+            this.btnStageOk.Name = "btnStageOk";
+            this.btnStageOk.Size = new System.Drawing.Size(75, 23);
+            this.btnStageOk.TabIndex = 12;
+            this.btnStageOk.Text = "OK";
+            this.btnStageOk.UseVisualStyleBackColor = true;
+            this.btnStageOk.Click += new System.EventHandler(this.btnStageOk_Click);
             // 
-            // button10
+            // btnUnacceptAllGroups
             // 
-            this.button10.Location = new System.Drawing.Point(127, 97);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(63, 29);
-            this.button10.TabIndex = 36;
-            this.button10.Text = "| <<";
-            this.button10.UseVisualStyleBackColor = true;
+            this.btnUnacceptAllGroups.Location = new System.Drawing.Point(127, 97);
+            this.btnUnacceptAllGroups.Name = "btnUnacceptAllGroups";
+            this.btnUnacceptAllGroups.Size = new System.Drawing.Size(63, 29);
+            this.btnUnacceptAllGroups.TabIndex = 36;
+            this.btnUnacceptAllGroups.Text = "| <<";
+            this.btnUnacceptAllGroups.UseVisualStyleBackColor = true;
+            this.btnUnacceptAllGroups.Click += new System.EventHandler(this.btnUnacceptAllGroups_Click);
             // 
-            // listBox1
+            // lvOtherGroups
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(8, 97);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(113, 186);
-            this.listBox1.TabIndex = 33;
+            this.lvOtherGroups.FormattingEnabled = true;
+            this.lvOtherGroups.Location = new System.Drawing.Point(8, 97);
+            this.lvOtherGroups.Name = "lvOtherGroups";
+            this.lvOtherGroups.Size = new System.Drawing.Size(113, 186);
+            this.lvOtherGroups.TabIndex = 33;
             // 
-            // listBox2
+            // lvAcceptedGroups
             // 
-            this.listBox2.FormattingEnabled = true;
-            this.listBox2.Location = new System.Drawing.Point(196, 97);
-            this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(113, 186);
-            this.listBox2.TabIndex = 35;
+            this.lvAcceptedGroups.FormattingEnabled = true;
+            this.lvAcceptedGroups.Location = new System.Drawing.Point(196, 97);
+            this.lvAcceptedGroups.Name = "lvAcceptedGroups";
+            this.lvAcceptedGroups.Size = new System.Drawing.Size(113, 186);
+            this.lvAcceptedGroups.TabIndex = 35;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(8, 81);
+            this.label5.Location = new System.Drawing.Point(193, 81);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(113, 13);
             this.label5.TabIndex = 34;
@@ -337,41 +374,44 @@
             // 
             // pnlSceneProps
             // 
-            this.pnlSceneProps.Controls.Add(this.tbCoach);
-            this.pnlSceneProps.Controls.Add(this.lbCall);
-            this.pnlSceneProps.Controls.Add(this.textBox3);
+            this.pnlSceneProps.Controls.Add(this.label7);
+            this.pnlSceneProps.Controls.Add(this.tbSceneCoach);
+            this.pnlSceneProps.Controls.Add(this.cmbSceneStage);
             this.pnlSceneProps.Controls.Add(this.lbDescription);
             this.pnlSceneProps.Controls.Add(this.lbName);
-            this.pnlSceneProps.Controls.Add(this.tbNumber);
+            this.pnlSceneProps.Controls.Add(this.tbSceneNumber);
             this.pnlSceneProps.Controls.Add(this.button3);
-            this.pnlSceneProps.Controls.Add(this.button4);
+            this.pnlSceneProps.Controls.Add(this.btnSceneOk);
             this.pnlSceneProps.Location = new System.Drawing.Point(647, 3);
             this.pnlSceneProps.Name = "pnlSceneProps";
             this.pnlSceneProps.Size = new System.Drawing.Size(316, 316);
             this.pnlSceneProps.TabIndex = 26;
+            this.pnlSceneProps.Visible = false;
             // 
-            // tbCoach
+            // label7
             // 
-            this.tbCoach.Location = new System.Drawing.Point(80, 55);
-            this.tbCoach.Name = "tbCoach";
-            this.tbCoach.Size = new System.Drawing.Size(229, 20);
-            this.tbCoach.TabIndex = 40;
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(43, 32);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(31, 13);
+            this.label7.TabIndex = 25;
+            this.label7.Text = "Этап";
             // 
-            // lbCall
+            // tbSceneCoach
             // 
-            this.lbCall.AutoSize = true;
-            this.lbCall.Location = new System.Drawing.Point(17, 32);
-            this.lbCall.Name = "lbCall";
-            this.lbCall.Size = new System.Drawing.Size(57, 13);
-            this.lbCall.TabIndex = 32;
-            this.lbCall.Text = "Название";
+            this.tbSceneCoach.Location = new System.Drawing.Point(80, 55);
+            this.tbSceneCoach.Name = "tbSceneCoach";
+            this.tbSceneCoach.Size = new System.Drawing.Size(229, 20);
+            this.tbSceneCoach.TabIndex = 40;
             // 
-            // textBox3
+            // cmbSceneStage
             // 
-            this.textBox3.Location = new System.Drawing.Point(80, 29);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(229, 20);
-            this.textBox3.TabIndex = 31;
+            this.cmbSceneStage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSceneStage.FormattingEnabled = true;
+            this.cmbSceneStage.Location = new System.Drawing.Point(80, 29);
+            this.cmbSceneStage.Name = "cmbSceneStage";
+            this.cmbSceneStage.Size = new System.Drawing.Size(229, 21);
+            this.cmbSceneStage.TabIndex = 24;
             // 
             // lbDescription
             // 
@@ -391,12 +431,12 @@
             this.lbName.TabIndex = 27;
             this.lbName.Text = "Номер";
             // 
-            // tbNumber
+            // tbSceneNumber
             // 
-            this.tbNumber.Location = new System.Drawing.Point(80, 3);
-            this.tbNumber.Name = "tbNumber";
-            this.tbNumber.Size = new System.Drawing.Size(229, 20);
-            this.tbNumber.TabIndex = 26;
+            this.tbSceneNumber.Location = new System.Drawing.Point(80, 3);
+            this.tbSceneNumber.Name = "tbSceneNumber";
+            this.tbSceneNumber.Size = new System.Drawing.Size(229, 20);
+            this.tbSceneNumber.TabIndex = 26;
             // 
             // button3
             // 
@@ -409,26 +449,46 @@
             this.button3.Text = "Cancel";
             this.button3.UseVisualStyleBackColor = true;
             // 
-            // button4
+            // btnSceneOk
             // 
-            this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button4.Location = new System.Drawing.Point(3, 289);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 12;
-            this.button4.Text = "OK";
-            this.button4.UseVisualStyleBackColor = true;
+            this.btnSceneOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnSceneOk.Location = new System.Drawing.Point(3, 290);
+            this.btnSceneOk.Name = "btnSceneOk";
+            this.btnSceneOk.Size = new System.Drawing.Size(75, 23);
+            this.btnSceneOk.TabIndex = 12;
+            this.btnSceneOk.Text = "OK";
+            this.btnSceneOk.UseVisualStyleBackColor = true;
+            this.btnSceneOk.Click += new System.EventHandler(this.btnSceneOk_Click);
             // 
             // pnlGroupProps
             // 
+            this.pnlGroupProps.Controls.Add(this.label6);
+            this.pnlGroupProps.Controls.Add(this.tbGroupShortName);
             this.pnlGroupProps.Controls.Add(this.label2);
             this.pnlGroupProps.Controls.Add(this.button1);
-            this.pnlGroupProps.Controls.Add(this.textBox1);
-            this.pnlGroupProps.Controls.Add(this.button2);
+            this.pnlGroupProps.Controls.Add(this.tbGroupName);
+            this.pnlGroupProps.Controls.Add(this.btnGroupOk);
             this.pnlGroupProps.Location = new System.Drawing.Point(325, 3);
             this.pnlGroupProps.Name = "pnlGroupProps";
             this.pnlGroupProps.Size = new System.Drawing.Size(316, 316);
             this.pnlGroupProps.TabIndex = 2;
+            this.pnlGroupProps.Visible = false;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(5, 32);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(71, 13);
+            this.label6.TabIndex = 27;
+            this.label6.Text = "Сокращение";
+            // 
+            // tbGroupShortName
+            // 
+            this.tbGroupShortName.Location = new System.Drawing.Point(82, 29);
+            this.tbGroupShortName.Name = "tbGroupShortName";
+            this.tbGroupShortName.Size = new System.Drawing.Size(224, 20);
+            this.tbGroupShortName.TabIndex = 26;
             // 
             // label2
             // 
@@ -450,22 +510,23 @@
             this.button1.Text = "Cancel";
             this.button1.UseVisualStyleBackColor = true;
             // 
-            // textBox1
+            // tbGroupName
             // 
-            this.textBox1.Location = new System.Drawing.Point(68, 3);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(238, 20);
-            this.textBox1.TabIndex = 24;
+            this.tbGroupName.Location = new System.Drawing.Point(82, 3);
+            this.tbGroupName.Name = "tbGroupName";
+            this.tbGroupName.Size = new System.Drawing.Size(224, 20);
+            this.tbGroupName.TabIndex = 24;
             // 
-            // button2
+            // btnGroupOk
             // 
-            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button2.Location = new System.Drawing.Point(3, 289);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 12;
-            this.button2.Text = "OK";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btnGroupOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnGroupOk.Location = new System.Drawing.Point(3, 290);
+            this.btnGroupOk.Name = "btnGroupOk";
+            this.btnGroupOk.Size = new System.Drawing.Size(75, 23);
+            this.btnGroupOk.TabIndex = 12;
+            this.btnGroupOk.Text = "OK";
+            this.btnGroupOk.UseVisualStyleBackColor = true;
+            this.btnGroupOk.Click += new System.EventHandler(this.btnGroupOk_Click);
             // 
             // pnlTeamProps
             // 
@@ -475,15 +536,16 @@
             this.pnlTeamProps.Controls.Add(this.btnStagePass);
             this.pnlTeamProps.Controls.Add(this.dgvStages);
             this.pnlTeamProps.Controls.Add(this.label3);
-            this.pnlTeamProps.Controls.Add(this.cmbGroup);
+            this.pnlTeamProps.Controls.Add(this.cmbTeamGroup);
             this.pnlTeamProps.Controls.Add(this.btnCancel);
-            this.pnlTeamProps.Controls.Add(this.btnOk);
+            this.pnlTeamProps.Controls.Add(this.btnTeamOk);
             this.pnlTeamProps.Controls.Add(this.label1);
-            this.pnlTeamProps.Controls.Add(this.tbName);
+            this.pnlTeamProps.Controls.Add(this.tbTeamName);
             this.pnlTeamProps.Location = new System.Drawing.Point(3, 3);
             this.pnlTeamProps.Name = "pnlTeamProps";
             this.pnlTeamProps.Size = new System.Drawing.Size(316, 316);
             this.pnlTeamProps.TabIndex = 1;
+            this.pnlTeamProps.Visible = false;
             // 
             // btnAuto
             // 
@@ -493,33 +555,37 @@
             this.btnAuto.TabIndex = 23;
             this.btnAuto.Text = "A";
             this.btnAuto.UseVisualStyleBackColor = true;
+            this.btnAuto.Click += new System.EventHandler(this.btnAuto_Click);
             // 
             // btnStageComplete
             // 
-            this.btnStageComplete.Location = new System.Drawing.Point(172, 228);
+            this.btnStageComplete.Location = new System.Drawing.Point(184, 228);
             this.btnStageComplete.Name = "btnStageComplete";
-            this.btnStageComplete.Size = new System.Drawing.Size(75, 23);
+            this.btnStageComplete.Size = new System.Drawing.Size(81, 23);
             this.btnStageComplete.TabIndex = 22;
-            this.btnStageComplete.Text = "<>";
+            this.btnStageComplete.Text = "Пройдено";
             this.btnStageComplete.UseVisualStyleBackColor = true;
+            this.btnStageComplete.Click += new System.EventHandler(this.btnStageComplete_Click);
             // 
             // btnStageIncomplete
             // 
-            this.btnStageIncomplete.Location = new System.Drawing.Point(91, 228);
+            this.btnStageIncomplete.Location = new System.Drawing.Point(97, 228);
             this.btnStageIncomplete.Name = "btnStageIncomplete";
-            this.btnStageIncomplete.Size = new System.Drawing.Size(75, 23);
+            this.btnStageIncomplete.Size = new System.Drawing.Size(81, 23);
             this.btnStageIncomplete.TabIndex = 21;
-            this.btnStageIncomplete.Text = "Добавить";
+            this.btnStageIncomplete.Text = "Не пройдено";
             this.btnStageIncomplete.UseVisualStyleBackColor = true;
+            this.btnStageIncomplete.Click += new System.EventHandler(this.btnStageIncomplete_Click);
             // 
             // btnStagePass
             // 
             this.btnStagePass.Location = new System.Drawing.Point(10, 228);
             this.btnStagePass.Name = "btnStagePass";
-            this.btnStagePass.Size = new System.Drawing.Size(75, 23);
+            this.btnStagePass.Size = new System.Drawing.Size(81, 23);
             this.btnStagePass.TabIndex = 20;
-            this.btnStagePass.Text = "Удалить";
+            this.btnStagePass.Text = "Пропустить";
             this.btnStagePass.UseVisualStyleBackColor = true;
+            this.btnStagePass.Click += new System.EventHandler(this.btnStagePass_Click);
             // 
             // dgvStages
             // 
@@ -538,6 +604,7 @@
             this.dgvStages.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvStages.Size = new System.Drawing.Size(296, 150);
             this.dgvStages.TabIndex = 19;
+            this.dgvStages.SelectionChanged += new System.EventHandler(this.dgvStages_SelectionChanged);
             // 
             // clStage
             // 
@@ -563,14 +630,14 @@
             this.label3.TabIndex = 18;
             this.label3.Text = "Группа";
             // 
-            // cmbGroup
+            // cmbTeamGroup
             // 
-            this.cmbGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbGroup.FormattingEnabled = true;
-            this.cmbGroup.Location = new System.Drawing.Point(68, 29);
-            this.cmbGroup.Name = "cmbGroup";
-            this.cmbGroup.Size = new System.Drawing.Size(238, 21);
-            this.cmbGroup.TabIndex = 17;
+            this.cmbTeamGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbTeamGroup.FormattingEnabled = true;
+            this.cmbTeamGroup.Location = new System.Drawing.Point(68, 29);
+            this.cmbTeamGroup.Name = "cmbTeamGroup";
+            this.cmbTeamGroup.Size = new System.Drawing.Size(238, 21);
+            this.cmbTeamGroup.TabIndex = 17;
             // 
             // btnCancel
             // 
@@ -582,14 +649,15 @@
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
-            // btnOk
+            // btnTeamOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(5, 290);
-            this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(75, 23);
-            this.btnOk.TabIndex = 15;
-            this.btnOk.Text = "OK";
-            this.btnOk.UseVisualStyleBackColor = true;
+            this.btnTeamOk.Location = new System.Drawing.Point(5, 291);
+            this.btnTeamOk.Name = "btnTeamOk";
+            this.btnTeamOk.Size = new System.Drawing.Size(75, 23);
+            this.btnTeamOk.TabIndex = 15;
+            this.btnTeamOk.Text = "OK";
+            this.btnTeamOk.UseVisualStyleBackColor = true;
+            this.btnTeamOk.Click += new System.EventHandler(this.btnTeamOk_Click);
             // 
             // label1
             // 
@@ -600,29 +668,21 @@
             this.label1.TabIndex = 14;
             this.label1.Text = "Название";
             // 
-            // tbName
+            // tbTeamName
             // 
-            this.tbName.Location = new System.Drawing.Point(68, 3);
-            this.tbName.Name = "tbName";
-            this.tbName.Size = new System.Drawing.Size(238, 20);
-            this.tbName.TabIndex = 13;
-            // 
-            // vScrollBarProps
-            // 
-            this.vScrollBarProps.Dock = System.Windows.Forms.DockStyle.Right;
-            this.vScrollBarProps.Location = new System.Drawing.Point(1325, 0);
-            this.vScrollBarProps.Name = "vScrollBarProps";
-            this.vScrollBarProps.Size = new System.Drawing.Size(17, 395);
-            this.vScrollBarProps.TabIndex = 0;
+            this.tbTeamName.Location = new System.Drawing.Point(68, 3);
+            this.tbTeamName.Name = "tbTeamName";
+            this.tbTeamName.Size = new System.Drawing.Size(238, 20);
+            this.tbTeamName.TabIndex = 13;
             // 
             // tvList
             // 
-            this.tvList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tvList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tvList.Location = new System.Drawing.Point(6, 6);
             this.tvList.Name = "tvList";
-            this.tvList.Size = new System.Drawing.Size(280, 394);
+            this.tvList.Size = new System.Drawing.Size(400, 470);
             this.tvList.TabIndex = 0;
             this.tvList.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvList_AfterSelect);
             this.tvList.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvList_NodeMouseClick);
@@ -631,7 +691,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1650, 456);
+            this.ClientSize = new System.Drawing.Size(1717, 532);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.menuStrip1);
             this.Name = "MainForm";
@@ -671,7 +731,6 @@
         private System.Windows.Forms.DataGridView dgvGrid;
         private System.Windows.Forms.TreeView tvList;
         private System.Windows.Forms.Panel pnlProps;
-        private System.Windows.Forms.VScrollBar vScrollBarProps;
         private System.Windows.Forms.Panel pnlTeamProps;
         private System.Windows.Forms.Button btnAuto;
         private System.Windows.Forms.Button btnStageComplete;
@@ -681,37 +740,42 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn clStage;
         private System.Windows.Forms.DataGridViewTextBoxColumn clUsage;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox cmbGroup;
+        private System.Windows.Forms.ComboBox cmbTeamGroup;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnOk;
+        private System.Windows.Forms.Button btnTeamOk;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox tbName;
+        private System.Windows.Forms.TextBox tbTeamName;
         private System.Windows.Forms.Panel pnlGroupProps;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox tbGroupName;
+        private System.Windows.Forms.Button btnGroupOk;
         private System.Windows.Forms.Panel pnlSceneProps;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button btnSceneOk;
         private System.Windows.Forms.Panel pnlStageProps;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button btnAcceptGroup;
         private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.Button button9;
-        private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.ListBox listBox1;
-        private System.Windows.Forms.ListBox listBox2;
+        private System.Windows.Forms.Button btnUnacceptGroup;
+        private System.Windows.Forms.TextBox tbStageName;
+        private System.Windows.Forms.Button btnAcceptAllGroups;
+        private System.Windows.Forms.Button btnStageOk;
+        private System.Windows.Forms.Button btnUnacceptAllGroups;
+        private System.Windows.Forms.ListBox lvOtherGroups;
+        private System.Windows.Forms.ListBox lvAcceptedGroups;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox tbCoach;
-        private System.Windows.Forms.Label lbCall;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox tbSceneCoach;
         private System.Windows.Forms.Label lbDescription;
         private System.Windows.Forms.Label lbName;
-        private System.Windows.Forms.TextBox tbNumber;
+        private System.Windows.Forms.TextBox tbSceneNumber;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox tbGroupShortName;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.ComboBox cmbSceneStage;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox tbStageShortname;
     }
 }
 
