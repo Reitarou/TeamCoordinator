@@ -14,6 +14,7 @@ namespace TeamCoordinator
         public string CurrentScene = "";
         public DateTime SceneStarted = DateTime.MinValue;
         public bool IsReady = true;
+        public Dictionary<string, TimeSpan> Scenes = new Dictionary<string, TimeSpan>();
 
         public Team(AI ai)
             :base(ai)
@@ -71,7 +72,7 @@ namespace TeamCoordinator
             for (int i = 0; i < array.Count; i++)
             {
                 var n = array.GetNode(i);
-                var name = n.GetString("Name", "");
+                var name = n.GetString("ID", "");
                 if (name != "")
                 {
                     int state = n.GetInt16("State", -1);
@@ -96,8 +97,15 @@ namespace TeamCoordinator
             foreach (var stage in Stages)
             {
                 var n = array.AddNode();
-                n.AddString("Name", stage.Key);
+                n.AddString("ID", stage.Key);
                 n.AddInt16("State", (short)stage.Value);
+            }
+            array = node.AddArray("Scenes", StgType.Node);
+            foreach (var scene in Scenes)
+            {
+                var n = array.AddNode();
+                n.AddString("ID", scene.Key);
+                n.AddString("Time", scene.Value.ToString());
             }
             node.AddString("CurrentScene", CurrentScene);
             node.AddString("SceneStarted", SceneStarted.ToShortTimeString());
