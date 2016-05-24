@@ -6,15 +6,41 @@ using Stg;
 
 namespace TeamCoordinator
 {
+    struct TeamTimerEvent
+    {
+        public const string c_NotReady = "NotReady";
+        public const string c_Ready = "Ready";
+
+        public DateTime Time;
+        public string Location;
+
+        public static TeamTimerEvent LoadFromStg(StgNode node)
+        {
+            var result = new TeamTimerEvent();
+
+            var time = node.GetString("Time", "");
+            if (!DateTime.TryParse(time, out result.Time))
+            {
+                result.Time = DateTime.Now;
+            }
+            result.Location = node.GetString("Location", c_NotReady);
+            return result;
+        }
+
+        public void SaveToStg(StgNode node)
+        {
+            node.AddString("Time", Time.ToShortTimeString());
+            node.AddString("Location", Location);
+        }
+    }
+
+
     class Team : Item
     {
         public string Name = "";
         public string GroupID = "";
         public Dictionary<string, int> Stages = new Dictionary<string, int>();
-        public string CurrentScene = "";
-        public DateTime SceneStarted = DateTime.MinValue;
-        public bool IsReady = true;
-        public Dictionary<string, TimeSpan> Scenes = new Dictionary<string, TimeSpan>();
+        private List<TeamTimerEvent> m_Log = new List<TeamTimerEvent>();
 
         public Team(AI ai)
             :base(ai)
@@ -58,6 +84,34 @@ namespace TeamCoordinator
             }
         }
 
+        public string State
+        {
+            get
+            {
+                if (m_Log.Count==0)
+                {
+                    return TeamTimerEvent.c_NotReady;
+                }
+                return m_Log.Last().Location;
+            }
+            set
+            {
+                m_Log.Add(new TeamTimerEvent() { Time = DateTime.Now, Location = value });
+            }
+        }
+
+        public DateTime ChangeStateTime
+        {
+            get
+            {
+                if (m_Log.Count==0)
+                {
+                    return DateTime.Now;
+                }
+                return m_Log.Last().Time;
+            }
+        }
+
         #region IStgSerializable Members
 
         public override void LoadFromStg(StgNode node)
@@ -66,9 +120,9 @@ namespace TeamCoordinator
             if (m_ID == "") m_ID = Guid.NewGuid().ToString();
             Name = node.GetString("Name", "");
             GroupID = node.GetString("GroupID", "");
-            IsReady = node.GetBoolean("IsReady", true);
-            var array = node.GetArray("Stages", StgType.Node);
+
             Stages.Clear();
+            var array = node.GetArray("Stages", StgType.Node);
             for (int i = 0; i < array.Count; i++)
             {
                 var n = array.GetNode(i);
@@ -79,11 +133,13 @@ namespace TeamCoordinator
                     Stages.Add(name, state);
                 }
             }
-            CurrentScene = node.GetString("CurrentScene", "");
-            var timeSceneStarted = node.GetString("SceneStarted", "");
-            if (timeSceneStarted != "")
+
+            m_Log.Clear();
+            array = node.GetArray("Log", StgType.Node);
+            for (int i = 0; i < array.Count; i++)
             {
-                SceneStarted = DateTime.Parse(timeSceneStarted);
+                var n = array.GetNode(i);
+                m_Log.Add(TeamTimerEvent.LoadFromStg(n));
             }
         }
 
@@ -92,7 +148,6 @@ namespace TeamCoordinator
             node.AddString("ID", m_ID);
             node.AddString("Name", Name);
             node.AddString("GroupID", GroupID);
-            node.AddBoolean("IsReady", IsReady);
             var array = node.AddArray("Stages", StgType.Node);
             foreach (var stage in Stages)
             {
@@ -100,15 +155,11 @@ namespace TeamCoordinator
                 n.AddString("ID", stage.Key);
                 n.AddInt16("State", (short)stage.Value);
             }
-            array = node.AddArray("Scenes", StgType.Node);
-            foreach (var scene in Scenes)
+            foreach(var record in m_Log)
             {
                 var n = array.AddNode();
-                n.AddString("ID", scene.Key);
-                n.AddString("Time", scene.Value.ToString());
+                record.SaveToStg(n);
             }
-            node.AddString("CurrentScene", CurrentScene);
-            node.AddString("SceneStarted", SceneStarted.ToShortTimeString());
         }
 
         #endregion

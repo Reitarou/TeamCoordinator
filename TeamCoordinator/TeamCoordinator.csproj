@@ -80,6 +80,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TeamLogDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TeamLogDlg.Designer.cs">
+      <DependentUpon>TeamLogDlg.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="GroupsEditDlg.resx">
       <DependentUpon>GroupsEditDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -102,6 +108,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="TeamLogDlg.resx">
+      <DependentUpon>TeamLogDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

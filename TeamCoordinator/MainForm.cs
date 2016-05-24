@@ -12,8 +12,19 @@ using System.IO;
 
 namespace TeamCoordinator
 {
+    struct MouseClickMoveEvent
+    {
+        public MouseButtons Button;
+        public Point MousePosition;
+        public Point GridPosition;
+        public int FirstDisplayedRow;
+
+    }
+
     public partial class MainForm : Form
     {
+        private const int c_RowHeight = 50;
+
         private Color c_Green = Color.FromArgb(120, 255, 120);
         private Color c_Yellow = Color.FromArgb(255, 160, 0);
         private Color c_Red = Color.FromArgb(255, 120, 120);
@@ -26,6 +37,8 @@ namespace TeamCoordinator
         private const string c_Teams = "Команды";
 
         private AI m_AI;
+
+        private MouseClickMoveEvent m_LastMouseClick;
 
         public MainForm()
         {
@@ -68,7 +81,10 @@ namespace TeamCoordinator
 
             dgvGrid.Columns.Clear();
             dgvGrid.Rows.Clear();
+
             dgvGrid.ColumnHeadersHeight = 60;
+            dgvGrid.RowHeadersWidth = 100;
+
             foreach (var scene in m_AI.Scenes)
             {
                 var stage = m_AI.GetStageByID(scene.StageID);
@@ -90,29 +106,14 @@ namespace TeamCoordinator
                 col.HeaderCell.Style.BackColor = (scene.IsReady) ? c_Green : c_Red;
                 foreach (var team in m_AI.Teams)
                 {
-                    if (team.CurrentScene == scene.ID)
+                    if (team.State == scene.ID)
                     {
                         col.HeaderCell.Style.BackColor = c_Yellow;
                         break;
                     }
                 }
-
-                //var state = m_AI.GetStageState(stage);
-                //if (state == null)
-                //{
-                //    col.HeaderCell.Style.BackColor = c_Red;
-                //}
-                //else if (state.Count == 0)
-                //{
-                //    col.HeaderCell.Style.BackColor = c_Green;
-                //}
-                //else
-                //{
-                //    col.HeaderCell.Style.BackColor = c_Yellow;
-                //}
-                //col.HeaderCell.ToolTipText = scene.Name;
                 col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                col.Width = 80;
+                col.Width = 100;
                 dgvGrid.Columns.Add(col);
             }
             if (dgvGrid.Columns.Count > 0)
@@ -121,22 +122,26 @@ namespace TeamCoordinator
                 {
                     var row = new DataGridViewRow();
                     row.Tag = team;
-                    row.HeaderCell.Value = string.Format("{0}\n{1} - {2}", team.Name, team.CompleteStages, team.IncompleteStages);
-                    row.Height = 40;
-                    if (team.CurrentScene != "")
+
+                    var lastMins = Math.Truncate((DateTime.Now - team.ChangeStateTime).TotalMinutes);
+                    var lastSecs = Math.Truncate((DateTime.Now - team.ChangeStateTime).TotalSeconds) - (60 * lastMins);
+
+                    row.HeaderCell.Value = string.Format("{0}\n{1} - {2}\n({3}:{4})", team.Name, team.CompleteStages, team.IncompleteStages, lastMins, lastSecs);
+                    row.Height = c_RowHeight;
+
+                    switch (team.State)
                     {
-                        row.HeaderCell.Style.BackColor = c_Yellow;
-                    }
-                    else
-                    {
-                        if (team.IsReady)
-                        {
+                        case TeamTimerEvent.c_Ready:
                             row.HeaderCell.Style.BackColor = c_Green;
-                        }
-                        else
-                        {
+                            break;
+
+                        case TeamTimerEvent.c_NotReady:
                             row.HeaderCell.Style.BackColor = c_Red;
-                        }
+                            break;
+
+                        default:
+                            row.HeaderCell.Style.BackColor = c_Yellow;
+                            break;
                     }
 
                     dgvGrid.Rows.Add(row);
@@ -149,16 +154,16 @@ namespace TeamCoordinator
                         {
                             switch (m_AI.GetState(team, scene))
                             {
-                                case -1:
+                                case TeamSceneState.Pass:
                                     row.Cells[i].Style.BackColor = c_Gray;
                                     break;
-                                case 0:
+                                case TeamSceneState.Incomplete:
                                     row.Cells[i].Style.BackColor = c_Red;
                                     break;
-                                case 1:
+                                case TeamSceneState.OnWork:
                                     row.Cells[i].Style.BackColor = c_Yellow;
                                     break;
-                                case 2:
+                                case TeamSceneState.Completed:
                                     row.Cells[i].Style.BackColor = c_Green;
                                     break;
                             }
@@ -172,8 +177,9 @@ namespace TeamCoordinator
             //    dgvGrid.CurrentCell = dgvGrid.Rows[selectedCell.X].Cells[selectedCell.Y];
             //    dgvGrid.CurrentCell.Selected = false;
             //}
-            dgvGrid.HorizontalScrollingOffset = horizontalScroll;
+
             if (firstRow != -1) dgvGrid.FirstDisplayedScrollingRowIndex = firstRow;
+            dgvGrid.HorizontalScrollingOffset = horizontalScroll;
 
             #endregion
 
@@ -324,6 +330,8 @@ namespace TeamCoordinator
                     {
                         cmbSceneStage.SelectedIndex = selectedStage;
                     }
+
+                    tbSceneCoach.Text = scene.Coach;
 
                     pnlSceneProps.Visible = true;
                     return;
@@ -585,9 +593,13 @@ namespace TeamCoordinator
                             sendTeam.Tag = tag;
                             sendTeam.Click += new EventHandler(sendTeam_Click);
 
-                            var stageClear = new MenuItem("Этап свободен");
-                            stageClear.Tag = tag;
-                            stageClear.Click += new EventHandler(stageClear_Click);
+                            var stageReady = new MenuItem("Этап свободен");
+                            stageReady.Tag = tag;
+                            stageReady.Click += new EventHandler(stageReady_Click);
+
+                            var teamReturned = new MenuItem("Команда вернулась");
+                            teamReturned.Tag = tag;
+                            teamReturned.Click += new EventHandler(teamReturned_Click);
 
                             var spacer = new MenuItem("--------");
 
@@ -603,15 +615,14 @@ namespace TeamCoordinator
                             stageCompleted.Tag = tag;
                             stageCompleted.Click += new EventHandler(stageCompleted_Click);
 
-                            var state = m_AI.GetState(team, scene);
-                            switch(state)
+                            switch(m_AI.GetState(team, scene))
                             {
-                                case -1:
+                                case TeamSceneState.Pass:
                                     m.MenuItems.Add(stageIncomplete);
                                     m.MenuItems.Add(stageCompleted);
                                     break;
-                                case 0:
-                                    if (scene.IsReady && team.IsReady)
+                                case TeamSceneState.Incomplete:
+                                    if (scene.IsReady && team.State == TeamTimerEvent.c_Ready)
                                     {
                                         m.MenuItems.Add(sendTeam);
                                         m.MenuItems.Add(spacer);
@@ -619,14 +630,15 @@ namespace TeamCoordinator
                                     m.MenuItems.Add(stagePass);
                                     m.MenuItems.Add(stageCompleted);
                                     break;
-                                case 1:
-                                    m.MenuItems.Add(stageClear);
+                                case TeamSceneState.OnWork:
+                                    m.MenuItems.Add(stageReady);
+                                    m.MenuItems.Add(teamReturned);
                                     m.MenuItems.Add(spacer);
                                     m.MenuItems.Add(stagePass);
                                     m.MenuItems.Add(stageIncomplete);
                                     m.MenuItems.Add(stageCompleted);
                                     break;
-                                case 2:
+                                case TeamSceneState.Completed:
                                     m.MenuItems.Add(stagePass);
                                     m.MenuItems.Add(stageIncomplete);
                                     break;
@@ -641,13 +653,6 @@ namespace TeamCoordinator
                 }
             }
         }
-
-
-
-
-
-
-
 
         void editStage_Click(object sender, EventArgs e)
         {
@@ -987,7 +992,16 @@ namespace TeamCoordinator
                 var team = mi.Tag as Team;
                 if (team != null)
                 {
-                    team.IsReady = !team.IsReady;
+                    switch(team.State)
+                    {
+                        case TeamTimerEvent.c_Ready:
+                            team.State = TeamTimerEvent.c_NotReady;
+                            break;
+
+                        case TeamTimerEvent.c_NotReady:
+                            team.State = TeamTimerEvent.c_Ready;
+                            break;
+                    }
                     UpdateData();
                 }
                 var scene = mi.Tag as Scene;
@@ -1000,33 +1014,65 @@ namespace TeamCoordinator
             }
         }
 
-
+        /// <summary>
+        /// Отправить команду на этап
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void sendTeam_Click(object sender, EventArgs e)
         {
             Team team;
             Scene scene;
             if (GetPairFromTag(sender, out team, out scene))
             {
-                team.CurrentScene = scene.ID;
+                team.State = scene.ID;
                 scene.ChangeStateTime = DateTime.Now;
                 UpdateData();
             }
         }
 
-        void stageClear_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Этап открыт, а команда ещё не вернулась
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void stageReady_Click(object sender, EventArgs e)
         {
             Team team;
             Scene scene;
             if (GetPairFromTag(sender, out team, out scene))
             {
                 team.Stages[scene.StageID] = 1;
-                team.CurrentScene = "";
-                team.IsReady = false;
+                team.State = TeamTimerEvent.c_NotReady;
                 scene.ChangeStateTime = DateTime.Now;
                 UpdateData();
             }
         }
 
+        /// <summary>
+        /// Команда вернулась, а этап ещё закрыт
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void teamReturned_Click(object sender, EventArgs e)
+        {
+            Team team;
+            Scene scene;
+            if (GetPairFromTag(sender, out team, out scene))
+            {
+                team.Stages[scene.StageID] = 1;
+                team.State = TeamTimerEvent.c_Ready;
+                scene.IsReady = false;
+                scene.ChangeStateTime = DateTime.Now;
+                UpdateData();
+            }
+        }
+
+        /// <summary>
+        /// Пропустить этап (тех.)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void stagePass_Click(object sender, EventArgs e)
         {
             Team team;
@@ -1034,11 +1080,15 @@ namespace TeamCoordinator
             if (GetPairFromTag(sender, out team, out scene))
             {
                 team.Stages[scene.StageID] = -1;
-                team.CurrentScene = "";
                 UpdateData();
             }
         }
 
+        /// <summary>
+        /// Этап не выполнен (тех.)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void stageIncomplete_Click(object sender, EventArgs e)
         {
             Team team;
@@ -1046,11 +1096,15 @@ namespace TeamCoordinator
             if (GetPairFromTag(sender, out team, out scene))
             {
                 team.Stages[scene.StageID] = 0;
-                team.CurrentScene = "";
                 UpdateData();
             }
         }
 
+        /// <summary>
+        /// Этап выполнен (тех.)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void stageCompleted_Click(object sender, EventArgs e)
         {
             Team team;
@@ -1058,7 +1112,6 @@ namespace TeamCoordinator
             if (GetPairFromTag(sender, out team, out scene))
             {
                 team.Stages[scene.StageID] = 1;
-                team.CurrentScene = "";
                 UpdateData();
             }
         }
@@ -1106,6 +1159,7 @@ namespace TeamCoordinator
             scene.Number = tbSceneNumber.Text;
             var stage = m_AI.GetStageByName(cmbSceneStage.Text);
             scene.StageID = (stage == null) ? "" : stage.ID;
+            scene.Coach = tbSceneCoach.Text;
             UpdateData();
         }
 
@@ -1373,6 +1427,43 @@ namespace TeamCoordinator
 
             RefreshTeamStages();
             UpdateButtons();
+        }
+
+        private void dgvGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+            m_LastMouseClick = new MouseClickMoveEvent() {
+                Button = e.Button,
+                MousePosition = e.Location ,
+                GridPosition = new Point(dgvGrid.HorizontalScrollingOffset, dgvGrid.VerticalScrollingOffset),
+                FirstDisplayedRow = dgvGrid.FirstDisplayedScrollingRowIndex
+            };
+        }
+
+        private void dgvGrid_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (m_LastMouseClick.Button == MouseButtons.Middle && e.Button == MouseButtons.Middle)
+            {
+                UpdateData();
+            }
+        }
+
+        private void dgvGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Middle && m_LastMouseClick.Button == MouseButtons.Middle)
+            {
+                var startPos = m_LastMouseClick.MousePosition;
+                var endPos = e.Location;
+
+                var horOffs = startPos.X - endPos.X;
+                var newHorPos = m_LastMouseClick.GridPosition.X + horOffs;
+                dgvGrid.HorizontalScrollingOffset = (newHorPos > 0) ? newHorPos : 0;
+
+
+                int vertOffs = (startPos.Y - endPos.Y) / c_RowHeight;
+                var oldIndex = m_LastMouseClick.FirstDisplayedRow;
+                dgvGrid.FirstDisplayedScrollingRowIndex = (oldIndex + vertOffs < 0) ? 0 : oldIndex + vertOffs;
+
+            }
         }
     }
 }

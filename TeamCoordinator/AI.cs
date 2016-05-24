@@ -47,6 +47,13 @@ namespace TeamCoordinator
         }
     }
 
+    public enum TeamSceneState
+    {
+        Pass,
+        Incomplete,
+        OnWork,
+        Completed
+    }
 
     class AI
     {
@@ -197,7 +204,6 @@ namespace TeamCoordinator
             return null;
         }
 
-
         public List<Scene> Scenes
         {
             get
@@ -208,39 +214,28 @@ namespace TeamCoordinator
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="team"></param>
-        /// <param name="scene"></param>
-        /// <returns>
-        /// -1 - Пропуск
-        /// 0 - Не пройден
-        /// 1 - На этапе
-        /// 2 - Пройден
-        /// </returns>
-        public int GetState(Team team, Scene scene)
+        public TeamSceneState GetState(Team team, Scene scene)
         {
             if (team.Stages.ContainsKey(scene.StageID))
             {
                 switch (team.Stages[scene.StageID])
                 {
                     case -1:
-                        return -1;
+                        return TeamSceneState.Pass;
                     case 0:
-                        if (team.CurrentScene == scene.ID)
+                        if (team.State == scene.ID)
                         {
-                            return 1;
+                            return TeamSceneState.OnWork;
                         }
                         else
                         {
-                            return 0;
+                            return TeamSceneState.Incomplete;
                         }
                     case 1:
-                        return 2;
+                        return TeamSceneState.Completed;
                 }
             }
-            return -1;
+            return TeamSceneState.Pass;
         }
 
         
