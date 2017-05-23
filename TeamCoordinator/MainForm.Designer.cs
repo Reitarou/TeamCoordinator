@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.miFile = new System.Windows.Forms.ToolStripMenuItem();
             this.miCreate = new System.Windows.Forms.ToolStripMenuItem();
@@ -106,7 +106,7 @@
             this.miFile});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1717, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1117, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -148,7 +148,7 @@
             this.tabControl.Location = new System.Drawing.Point(0, 24);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(1717, 508);
+            this.tabControl.Size = new System.Drawing.Size(1117, 508);
             this.tabControl.TabIndex = 0;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -157,7 +157,7 @@
             this.tpGrid.Controls.Add(this.dgvGrid);
             this.tpGrid.Location = new System.Drawing.Point(4, 22);
             this.tpGrid.Name = "tpGrid";
-            this.tpGrid.Size = new System.Drawing.Size(1709, 482);
+            this.tpGrid.Size = new System.Drawing.Size(1276, 482);
             this.tpGrid.TabIndex = 2;
             this.tpGrid.Text = "Сетка";
             this.tpGrid.UseVisualStyleBackColor = true;
@@ -168,14 +168,14 @@
             this.dgvGrid.AllowUserToDeleteRows = false;
             this.dgvGrid.AllowUserToResizeColumns = false;
             this.dgvGrid.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle9;
             this.dgvGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvGrid.EnableHeadersVisualStyles = false;
@@ -183,17 +183,17 @@
             this.dgvGrid.MultiSelect = false;
             this.dgvGrid.Name = "dgvGrid";
             this.dgvGrid.ReadOnly = true;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle10;
             this.dgvGrid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dgvGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgvGrid.Size = new System.Drawing.Size(1709, 482);
+            this.dgvGrid.Size = new System.Drawing.Size(1276, 482);
             this.dgvGrid.TabIndex = 1;
             this.dgvGrid.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dgvGrid_MouseClick);
             this.dgvGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dgvGrid_MouseDown);
@@ -202,12 +202,12 @@
             // 
             // tpLists
             // 
-            this.tpLists.Controls.Add(this.pnlProps);
             this.tpLists.Controls.Add(this.tvList);
+            this.tpLists.Controls.Add(this.pnlProps);
             this.tpLists.Location = new System.Drawing.Point(4, 22);
             this.tpLists.Name = "tpLists";
             this.tpLists.Padding = new System.Windows.Forms.Padding(3);
-            this.tpLists.Size = new System.Drawing.Size(1709, 482);
+            this.tpLists.Size = new System.Drawing.Size(1109, 482);
             this.tpLists.TabIndex = 0;
             this.tpLists.Text = "Списки";
             this.tpLists.UseVisualStyleBackColor = true;
@@ -216,13 +216,13 @@
             // 
             this.pnlProps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlProps.Controls.Add(this.pnlStageProps);
             this.pnlProps.Controls.Add(this.pnlSceneProps);
-            this.pnlProps.Controls.Add(this.pnlGroupProps);
             this.pnlProps.Controls.Add(this.pnlTeamProps);
-            this.pnlProps.Location = new System.Drawing.Point(412, 6);
+            this.pnlProps.Controls.Add(this.pnlStageProps);
+            this.pnlProps.Controls.Add(this.pnlGroupProps);
+            this.pnlProps.Location = new System.Drawing.Point(448, 16);
             this.pnlProps.Name = "pnlProps";
-            this.pnlProps.Size = new System.Drawing.Size(1288, 470);
+            this.pnlProps.Size = new System.Drawing.Size(389, 470);
             this.pnlProps.TabIndex = 1;
             // 
             // pnlStageProps
@@ -241,7 +241,7 @@
             this.pnlStageProps.Controls.Add(this.lvOtherGroups);
             this.pnlStageProps.Controls.Add(this.lvAcceptedGroups);
             this.pnlStageProps.Controls.Add(this.lbStageAcceptedGroups);
-            this.pnlStageProps.Location = new System.Drawing.Point(969, 3);
+            this.pnlStageProps.Location = new System.Drawing.Point(3, 3);
             this.pnlStageProps.Name = "pnlStageProps";
             this.pnlStageProps.Size = new System.Drawing.Size(316, 316);
             this.pnlStageProps.TabIndex = 3;
@@ -385,7 +385,7 @@
             this.pnlSceneProps.Controls.Add(this.tbSceneNumber);
             this.pnlSceneProps.Controls.Add(this.btnSceneCancel);
             this.pnlSceneProps.Controls.Add(this.btnSceneOk);
-            this.pnlSceneProps.Location = new System.Drawing.Point(647, 3);
+            this.pnlSceneProps.Location = new System.Drawing.Point(29, 334);
             this.pnlSceneProps.Name = "pnlSceneProps";
             this.pnlSceneProps.Size = new System.Drawing.Size(316, 316);
             this.pnlSceneProps.TabIndex = 2;
@@ -471,7 +471,7 @@
             this.pnlGroupProps.Controls.Add(this.btnGroupCancel);
             this.pnlGroupProps.Controls.Add(this.tbGroupName);
             this.pnlGroupProps.Controls.Add(this.btnGroupOk);
-            this.pnlGroupProps.Location = new System.Drawing.Point(325, 3);
+            this.pnlGroupProps.Location = new System.Drawing.Point(3, 3);
             this.pnlGroupProps.Name = "pnlGroupProps";
             this.pnlGroupProps.Size = new System.Drawing.Size(316, 316);
             this.pnlGroupProps.TabIndex = 1;
@@ -695,7 +695,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tvList.Location = new System.Drawing.Point(6, 6);
             this.tvList.Name = "tvList";
-            this.tvList.Size = new System.Drawing.Size(400, 470);
+            this.tvList.Size = new System.Drawing.Size(336, 470);
             this.tvList.TabIndex = 0;
             this.tvList.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvList_AfterSelect);
             this.tvList.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvList_NodeMouseClick);
@@ -704,7 +704,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1717, 532);
+            this.ClientSize = new System.Drawing.Size(1117, 532);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.menuStrip1);
             this.Name = "MainForm";

@@ -23,7 +23,13 @@ namespace TeamCoordinator
 
     public partial class MainForm : Form
     {
-        private const int c_RowHeight = 50;
+        private const float c_FontSize = 6f;
+
+        private const int c_RowHeight = 35;
+        private const int c_ColHeadersHeight = 50;
+
+        private const int c_ColWidth = 54;
+        private const int c_RowHeadersWidth = 60;
 
         private Color c_Green = Color.FromArgb(120, 255, 120);
         private Color c_Yellow = Color.FromArgb(255, 160, 0);
@@ -45,6 +51,8 @@ namespace TeamCoordinator
             InitializeComponent();
             m_AI = new AI(null);
 
+            //Width = 750;
+            tvList.Location = new Point(3, 3);
             pnlTeamProps.Location = new Point(3, 3);
             pnlSceneProps.Location = new Point(3, 3);
             pnlGroupProps.Location = new Point(3, 3);
@@ -52,7 +60,6 @@ namespace TeamCoordinator
             pnlProps.Width = 324;
             pnlProps.Left = Width - pnlProps.Width - 24;
             tvList.Width = pnlProps.Left - 12;
-            Width = 750;
 
 
             UpdateData();
@@ -60,6 +67,8 @@ namespace TeamCoordinator
 
         private void UpdateData()
         {
+
+
             this.Text = m_AI.FileName;
             if (!m_AI.Valid)
             {
@@ -79,11 +88,15 @@ namespace TeamCoordinator
             //    selectedCell = new Point(dgvGrid.CurrentCell.RowIndex, dgvGrid.CurrentCell.ColumnIndex);
             //}
 
+            var t = dgvGrid.Font.Name;
+            var font = new Font(t, c_FontSize);
+            dgvGrid.Font = font;
+
             dgvGrid.Columns.Clear();
             dgvGrid.Rows.Clear();
 
-            dgvGrid.ColumnHeadersHeight = 60;
-            dgvGrid.RowHeadersWidth = 100;
+            dgvGrid.ColumnHeadersHeight = c_ColHeadersHeight;
+            dgvGrid.RowHeadersWidth = c_RowHeadersWidth;
 
             foreach (var scene in m_AI.Scenes)
             {
@@ -113,7 +126,7 @@ namespace TeamCoordinator
                     }
                 }
                 col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                col.Width = 100;
+                col.Width = c_ColWidth;
                 dgvGrid.Columns.Add(col);
             }
             if (dgvGrid.Columns.Count > 0)
@@ -601,6 +614,10 @@ namespace TeamCoordinator
                             teamReturned.Tag = tag;
                             teamReturned.Click += new EventHandler(teamReturned_Click);
 
+                            var stageteamBusy = new MenuItem("Команда ушла, пауза");
+                            stageteamBusy.Tag = tag;
+                            stageteamBusy.Click += new EventHandler(stageSentTeamAndPause);
+
                             var spacer = new MenuItem("--------");
 
                             var stagePass = new MenuItem("Пропустить");
@@ -633,6 +650,7 @@ namespace TeamCoordinator
                                 case TeamSceneState.OnWork:
                                     m.MenuItems.Add(stageReady);
                                     m.MenuItems.Add(teamReturned);
+                                    m.MenuItems.Add(stageteamBusy);
                                     m.MenuItems.Add(spacer);
                                     m.MenuItems.Add(stagePass);
                                     m.MenuItems.Add(stageIncomplete);
@@ -1044,6 +1062,7 @@ namespace TeamCoordinator
             {
                 team.Stages[scene.StageID] = 1;
                 team.State = TeamTimerEvent.c_NotReady;
+                scene.IsReady = true;
                 scene.ChangeStateTime = DateTime.Now;
                 UpdateData();
             }
@@ -1062,6 +1081,25 @@ namespace TeamCoordinator
             {
                 team.Stages[scene.StageID] = 1;
                 team.State = TeamTimerEvent.c_Ready;
+                scene.IsReady = false;
+                scene.ChangeStateTime = DateTime.Now;
+                UpdateData();
+            }
+        }
+
+        /// <summary>
+        /// Команда ушла с этапа, но этап закрыт на паузу
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void stageSentTeamAndPause(object sender, EventArgs e)
+        {
+            Team team;
+            Scene scene;
+            if (GetPairFromTag(sender, out team, out scene))
+            {
+                team.Stages[scene.StageID] = 1;
+                team.State = TeamTimerEvent.c_NotReady;
                 scene.IsReady = false;
                 scene.ChangeStateTime = DateTime.Now;
                 UpdateData();
@@ -1138,6 +1176,7 @@ namespace TeamCoordinator
             return false;
         }
         #endregion
+
 
         private void btnTeamOk_Click(object sender, EventArgs e)
         {

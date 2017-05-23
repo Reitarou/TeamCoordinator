@@ -10,6 +10,7 @@ namespace TeamCoordinator
     {
         public const string c_NotReady = "NotReady";
         public const string c_Ready = "Ready";
+        public const string c_OnNextStages = "OnNextStages";
 
         public DateTime Time;
         public string Location;
@@ -155,6 +156,7 @@ namespace TeamCoordinator
                 n.AddString("ID", stage.Key);
                 n.AddInt16("State", (short)stage.Value);
             }
+            array = node.AddArray("Log", StgType.Node);
             foreach(var record in m_Log)
             {
                 var n = array.AddNode();
