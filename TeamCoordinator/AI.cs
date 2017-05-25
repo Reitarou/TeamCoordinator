@@ -10,58 +10,15 @@ using Stg;
 
 namespace TeamCoordinator
 {
-    class SceneComparer : IComparer<Scene>
-    {
-        private AI m_AI;
-
-        public SceneComparer(AI ai)
-        {
-            m_AI = ai;
-        }
-
-        public int Compare(Scene x, Scene y)
-        {
-            var xStage = m_AI.GetStageByID(x.StageID);
-            var yStage = m_AI.GetStageByID(y.StageID);
-
-            if (xStage == null && yStage == null)
-            {
-                return 0;
-            }
-            else if (xStage == null)
-            {
-                return -1;
-            }
-            else if (yStage == null)
-            {
-                return 1;
-            }
-            //else
-            var cStages = xStage.Name.CompareTo(yStage.Name);
-            if (cStages != 0)
-            {
-                return cStages;
-            }
-            //else
-            return x.Number.CompareTo(y.Number);
-        }
-    }
-
-    public enum TeamSceneState
-    {
-        Pass,
-        Incomplete,
-        OnWork,
-        Completed
-    }
-
-    class AI
+   public class AI
     {
         private string m_Path;
-        private List<Group> m_Groups;
-        private List<Scene> m_Scenes;
-        private List<Team> m_Teams;
-        private List<Stage> m_Stages;
+        private Dictionary<string, Group> m_Groups;
+        private Dictionary<string, Scene> m_Scenes;
+        private Dictionary<string, Team> m_Teams;
+        private Dictionary<string, Stage> m_Stages;
+
+        public bool RebuildGrid { get; set; } = true;
 
         public AI(string path)
         {
@@ -108,271 +65,260 @@ namespace TeamCoordinator
             }
         }
 
-        
-        public List<Team> Teams
+        #region Collection
+
+        #region Teams
+
+        public IEnumerable<Team> Teams
         {
             get
             {
-                return m_Teams;
-            }
-        }
-
-        //public Team AddTeam()
-        //{
-        //    var team = new Team(this);
-        //    m_Teams.Add(team);
-        //    return team;
-        //}
-
-
-        public List<Group> Groups
-        {
-            get
-            {
-                return m_Groups;
-            }
-        }
-
-        //public Group AddGroup()
-        //{
-        //    var group = new Group(this);
-        //    m_Groups.Add(group);
-        //    return group;
-        //}
-
-        public Group GetGroupByName(string name)
-        {
-            foreach (var group in m_Groups)
-            {
-                if (group.Name == name)
+                var list = new List<Team>();
+                foreach (var pair in m_Teams)
                 {
-                    return group;
+                    var index = list.BinarySearch(pair.Value, Team.Comparer);
+                    list.Insert(~index, pair.Value);
                 }
+                return list;
+            }
+        }
+
+        public Team AddTeam()
+        {
+            var team = new Team(this);
+            m_Teams.Add(team.ID, team);
+            RebuildGrid = true;
+            return team;
+        }
+
+        public Team GetTeamByID(string id)
+        {
+            if (m_Teams.ContainsKey(id))
+                return m_Teams[id];
+            return null;
+        }
+
+        public Team GetTeamByName(string name)
+        {
+            foreach (var pair in m_Teams)
+            {
+                if (pair.Value.Name == name)
+                    return pair.Value;
             }
             return null;
+        }
+
+        public void RemoveTeam(string id)
+        {
+            if (m_Teams.ContainsKey(id))
+            {
+                m_Teams.Remove(id);
+                RebuildGrid = true;
+            }
+        }
+
+        #endregion
+
+        #region Groups
+
+        public IEnumerable<Group> Groups
+        {
+            get
+            {
+                var list = new List<Group>();
+                foreach (var pair in m_Groups)
+                {
+                    var index = list.BinarySearch(pair.Value, Group.Comparer);
+                    list.Insert(~index, pair.Value);
+                }
+                return list;
+            }
+        }
+
+        public Group AddGroup()
+        {
+            var team = new Group(this);
+            m_Groups.Add(team.ID, team);
+            RebuildGrid = true;
+            return team;
         }
 
         public Group GetGroupByID(string id)
         {
-            foreach (var group in m_Groups)
+            if (m_Groups.ContainsKey(id))
+                return m_Groups[id];
+            return null;
+        }
+
+        public Group GetGroupByName(string name)
+        {
+            foreach (var pair in m_Groups)
             {
-                if (group.ID == id)
-                {
-                    return group;
-                }
+                if (pair.Value.Name == name)
+                    return pair.Value;
             }
             return null;
         }
 
-        public List<Stage> Stages
+        public void RemoveGroup(string id)
+        {
+            if (m_Groups.ContainsKey(id))
+            {
+                m_Groups.Remove(id);
+                RebuildGrid = true;
+            }
+        }
+
+        #endregion
+
+        #region Stages
+
+        public IEnumerable<Stage> Stages
         {
             get
             {
-                m_Stages.Sort((a, b) => a.Name.CompareTo(b.Name));
-                return m_Stages;
+                var list = new List<Stage>();
+                foreach (var pair in m_Stages)
+                {
+                    var index = list.BinarySearch(pair.Value, Stage.Comparer);
+                    list.Insert(~index, pair.Value);
+                }
+                return list;
             }
         }
 
-        //public Stage AddStage()
-        //{
-        //    var stage = new Stage(this);
-        //    m_Stages.Add(stage);
-        //    return stage;
-        //}
-
-        public Stage GetStageByName(string name)
+        public Stage AddStage()
         {
-            foreach (var stage in m_Stages)
-            {
-                if (stage.Name == name)
-                {
-                    return stage;
-                }
-            }
-            return null;
+            var team = new Stage(this);
+            m_Stages.Add(team.ID, team);
+            RebuildGrid = true;
+            return team;
         }
 
         public Stage GetStageByID(string id)
         {
-            foreach (var stage in m_Stages)
+            if (m_Stages.ContainsKey(id))
+                return m_Stages[id];
+            return null;
+        }
+
+        public Stage GetStageByName(string name)
+        {
+            foreach (var pair in m_Stages)
             {
-                if (stage.ID == id)
-                {
-                    return stage;
-                }
+                if (pair.Value.Name == name)
+                    return pair.Value;
             }
             return null;
         }
 
-        public List<Scene> Scenes
+        public void RemoveStage(string id)
+        {
+            if (m_Stages.ContainsKey(id))
+            {
+                m_Stages.Remove(id);
+                RebuildGrid = true;
+            }
+        }
+
+        #endregion
+
+        #region Scenes
+
+        public IEnumerable<Scene> Scenes
         {
             get
             {
-                var comparer = new SceneComparer(this);
-                m_Scenes.Sort(comparer);
-                return m_Scenes;
-            }
-        }
-
-        public TeamSceneState GetState(Team team, Scene scene)
-        {
-            if (team.Stages.ContainsKey(scene.StageID))
-            {
-                switch (team.Stages[scene.StageID])
+                var list = new List<Scene>();
+                foreach (var pair in m_Scenes)
                 {
-                    case -1:
-                        return TeamSceneState.Pass;
-                    case 0:
-                        if (team.State == scene.ID)
-                        {
-                            return TeamSceneState.OnWork;
-                        }
-                        else
-                        {
-                            return TeamSceneState.Incomplete;
-                        }
-                    case 1:
-                        return TeamSceneState.Completed;
+                    var index = list.BinarySearch(pair.Value, Scene.Comparer);
+                    list.Insert(~index, pair.Value);
                 }
+                return list;
             }
-            return TeamSceneState.Pass;
         }
 
-        
-        //public Scene AddScene()
+        public Scene AddScene()
+        {
+            var team = new Scene(this);
+            m_Scenes.Add(team.ID, team);
+            RebuildGrid = true;
+            return team;
+        }
+
+        public Scene GetSceneByID(string id)
+        {
+            if (m_Scenes.ContainsKey(id))
+                return m_Scenes[id];
+            return null;
+        }
+
+        //public Scene GetSceneByName(string name)
         //{
-        //    var scene = new Scene(this);
-        //    m_Scenes.Add(scene);
-        //    return scene;
-        //}
-
-
-
-        //public Scene GetScene(string id)
-        //{
-        //    foreach (var stage in m_Scenes)
+        //    foreach (var pair in m_Scenes)
         //    {
-        //        if (stage.ID == id)
-        //        {
-        //            return stage;
-        //        }
+        //        if (pair.Value.Name == name)
+        //            return pair.Value;
         //    }
         //    return null;
         //}
 
-        
+        public void RemoveScene(string id)
+        {
+            if (m_Scenes.ContainsKey(id))
+            {
+                m_Scenes.Remove(id);
+                RebuildGrid = true;
+            }
+        }
 
-        //public Team GetTeam(string id)
-        //{
-        //    foreach (var team in m_Teams)
-        //    {
-        //        if (team.ID == id)
-        //        {
-        //            return team;
-        //        }
-        //    }
-        //    return null;
-        //}
+        #endregion
 
-        //public Group GetGroup(int id)
-        //{
-        //    foreach (var group in m_Groups)
-        //    {
-        //        if (group.ID == id)
-        //        {
-        //            return group;
-        //        }
-        //    }
-        //    return null;
-        //}
+        #endregion
 
-        //public List<int> GetStageState(Scene stage)
-        //{
-        //    if (stage.IsClosed)
-        //    {
-        //        return null;
-        //    }
-        //    var res = new List<int>();
-
-        //    foreach (var team in m_Teams)
-        //    {
-        //        var index = team.CurrentStages.BinarySearch(stage.ID);
-        //        if (index >= 0)
-        //        {
-        //            res.Add(team.ID);
-        //        }
-        //    }
-
-        //    return res;
-        //}
-
-        //public int GetState(Scene stage, Team team)
-        //{
-        //    if (team.Stages.ContainsKey(stage.Name))
-        //    {
-        //        return team.Stages[stage.Name];
-        //    }
-        //    return -1;
-        //}
-
-        //public void CheckTeams()
-        //{
-        //    foreach (var team in m_Teams)
-        //    {
-        //        foreach (var stage in m_Scenes)
-        //        {
-        //            if (!team.Stages.ContainsKey(stage.Name))
-        //            {
-        //                team.Stages.Add(stage.Name, -1);
-        //            }
-        //        }
-        //    }
-        //}
+        #region IStgSerializable
 
         public void LoadFromStg(StgDocument doc)
         {
-            m_Stages = new List<Stage>();
+            m_Stages = new Dictionary<string, Stage>();
             var array = doc.Body.GetArray("Stages", StgType.Node);
-            for (int i = 0; i<array.Count; i++)
+            for (int i = 0; i < array.Count; i++)
             {
                 var node = array[i] as StgNode;
-                if (node != null)
-                {
-                    m_Stages.Add(new Stage(this, node));
-                }
+                var item = new Stage(this);
+                item.LoadFromStg(node);
+                m_Stages.Add(item.ID, item);
             }
-            
-            m_Scenes = new List<Scene>();
+
+            m_Scenes = new Dictionary<string, Scene>();
             array = doc.Body.GetArray("Scenes", StgType.Node);
             for (int i = 0; i < array.Count; i++)
             {
                 var node = array[i] as StgNode;
-                if (node != null)
-                {
-                    m_Scenes.Add(new Scene(this, node));
-                }
+                var item = new Scene(this);
+                item.LoadFromStg(node);
+                m_Scenes.Add(item.ID, item);
             }
 
-            m_Teams = new List<Team>();
+            m_Teams = new Dictionary<string, Team>();
             array = doc.Body.GetArray("Teams", StgType.Node);
             for (int i = 0; i < array.Count; i++)
             {
                 var node = array[i] as StgNode;
-                if (node != null)
-                {
-                    m_Teams.Add(new Team(this, node));
-                }
+                var item = new Team(this);
+                item.LoadFromStg(node);
+                m_Teams.Add(item.ID, item);
             }
 
-            m_Groups = new List<Group>();
+            m_Groups = new Dictionary<string, Group>();
             array = doc.Body.GetArray("Groups", StgType.Node);
             for (int i = 0; i < array.Count; i++)
             {
                 var node = array[i] as StgNode;
-                if (node != null)
-                {
-                    m_Groups.Add(new Group(this, node));
-                }
+                var item = new Group(this);
+                item.LoadFromStg(node);
+                m_Groups.Add(item.ID, item);
             }
         }
 
@@ -386,33 +332,35 @@ namespace TeamCoordinator
             var doc = new StgDocument();
 
             var nodes = doc.Body.AddArray("Stages", StgType.Node);
-            foreach (var item in m_Stages)
+            foreach (var pair in m_Stages)
             {
                 var node = nodes.AddNode();
-                item.SaveToStg(node);
+                pair.Value.SaveToStg(node);
             }
 
             nodes = doc.Body.AddArray("Scenes", StgType.Node);
-            foreach (var item in m_Scenes)
+            foreach (var pair in m_Scenes)
             {
                 var node = nodes.AddNode();
-                item.SaveToStg(node);
+                pair.Value.SaveToStg(node);
             }
 
             nodes = doc.Body.AddArray("Teams", StgType.Node);
-            foreach (var item in m_Teams)
+            foreach (var pair in m_Teams)
             {
                 var node = nodes.AddNode();
-                item.SaveToStg(node);
+                pair.Value.SaveToStg(node);
             }
 
             nodes = doc.Body.AddArray("Groups", StgType.Node);
-            foreach (var item in m_Groups)
+            foreach (var pair in m_Groups)
             {
                 var node = nodes.AddNode();
-                item.SaveToStg(node);
+                pair.Value.SaveToStg(node);
             }
             doc.SaveToFileAsXml(m_Path);
         }
+
+        #endregion
     }
 }

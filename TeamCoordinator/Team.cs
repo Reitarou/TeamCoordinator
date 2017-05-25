@@ -1,163 +1,189 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Stg;
 
 namespace TeamCoordinator
 {
-    struct TeamTimerEvent
+    public class TeamLogRecord
     {
-        public const string c_NotReady = "NotReady";
-        public const string c_Ready = "Ready";
-        public const string c_OnNextStages = "OnNextStages";
-
         public DateTime Time;
         public string Location;
+        public TeamSceneState State;
 
-        public static TeamTimerEvent LoadFromStg(StgNode node)
+        public TeamLogRecord(string location, TeamSceneState state)
         {
-            var result = new TeamTimerEvent();
+            Time = DateTime.Now;
+            Location = location;
+            State = state;
+        }
 
+        public TeamLogRecord(StgNode node)
+        {
             var time = node.GetString("Time", "");
-            if (!DateTime.TryParse(time, out result.Time))
+            if (!DateTime.TryParse(time, out Time))
             {
-                result.Time = DateTime.Now;
+                Debug.Fail("How?");
+                Time = DateTime.Now;
             }
-            result.Location = node.GetString("Location", c_NotReady);
-            return result;
+            Location = node.GetString("Location", "");
+            State = (TeamSceneState)node.GetInt32("State", (int)TeamSceneState.Unknown);
         }
 
         public void SaveToStg(StgNode node)
         {
             node.AddString("Time", Time.ToShortTimeString());
             node.AddString("Location", Location);
+            node.AddInt32("State", (int)State);
         }
     }
 
-
-    class Team : Item
+    public class Team : Item
     {
+        #region Comparer
+
+        public class TeamComparer : IComparer<Team>
+        {
+            public int Compare(Team x, Team y)
+            {
+                return x.Name.CompareTo(y.Name);
+            }
+        }
+
+        public static readonly IComparer<Team> Comparer = new TeamComparer();
+
+        #endregion
+
         public string Name = "";
         public string GroupID = "";
-        public Dictionary<string, int> Stages = new Dictionary<string, int>();
-        private List<TeamTimerEvent> m_Log = new List<TeamTimerEvent>();
+        public List<string> IncompleteStages = new List<string>();
+        public List<string> CompleteStages = new List<string>();
+        public List<TeamLogRecord> Log;
 
         public Team(AI ai)
             :base(ai)
         {
+            Log = new List<TeamLogRecord>();
+            Log.Add(new TeamLogRecord("", TeamSceneState.Pause));
         }
 
-        public Team(AI ai, StgNode node)
-            :base(ai, node)
+        public int GetState()
         {
-        }
-
-        public int IncompleteStages
-        {
-            get
+            var lastLog = Log.Last();
+            if (lastLog.Location == "")
             {
-                int cnt = 0;
-                foreach(var stage in Stages)
+                if (lastLog.State == TeamSceneState.Pause)
+                    return -1;
+                else if (lastLog.State == TeamSceneState.Ready)
+                    return 1;
+                else
+                    Debug.Fail("How?");
+                return 1;
+            }
+            return 0;
+        }
+
+        public TeamSceneState GetStateByScene(string sceneId)
+        {
+            var scene = AI.GetSceneByID(sceneId);
+            if (scene == null)
+            {
+                Debug.Fail("How??");
+                return TeamSceneState.Unknown;
+            }
+
+            var lastLog = Log.Last();
+            if (lastLog.Location == sceneId)
+            {
+                return lastLog.State;
+            }
+
+            if (lastLog.Location != "")
+            {
+                var lastLogScene = AI.GetSceneByID(lastLog.Location);
+                if (lastLogScene == null)
                 {
-                    if (stage.Value == 0)
-                    {
-                        cnt++;
-                    }
+                    Debug.Fail("How??");
+                    return TeamSceneState.Unknown;
                 }
-                return cnt;
-            }
-        }
-
-        public int CompleteStages
-        {
-            get
-            {
-                int cnt = 0;
-                foreach (var stage in Stages)
+                if (lastLogScene.StageID == scene.StageID)
                 {
-                    if (stage.Value == 1)
-                    {
-                        cnt++;
-                    }
+                    return TeamSceneState.OtherSame;
                 }
-                return cnt;
             }
-        }
-
-        public string State
-        {
-            get
+            foreach (var id in IncompleteStages)
             {
-                if (m_Log.Count==0)
-                {
-                    return TeamTimerEvent.c_NotReady;
-                }
-                return m_Log.Last().Location;
+                if (id == scene.StageID)
+                    return TeamSceneState.Incomplete;
             }
-            set
+            foreach (var id in CompleteStages)
             {
-                m_Log.Add(new TeamTimerEvent() { Time = DateTime.Now, Location = value });
+                if (id == scene.StageID)
+                    return TeamSceneState.Completed;
             }
-        }
-
-        public DateTime ChangeStateTime
-        {
-            get
-            {
-                if (m_Log.Count==0)
-                {
-                    return DateTime.Now;
-                }
-                return m_Log.Last().Time;
-            }
+            return TeamSceneState.Pass;
         }
 
         #region IStgSerializable Members
 
-        public override void LoadFromStg(StgNode node)
+        protected override void OnLoad(StgNode node)
         {
-            m_ID = node.GetString("ID", "");
-            if (m_ID == "") m_ID = Guid.NewGuid().ToString();
             Name = node.GetString("Name", "");
             GroupID = node.GetString("GroupID", "");
 
-            Stages.Clear();
-            var array = node.GetArray("Stages", StgType.Node);
+            IncompleteStages.Clear();
+            var array = node.GetArray("IncompleteStages", StgType.Node);
             for (int i = 0; i < array.Count; i++)
             {
                 var n = array.GetNode(i);
-                var name = n.GetString("ID", "");
-                if (name != "")
+                var id = n.GetString("ID", "");
+                if (id != "")
                 {
-                    int state = n.GetInt16("State", -1);
-                    Stages.Add(name, state);
+                    IncompleteStages.Add(id);
                 }
             }
 
-            m_Log.Clear();
+            CompleteStages.Clear();
+            array = node.GetArray("CompleteStages", StgType.Node);
+            for (int i = 0; i < array.Count; i++)
+            {
+                var n = array.GetNode(i);
+                var id = n.GetString("ID", "");
+                if (id != "")
+                {
+                    CompleteStages.Add(id);
+                }
+            }
+
+            Log.Clear();
             array = node.GetArray("Log", StgType.Node);
             for (int i = 0; i < array.Count; i++)
             {
                 var n = array.GetNode(i);
-                m_Log.Add(TeamTimerEvent.LoadFromStg(n));
+                Log.Add(new TeamLogRecord(n));
             }
         }
 
-        public override void SaveToStg(StgNode node)
+        protected override void OnSave(StgNode node)
         {
-            node.AddString("ID", m_ID);
             node.AddString("Name", Name);
             node.AddString("GroupID", GroupID);
-            var array = node.AddArray("Stages", StgType.Node);
-            foreach (var stage in Stages)
+            var array = node.AddArray("IncompleteStages", StgType.Node);
+            foreach (var stage in IncompleteStages)
             {
                 var n = array.AddNode();
-                n.AddString("ID", stage.Key);
-                n.AddInt16("State", (short)stage.Value);
+                n.AddString("ID", stage);
+            }
+            array = node.AddArray("CompleteStages", StgType.Node);
+            foreach (var stage in CompleteStages)
+            {
+                var n = array.AddNode();
+                n.AddString("ID", stage);
             }
             array = node.AddArray("Log", StgType.Node);
-            foreach(var record in m_Log)
+            foreach(var record in Log)
             {
                 var n = array.AddNode();
                 record.SaveToStg(n);

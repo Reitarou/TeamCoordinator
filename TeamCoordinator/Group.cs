@@ -6,8 +6,22 @@ using Stg;
 
 namespace TeamCoordinator
 {
-    class Group : Item
+    public class Group : Item
     {
+        #region Comparer
+
+        public class GroupComparer : IComparer<Group>
+        {
+            public int Compare(Group x, Group y)
+            {
+                return x.Name.CompareTo(y.Name);
+            }
+        }
+
+        public static readonly IComparer<Group> Comparer = new GroupComparer();
+
+        #endregion
+
         public string Name = "";
         public string ShortName = "";
 
@@ -16,24 +30,16 @@ namespace TeamCoordinator
         {
         }
 
-        public Group(AI ai, StgNode node)
-            :base(ai, node)
-        {
-        }
-
         #region IStgSerializable Members
 
-        public override void LoadFromStg(StgNode node)
+        protected override void OnLoad(StgNode node)
         {
-            m_ID = node.GetString("ID", "");
-            if (m_ID == "") m_ID = Guid.NewGuid().ToString();
             Name = node.GetString("Name", "");
             ShortName = node.GetString("ShortName", "");
         }
-        
-        public override void SaveToStg(StgNode node)
+
+        protected override void OnSave(StgNode node)
         {
-            node.AddString("ID", m_ID);
             node.AddString("Name", Name);
             node.AddString("ShortName", ShortName);
         }

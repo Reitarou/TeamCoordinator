@@ -6,10 +6,10 @@ using Stg;
 
 namespace TeamCoordinator
 {
-    abstract class Item : IStgSerializable
+    public abstract class Item : IStgSerializable
     {
         private AI m_AI;
-        protected string m_ID;
+        private string m_ID;
 
         public Item(AI ai)
         {
@@ -17,14 +17,7 @@ namespace TeamCoordinator
             m_ID = Guid.NewGuid().ToString();
         }
 
-        public Item(AI ai, StgNode node)
-        {
-            m_AI = ai;
-            LoadFromStg(node);
-        }
-
-
-        public AI Parent
+        public AI AI
         {
             get
             {
@@ -42,15 +35,22 @@ namespace TeamCoordinator
 
         #region IStgSerializable Members
 
-        public abstract void LoadFromStg(StgNode node);
+        protected abstract void OnLoad(StgNode node);
 
-        public abstract void SaveToStg(StgNode node);
+        public void LoadFromStg(StgNode node)
+        {
+            m_ID = node.GetString("ID");
+            OnLoad(node);
+        }
+
+        protected abstract void OnSave(StgNode node);
+
+        public void SaveToStg(StgNode node)
+        {
+            node.AddString("ID", m_ID);
+            OnSave(node);
+        }
 
         #endregion
-
-        public override string ToString()
-        {
-            return m_ID;
-        }
     }
 }

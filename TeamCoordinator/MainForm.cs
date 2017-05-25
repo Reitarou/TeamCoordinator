@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using TeamCoordinator.Properties;
 using System.Xml.Linq;
 using System.IO;
+using System.Diagnostics;
 
 namespace TeamCoordinator
 {
@@ -23,13 +24,32 @@ namespace TeamCoordinator
 
     public partial class MainForm : Form
     {
-        private const float c_FontSize = 6f;
 
-        private const int c_RowHeight = 35;
-        private const int c_ColHeadersHeight = 50;
+        //private const int c_RowHeight = 35;
+        //private const int c_ColHeadersHeight = 50;
 
         private const int c_ColWidth = 54;
         private const int c_RowHeadersWidth = 60;
+
+        private float m_FontSize = 6f;
+
+        private int RowHeight
+        {
+            get
+            {
+                var rows = 3;
+                return (int)(m_FontSize * rows + m_FontSize * (rows + 2) * 0.8);
+            }
+        }
+
+        private int ColHeadersHeight
+        {
+            get
+            {
+                var rows = 4;
+                return (int)(m_FontSize * rows + m_FontSize * (rows + 2) * 0.8);
+            }
+        }
 
         private Color c_Green = Color.FromArgb(120, 255, 120);
         private Color c_Yellow = Color.FromArgb(255, 160, 0);
@@ -65,21 +85,10 @@ namespace TeamCoordinator
             UpdateData();
         }
 
-        private void UpdateData()
+        private void UpdateGridCells()
         {
-
-
-            this.Text = m_AI.FileName;
-            if (!m_AI.Valid)
-            {
-                return;
-            }
-
-            //m_AI.CheckTeams();
-
-            #region Grid
-
-            Point selectedCell = new Point(-1, -1);
+            m_AI.RebuildGrid = false;
+            //Point selectedCell = new Point(-1, -1);
             int firstRow = dgvGrid.FirstDisplayedScrollingRowIndex;
             int horizontalScroll = dgvGrid.HorizontalScrollingOffset;
 
@@ -89,100 +98,34 @@ namespace TeamCoordinator
             //}
 
             var t = dgvGrid.Font.Name;
-            var font = new Font(t, c_FontSize);
+            var font = new Font(t, m_FontSize);
             dgvGrid.Font = font;
 
             dgvGrid.Columns.Clear();
             dgvGrid.Rows.Clear();
 
-            dgvGrid.ColumnHeadersHeight = c_ColHeadersHeight;
+            dgvGrid.ColumnHeadersHeight = ColHeadersHeight;
             dgvGrid.RowHeadersWidth = c_RowHeadersWidth;
 
             foreach (var scene in m_AI.Scenes)
             {
-                var stage = m_AI.GetStageByID(scene.StageID);
-                if (stage == null) continue;
-                var stageName = (stage.ShortName == "") ? stage.Name : stage.ShortName;
-                string sceneName = (scene.Number == "") ? stageName : string.Format("{0} - {1}", stageName, scene.Number);
-
                 var col = new DataGridViewTextBoxColumn();
-                col.Name = scene.ID;
-                col.Tag = scene;
+                //col.Name = scene.ID;
+                col.Tag = scene.ID;
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
-                var sceneTime = scene.ChangeStateTime;
-                var lastMins = Math.Truncate((DateTime.Now - scene.ChangeStateTime).TotalMinutes);
-                var lastSecs = Math.Truncate((DateTime.Now - scene.ChangeStateTime).TotalSeconds) - (60 * lastMins);
-
-                col.HeaderText = string.Format("{0}\n{1}\n{2}\n(+{3}:{4})", sceneName, scene.Coach, 
-                    sceneTime.ToShortTimeString(), lastMins, lastSecs);
-
-                col.HeaderCell.Style.BackColor = (scene.IsReady) ? c_Green : c_Red;
-                foreach (var team in m_AI.Teams)
-                {
-                    if (team.State == scene.ID)
-                    {
-                        col.HeaderCell.Style.BackColor = c_Yellow;
-                        break;
-                    }
-                }
                 col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                 col.Width = c_ColWidth;
                 dgvGrid.Columns.Add(col);
             }
-            if (dgvGrid.Columns.Count > 0)
+            foreach (var team in m_AI.Teams)
             {
-                foreach (var team in m_AI.Teams)
-                {
-                    var row = new DataGridViewRow();
-                    row.Tag = team;
+                var row = new DataGridViewRow();
+                row.Tag = team.ID;
+                //row.Tag = team;
 
-                    var lastMins = Math.Truncate((DateTime.Now - team.ChangeStateTime).TotalMinutes);
-                    var lastSecs = Math.Truncate((DateTime.Now - team.ChangeStateTime).TotalSeconds) - (60 * lastMins);
+                row.Height = RowHeight;
+                dgvGrid.Rows.Add(row);
 
-                    row.HeaderCell.Value = string.Format("{0}\n{1} - {2}\n({3}:{4})", team.Name, team.CompleteStages, team.IncompleteStages, lastMins, lastSecs);
-                    row.Height = c_RowHeight;
-
-                    switch (team.State)
-                    {
-                        case TeamTimerEvent.c_Ready:
-                            row.HeaderCell.Style.BackColor = c_Green;
-                            break;
-
-                        case TeamTimerEvent.c_NotReady:
-                            row.HeaderCell.Style.BackColor = c_Red;
-                            break;
-
-                        default:
-                            row.HeaderCell.Style.BackColor = c_Yellow;
-                            break;
-                    }
-
-                    dgvGrid.Rows.Add(row);
-
-                    for (int i = 0; i < dgvGrid.Columns.Count; i++)
-                    {
-                        var col = dgvGrid.Columns[i];
-                        var scene = col.Tag as Scene;
-                        if (scene != null)
-                        {
-                            switch (m_AI.GetState(team, scene))
-                            {
-                                case TeamSceneState.Pass:
-                                    row.Cells[i].Style.BackColor = c_Gray;
-                                    break;
-                                case TeamSceneState.Incomplete:
-                                    row.Cells[i].Style.BackColor = c_Red;
-                                    break;
-                                case TeamSceneState.OnWork:
-                                    row.Cells[i].Style.BackColor = c_Yellow;
-                                    break;
-                                case TeamSceneState.Completed:
-                                    row.Cells[i].Style.BackColor = c_Green;
-                                    break;
-                            }
-                        }
-                    }
-                }
             }
             dgvGrid.ClearSelection();
             //if (selectedCell.X != -1 && selectedCell.Y != -1)
@@ -191,10 +134,167 @@ namespace TeamCoordinator
             //    dgvGrid.CurrentCell.Selected = false;
             //}
 
-            if (firstRow != -1) dgvGrid.FirstDisplayedScrollingRowIndex = firstRow;
+            if (firstRow != -1)
+                dgvGrid.FirstDisplayedScrollingRowIndex = firstRow;
             dgvGrid.HorizontalScrollingOffset = horizontalScroll;
 
-            #endregion
+            
+        }
+
+        private void UpdateGridData()
+        {
+            for (int i = 1; i < dgvGrid.ColumnCount; i++)
+            {
+                var col = dgvGrid.Columns[i];
+                var sceneID = col.Tag.ToString();
+                var scene = m_AI.GetSceneByID(sceneID);
+
+                var stage = m_AI.GetStageByID(scene.StageID);
+                if (stage == null)
+                {
+                    Debug.Fail("How?");
+                    continue;
+                }
+                var stageName = (stage.ShortName == "") ? stage.Name : stage.ShortName;
+                string sceneName = (scene.Number == "") ? stageName : string.Format("{0} - {1}", stageName, scene.Number);
+
+                var sceneTime = scene.ChangeStateTime;
+                var lastMins = Math.Truncate((DateTime.Now - scene.ChangeStateTime).TotalMinutes);
+                var lastSecs = Math.Truncate((DateTime.Now - scene.ChangeStateTime).TotalSeconds) - (60 * lastMins);
+
+                col.HeaderText = string.Format("{0}\n{1}\n{2}\n(+{3}:{4})", sceneName, scene.Coach,
+                    sceneTime.ToShortTimeString(), lastMins, lastSecs);
+
+                Color color = Color.Teal;
+                switch (scene.GetState())
+                {
+                    case -1:
+                        color = c_Red;
+                        break;
+                    case 0:
+                        color = c_Yellow;
+                        break;
+                    case 1:
+                        color = c_Green;
+                        break;
+                }
+                col.HeaderCell.Style.BackColor = color;
+            }
+
+            //foreach (var scene in m_AI.Scenes)
+            //{
+            //    var stage = m_AI.GetStageByID(scene.StageID);
+            //    if (stage == null)
+            //        continue;
+            //    var stageName = (stage.ShortName == "") ? stage.Name : stage.ShortName;
+            //    string sceneName = (scene.Number == "") ? stageName : string.Format("{0} - {1}", stageName, scene.Number);
+
+            //    var col = new DataGridViewTextBoxColumn();
+            //    col.Name = scene.ID;
+            //    col.Tag = scene;
+            //    col.SortMode = DataGridViewColumnSortMode.NotSortable;
+            //    var sceneTime = scene.ChangeStateTime;
+            //    var lastMins = Math.Truncate((DateTime.Now - scene.ChangeStateTime).TotalMinutes);
+            //    var lastSecs = Math.Truncate((DateTime.Now - scene.ChangeStateTime).TotalSeconds) - (60 * lastMins);
+
+            //    col.HeaderText = string.Format("{0}\n{1}\n{2}\n(+{3}:{4})", sceneName, scene.Coach,
+            //        sceneTime.ToShortTimeString(), lastMins, lastSecs);
+
+            //    col.HeaderCell.Style.BackColor = (scene.IsReady) ? c_Green : c_Red;
+            //    foreach (var team in m_AI.Teams)
+            //    {
+            //        if (team.State == scene.ID)
+            //        {
+            //            col.HeaderCell.Style.BackColor = c_Yellow;
+            //            break;
+            //        }
+            //    }
+            //    col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            //    col.Width = c_ColWidth;
+            //    dgvGrid.Columns.Add(col);
+            //}
+            //if (dgvGrid.Columns.Count > 0)
+            //{
+            //    foreach (var team in m_AI.Teams)
+            //    {
+            //        var row = new DataGridViewRow();
+            //        row.Tag = team;
+
+            //        var lastMins = Math.Truncate((DateTime.Now - team.ChangeStateTime).TotalMinutes);
+            //        var lastSecs = Math.Truncate((DateTime.Now - team.ChangeStateTime).TotalSeconds) - (60 * lastMins);
+
+            //        row.HeaderCell.Value = string.Format("{0}\n{1} - {2}\n({3}:{4})", team.Name, team.CompleteStages, team.IncompleteStages, lastMins, lastSecs);
+            //        row.Height = RowHeight;
+
+            //        switch (team.State)
+            //        {
+            //            case TeamLogRecord.c_Ready:
+            //                row.HeaderCell.Style.BackColor = c_Green;
+            //                break;
+
+            //            case TeamLogRecord.c_NotReady:
+            //                row.HeaderCell.Style.BackColor = c_Red;
+            //                break;
+
+            //            default:
+            //                row.HeaderCell.Style.BackColor = c_Yellow;
+            //                break;
+            //        }
+
+            //        dgvGrid.Rows.Add(row);
+
+            //        for (int i = 0; i < dgvGrid.Columns.Count; i++)
+            //        {
+            //            var col = dgvGrid.Columns[i];
+            //            var scene = col.Tag as Scene;
+            //            if (scene != null)
+            //            {
+            //                switch (m_AI.GetState(team, scene))
+            //                {
+            //                    case TeamSceneState.Pass:
+            //                        row.Cells[i].Style.BackColor = c_Gray;
+            //                        break;
+            //                    case TeamSceneState.Incomplete:
+            //                        row.Cells[i].Style.BackColor = c_Red;
+            //                        break;
+            //                    case TeamSceneState.OnWork:
+            //                        row.Cells[i].Style.BackColor = c_Yellow;
+            //                        break;
+            //                    case TeamSceneState.Completed:
+            //                        row.Cells[i].Style.BackColor = c_Green;
+            //                        break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            //dgvGrid.ClearSelection();
+            ////if (selectedCell.X != -1 && selectedCell.Y != -1)
+            ////{
+            ////    dgvGrid.CurrentCell = dgvGrid.Rows[selectedCell.X].Cells[selectedCell.Y];
+            ////    dgvGrid.CurrentCell.Selected = false;
+            ////}
+
+            //if (firstRow != -1)
+            //    dgvGrid.FirstDisplayedScrollingRowIndex = firstRow;
+            //dgvGrid.HorizontalScrollingOffset = horizontalScroll;
+        }
+
+        private void UpdateData()
+        {
+            this.Text = m_AI.FileName;
+            if (!m_AI.Valid)
+            {
+                return;
+            }
+
+            if (m_AI.RebuildGrid)
+            {
+                UpdateGridCells();
+            }
+            UpdateGridData();
+
+            //m_AI.CheckTeams();
 
             #region Props
 
@@ -301,20 +401,20 @@ namespace TeamCoordinator
                 if (team != null)
                 {
                     tbTeamName.Text = team.Name;
+
+                    var cnt = 0;
+                    var index = -1;
                     cmbTeamGroup.Items.Clear();
-                    int selectedGroup = 0;
-                    for (int i = 0; i < m_AI.Groups.Count; i++)
+                    foreach (var aiGroup in m_AI.Groups)
                     {
-                        var aiGroup = m_AI.Groups[i];
                         cmbTeamGroup.Items.Add(aiGroup.Name);
                         if (aiGroup.ID == team.GroupID)
-                        {
-                            selectedGroup = i;
-                        }
+                            index = cnt;
+                        cnt++;
                     }
                     if (cmbTeamGroup.Items.Count > 0)
                     {
-                        cmbTeamGroup.SelectedIndex = selectedGroup;
+                        cmbTeamGroup.SelectedIndex = index;
                     }
 
                     RefreshTeamStages();                   
@@ -328,20 +428,19 @@ namespace TeamCoordinator
                 {
                     tbSceneNumber.Text = scene.Number;
 
+                    var cnt = 0;
+                    var index = -1;
                     cmbSceneStage.Items.Clear();
-                    int selectedStage = 0;
-                    for (int i = 0; i < m_AI.Stages.Count; i++)
+                    foreach (var aiStage in m_AI.Stages)
                     {
-                        var aiStage = m_AI.Stages[i];
                         cmbSceneStage.Items.Add(aiStage.Name);
                         if (aiStage.ID == scene.StageID)
-                        {
-                            selectedStage = i;
-                        }
+                            index = cnt;
+                        cnt++;
                     }
                     if (cmbSceneStage.Items.Count > 0)
                     {
-                        cmbSceneStage.SelectedIndex = selectedStage;
+                        cmbSceneStage.SelectedIndex = index;
                     }
 
                     tbSceneCoach.Text = scene.Coach;
@@ -406,14 +505,7 @@ namespace TeamCoordinator
             }
         }
 
-        private void miEditMode_Click(object sender, EventArgs e)
-        {
-            //if (m_AI.Valid)
-            //{
-            //    m_EditMode = !m_EditMode;
-            //    UpdateControls();
-            //}
-        }
+        #region Menu
 
         private void miCreate_Click(object sender, EventArgs e)
         {
@@ -448,7 +540,8 @@ namespace TeamCoordinator
             var doc = new XDocument(new XElement("AI",
                 new XElement("Stages"),
                 new XElement("Teams"),
-                new XElement("Groups")));
+                new XElement("Groups"),
+                new XElement("Scenes")));
             doc.Save(pathString);
             m_AI = new AI(pathString);
 
@@ -471,16 +564,23 @@ namespace TeamCoordinator
             UpdateData();
         }
 
-        private void miEditGroups_Click(object sender, EventArgs e)
+
+        private void miChangeTextSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (m_AI.Valid)
+            var sFontSize = m_FontSize.ToString();
+            if (Input.ShowInputDialog("Задайте новый размер шрифта", ref sFontSize) == DialogResult.OK)
             {
-                if (GroupsEditDlg.Execute(m_AI))
+                float fs;
+                if (float.TryParse(sFontSize, out fs))
                 {
+                    m_FontSize = fs;
+                    m_AI.RebuildGrid = true;
                     UpdateData();
                 }
             }
         }
+
+        #endregion
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
@@ -632,36 +732,36 @@ namespace TeamCoordinator
                             stageCompleted.Tag = tag;
                             stageCompleted.Click += new EventHandler(stageCompleted_Click);
 
-                            switch(m_AI.GetState(team, scene))
-                            {
-                                case TeamSceneState.Pass:
-                                    m.MenuItems.Add(stageIncomplete);
-                                    m.MenuItems.Add(stageCompleted);
-                                    break;
-                                case TeamSceneState.Incomplete:
-                                    if (scene.IsReady && team.State == TeamTimerEvent.c_Ready)
-                                    {
-                                        m.MenuItems.Add(sendTeam);
-                                        m.MenuItems.Add(spacer);
-                                    }
-                                    m.MenuItems.Add(stagePass);
-                                    m.MenuItems.Add(stageCompleted);
-                                    break;
-                                case TeamSceneState.OnWork:
-                                    m.MenuItems.Add(stageReady);
-                                    m.MenuItems.Add(teamReturned);
-                                    m.MenuItems.Add(stageteamBusy);
-                                    m.MenuItems.Add(spacer);
-                                    m.MenuItems.Add(stagePass);
-                                    m.MenuItems.Add(stageIncomplete);
-                                    m.MenuItems.Add(stageCompleted);
-                                    break;
-                                case TeamSceneState.Completed:
-                                    m.MenuItems.Add(stagePass);
-                                    m.MenuItems.Add(stageIncomplete);
-                                    break;
+                            //switch(m_AI.GetState(team, scene))
+                            //{
+                            //    case TeamSceneState.Pass:
+                            //        m.MenuItems.Add(stageIncomplete);
+                            //        m.MenuItems.Add(stageCompleted);
+                            //        break;
+                            //    case TeamSceneState.Incomplete:
+                            //        if (scene.IsReady && team.State == TeamLogRecord.c_Ready)
+                            //        {
+                            //            m.MenuItems.Add(sendTeam);
+                            //            m.MenuItems.Add(spacer);
+                            //        }
+                            //        m.MenuItems.Add(stagePass);
+                            //        m.MenuItems.Add(stageCompleted);
+                            //        break;
+                            //    case TeamSceneState.OnWork:
+                            //        m.MenuItems.Add(stageReady);
+                            //        m.MenuItems.Add(teamReturned);
+                            //        m.MenuItems.Add(stageteamBusy);
+                            //        m.MenuItems.Add(spacer);
+                            //        m.MenuItems.Add(stagePass);
+                            //        m.MenuItems.Add(stageIncomplete);
+                            //        m.MenuItems.Add(stageCompleted);
+                            //        break;
+                            //    case TeamSceneState.Completed:
+                            //        m.MenuItems.Add(stagePass);
+                            //        m.MenuItems.Add(stageIncomplete);
+                            //        break;
 
-                            }
+                            //}
                         }
                     }
                 }
@@ -688,13 +788,6 @@ namespace TeamCoordinator
             //}
         }
 
-        
-
-
-        
-
-        
-
         void editTeam_Click(object sender, EventArgs e)
         {
             //var mi = sender as MenuItem;
@@ -710,8 +803,6 @@ namespace TeamCoordinator
             //    }
             //}
         }
-
-        
 
         #endregion
 
@@ -916,8 +1007,6 @@ namespace TeamCoordinator
             RefreshPropsPnl();
         }
 
-
-
         #endregion
 
         #region actions
@@ -938,28 +1027,23 @@ namespace TeamCoordinator
                     return;
                 }
 
-                var team = mi.Tag as Team;
-                if (team != null)
+                if (mi.Tag is Team)
                 {
-                    m_AI.Teams.Add(team);
+                    m_SelectedItem = m_AI.AddTeam();
                 }
-                var scene = mi.Tag as Scene;
-                if (scene != null)
+                if (mi.Tag is Scene)
                 {
-                    m_AI.Scenes.Add(scene);
+                    m_SelectedItem = m_AI.AddScene();
                 }
-                var group = mi.Tag as Group;
-                if (group != null)
+                if (mi.Tag is Group)
                 {
-                    m_AI.Groups.Add(group);
+                    m_SelectedItem = m_AI.AddGroup();
                 }
-                var stage = mi.Tag as Stage;
-                if (stage != null)
+                if (mi.Tag is Stage)
                 {
-                    m_AI.Stages.Add(stage);
+                    m_SelectedItem = m_AI.AddStage();
                 }
 
-                m_SelectedItem = item;
                 UpdateData();
                 if (tabControl.SelectedIndex == 0)
                 {
@@ -973,29 +1057,25 @@ namespace TeamCoordinator
             var mi = sender as MenuItem;
             if (mi != null)
             {
-                if (!(mi.Tag is Item))
-                {
+                var item = mi.Tag as Item;
+                if (item == null)
                     return;
-                }
-                var team = mi.Tag as Team;
-                if (team != null)
+
+                if (item is Team)
                 {
-                    m_AI.Teams.Remove(team);
+                    m_AI.RemoveTeam(item.ID);
                 }
-                var scene = mi.Tag as Scene;
-                if (scene != null)
+                if (item is Scene)
                 {
-                    m_AI.Scenes.Remove(scene);
+                    m_AI.RemoveScene(item.ID);
                 }
-                var group = mi.Tag as Group;
-                if (group != null)
+                if (item is Group)
                 {
-                    m_AI.Groups.Remove(group);
+                    m_AI.RemoveGroup(item.ID);
                 }
-                var stage = mi.Tag as Stage;
-                if (stage != null)
+                if (item is Stage)
                 {
-                    m_AI.Stages.Remove(stage);
+                    m_AI.RemoveStage(item.ID);
                 }
                 m_SelectedItem = null;
                 UpdateData();
@@ -1010,15 +1090,12 @@ namespace TeamCoordinator
                 var team = mi.Tag as Team;
                 if (team != null)
                 {
-                    switch(team.State)
+                    var st = team.GetState();
+                    if (st == -1)
+                        team.Log.Add(new TeamLogRecord("", TeamSceneState.Ready));
+                    else if (st == 1)
                     {
-                        case TeamTimerEvent.c_Ready:
-                            team.State = TeamTimerEvent.c_NotReady;
-                            break;
-
-                        case TeamTimerEvent.c_NotReady:
-                            team.State = TeamTimerEvent.c_Ready;
-                            break;
+                        team.Log.Add(new TeamLogRecord("", TeamSceneState.Pause));
                     }
                     UpdateData();
                 }
@@ -1061,7 +1138,7 @@ namespace TeamCoordinator
             if (GetPairFromTag(sender, out team, out scene))
             {
                 team.Stages[scene.StageID] = 1;
-                team.State = TeamTimerEvent.c_NotReady;
+                team.State = TeamLogRecord.c_NotReady;
                 scene.IsReady = true;
                 scene.ChangeStateTime = DateTime.Now;
                 UpdateData();
@@ -1080,7 +1157,7 @@ namespace TeamCoordinator
             if (GetPairFromTag(sender, out team, out scene))
             {
                 team.Stages[scene.StageID] = 1;
-                team.State = TeamTimerEvent.c_Ready;
+                team.State = TeamLogRecord.c_Ready;
                 scene.IsReady = false;
                 scene.ChangeStateTime = DateTime.Now;
                 UpdateData();
@@ -1099,7 +1176,7 @@ namespace TeamCoordinator
             if (GetPairFromTag(sender, out team, out scene))
             {
                 team.Stages[scene.StageID] = 1;
-                team.State = TeamTimerEvent.c_NotReady;
+                team.State = TeamLogRecord.c_NotReady;
                 scene.IsReady = false;
                 scene.ChangeStateTime = DateTime.Now;
                 UpdateData();
@@ -1341,10 +1418,11 @@ namespace TeamCoordinator
                 row.Cells[0].Value = stage.Name;
                 row.Tag = stage;
                 int res = -1;
-                if (team.Stages.ContainsKey(stage.ID))
-                {
-                    res = team.Stages[stage.ID];
-                }
+                if (team.IncompleteStages.Contains(stage.ID))
+                    res = 0;
+                if (team.CompleteStages.Contains(stage.ID))
+                    res = 1;
+
                 string stageState;
                 switch (res)
                 {
@@ -1386,14 +1464,10 @@ namespace TeamCoordinator
                 var stage = row.Tag as Stage;
                 if (stage != null)
                 {
-                    if (!team.Stages.ContainsKey(stage.ID))
-                    {
-                        team.Stages.Add(stage.ID, -1);
-                    }
-                    else
-                    {
-                        team.Stages[stage.ID] = -1;
-                    }
+                    if (team.IncompleteStages.Contains(stage.ID))
+                        team.IncompleteStages.Remove(stage.ID);
+                    if (team.CompleteStages.Contains(stage.ID))
+                        team.CompleteStages.Remove(stage.ID);
                 }
                 RefreshTeamStages();
                 UpdateButtons();
@@ -1412,14 +1486,10 @@ namespace TeamCoordinator
                 var stage = row.Tag as Stage;
                 if (stage != null)
                 {
-                    if (!team.Stages.ContainsKey(stage.ID))
-                    {
-                        team.Stages.Add(stage.ID, 0);
-                    }
-                    else
-                    {
-                        team.Stages[stage.ID] = 0;
-                    }
+                    if(!team.IncompleteStages.Contains(stage.ID))
+                        team.IncompleteStages.Add(stage.ID);
+                    if (team.CompleteStages.Contains(stage.ID))
+                        team.CompleteStages.Remove(stage.ID);
                 }
                 RefreshTeamStages();
                 UpdateButtons();
@@ -1438,14 +1508,10 @@ namespace TeamCoordinator
                 var stage = row.Tag as Stage;
                 if (stage != null)
                 {
-                    if (!team.Stages.ContainsKey(stage.ID))
-                    {
-                        team.Stages.Add(stage.ID, 1);
-                    }
-                    else
-                    {
-                        team.Stages[stage.ID] = 1;
-                    }
+                    if (team.IncompleteStages.Contains(stage.ID))
+                        team.IncompleteStages.Remove(stage.ID);
+                    if (!team.CompleteStages.Contains(stage.ID))
+                        team.CompleteStages.Add(stage.ID);
                 }
                 RefreshTeamStages();
                 UpdateButtons();
@@ -1458,10 +1524,12 @@ namespace TeamCoordinator
             var team = m_SelectedItem as Team;
             if (team == null) return;
 
-            team.Stages.Clear();
+            team.CompleteStages.Clear();
+            team.IncompleteStages.Clear();
             foreach (var stage in m_AI.Stages)
             {
-                team.Stages.Add(stage.ID, (stage.AvailableGroups.Contains(team.GroupID)) ? 0 : -1);
+                if (stage.AvailableGroups.Contains(team.GroupID))
+                    team.IncompleteStages.Add(stage.ID);
             }
 
             RefreshTeamStages();
@@ -1498,11 +1566,17 @@ namespace TeamCoordinator
                 dgvGrid.HorizontalScrollingOffset = (newHorPos > 0) ? newHorPos : 0;
 
 
-                int vertOffs = (startPos.Y - endPos.Y) / c_RowHeight;
+                int vertOffs = (startPos.Y - endPos.Y) / RowHeight;
                 var oldIndex = m_LastMouseClick.FirstDisplayedRow;
                 dgvGrid.FirstDisplayedScrollingRowIndex = (oldIndex + vertOffs < 0) ? 0 : oldIndex + vertOffs;
 
             }
         }
+
+        private void btnTeamShowLog_Click(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }
