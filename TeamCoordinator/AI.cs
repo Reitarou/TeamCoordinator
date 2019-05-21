@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using TeamCoordinator.Properties;
-using System.Xml.Linq;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 using Stg;
+using TeamCoordinator.Properties;
 
 namespace TeamCoordinator
 {
-   public class AI
+    public class AI
     {
         private string m_Path;
         private Dictionary<string, Group> m_Groups;
@@ -233,7 +229,9 @@ namespace TeamCoordinator
                 foreach (var pair in m_Scenes)
                 {
                     var index = list.BinarySearch(pair.Value, Scene.Comparer);
-                    list.Insert(~index, pair.Value);
+                    if (index < 0)
+                        index = ~index;
+                    list.Insert(index, pair.Value);
                 }
                 return list;
             }
@@ -241,10 +239,10 @@ namespace TeamCoordinator
 
         public Scene AddScene()
         {
-            var team = new Scene(this);
-            m_Scenes.Add(team.ID, team);
+            var scene = new Scene(this);
+            m_Scenes.Add(scene.ID, scene);
             RebuildGrid = true;
-            return team;
+            return scene;
         }
 
         public Scene GetSceneByID(string id)

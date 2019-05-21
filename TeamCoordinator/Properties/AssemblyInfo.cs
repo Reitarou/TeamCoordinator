@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("TeamCoordinator")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Win-Torrent Yagd")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TeamCoordinator")]
-[assembly: AssemblyCopyright("Copyright © Win-Torrent Yagd 2015")]
+[assembly: AssemblyCopyright("Reitarou")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

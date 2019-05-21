@@ -28,15 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.miFile = new System.Windows.Forms.ToolStripMenuItem();
             this.miCreate = new System.Windows.Forms.ToolStripMenuItem();
             this.miOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.miExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.miProperties = new System.Windows.Forms.ToolStripMenuItem();
+            this.miChangeTextSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.логToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tpGrid = new System.Windows.Forms.TabPage();
+            this.lbLog = new System.Windows.Forms.ListBox();
             this.dgvGrid = new System.Windows.Forms.DataGridView();
             this.tpLists = new System.Windows.Forms.TabPage();
             this.tvList = new System.Windows.Forms.TreeView();
@@ -51,14 +57,14 @@
             this.btnSceneCancel = new System.Windows.Forms.Button();
             this.btnSceneOk = new System.Windows.Forms.Button();
             this.pnlTeamProps = new System.Windows.Forms.Panel();
+            this.dgvStages = new System.Windows.Forms.DataGridView();
+            this.clStage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clUsage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnTeamShowLog = new System.Windows.Forms.Button();
             this.btnAuto = new System.Windows.Forms.Button();
             this.btnStageComplete = new System.Windows.Forms.Button();
             this.btnStageIncomplete = new System.Windows.Forms.Button();
             this.btnStagePass = new System.Windows.Forms.Button();
-            this.dgvStages = new System.Windows.Forms.DataGridView();
-            this.clStage = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clUsage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lbTeamGroup = new System.Windows.Forms.Label();
             this.cmbTeamGroup = new System.Windows.Forms.ComboBox();
             this.btnTeamCancel = new System.Windows.Forms.Button();
@@ -87,8 +93,7 @@
             this.btnGroupCancel = new System.Windows.Forms.Button();
             this.tbGroupName = new System.Windows.Forms.TextBox();
             this.btnGroupOk = new System.Windows.Forms.Button();
-            this.miProperties = new System.Windows.Forms.ToolStripMenuItem();
-            this.miChangeTextSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RefreshTimer = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tpGrid.SuspendLayout();
@@ -126,22 +131,45 @@
             // miCreate
             // 
             this.miCreate.Name = "miCreate";
-            this.miCreate.Size = new System.Drawing.Size(152, 22);
+            this.miCreate.Size = new System.Drawing.Size(121, 22);
             this.miCreate.Text = "Создать";
             this.miCreate.Click += new System.EventHandler(this.miCreate_Click);
             // 
             // miOpen
             // 
             this.miOpen.Name = "miOpen";
-            this.miOpen.Size = new System.Drawing.Size(152, 22);
+            this.miOpen.Size = new System.Drawing.Size(121, 22);
             this.miOpen.Text = "Открыть";
             this.miOpen.Click += new System.EventHandler(this.miOpen_Click);
             // 
             // miExit
             // 
             this.miExit.Name = "miExit";
-            this.miExit.Size = new System.Drawing.Size(152, 22);
+            this.miExit.Size = new System.Drawing.Size(121, 22);
             this.miExit.Text = "Выход";
+            // 
+            // miProperties
+            // 
+            this.miProperties.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miChangeTextSizeToolStripMenuItem,
+            this.логToolStripMenuItem});
+            this.miProperties.Name = "miProperties";
+            this.miProperties.Size = new System.Drawing.Size(70, 20);
+            this.miProperties.Text = "Свойства";
+            // 
+            // miChangeTextSizeToolStripMenuItem
+            // 
+            this.miChangeTextSizeToolStripMenuItem.Name = "miChangeTextSizeToolStripMenuItem";
+            this.miChangeTextSizeToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.miChangeTextSizeToolStripMenuItem.Text = "Изменить шрифт";
+            this.miChangeTextSizeToolStripMenuItem.Click += new System.EventHandler(this.miChangeTextSizeToolStripMenuItem_Click);
+            // 
+            // логToolStripMenuItem
+            // 
+            this.логToolStripMenuItem.Name = "логToolStripMenuItem";
+            this.логToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.логToolStripMenuItem.Text = "Лог";
+            this.логToolStripMenuItem.Click += new System.EventHandler(this.miLog_Click);
             // 
             // tabControl
             // 
@@ -157,6 +185,7 @@
             // 
             // tpGrid
             // 
+            this.tpGrid.Controls.Add(this.lbLog);
             this.tpGrid.Controls.Add(this.dgvGrid);
             this.tpGrid.Location = new System.Drawing.Point(4, 22);
             this.tpGrid.Name = "tpGrid";
@@ -164,6 +193,15 @@
             this.tpGrid.TabIndex = 2;
             this.tpGrid.Text = "Сетка";
             this.tpGrid.UseVisualStyleBackColor = true;
+            // 
+            // lbLog
+            // 
+            this.lbLog.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lbLog.FormattingEnabled = true;
+            this.lbLog.Location = new System.Drawing.Point(903, 0);
+            this.lbLog.Name = "lbLog";
+            this.lbLog.Size = new System.Drawing.Size(217, 740);
+            this.lbLog.TabIndex = 2;
             // 
             // dgvGrid
             // 
@@ -180,20 +218,28 @@
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvGrid.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvGrid.EnableHeadersVisualStyles = false;
             this.dgvGrid.Location = new System.Drawing.Point(0, 0);
             this.dgvGrid.MultiSelect = false;
             this.dgvGrid.Name = "dgvGrid";
             this.dgvGrid.ReadOnly = true;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dgvGrid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dgvGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvGrid.Size = new System.Drawing.Size(1120, 740);
@@ -348,6 +394,40 @@
             this.pnlTeamProps.TabIndex = 0;
             this.pnlTeamProps.Visible = false;
             // 
+            // dgvStages
+            // 
+            this.dgvStages.AllowUserToAddRows = false;
+            this.dgvStages.AllowUserToDeleteRows = false;
+            this.dgvStages.AllowUserToResizeColumns = false;
+            this.dgvStages.AllowUserToResizeRows = false;
+            this.dgvStages.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvStages.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.clStage,
+            this.clUsage});
+            this.dgvStages.Location = new System.Drawing.Point(10, 72);
+            this.dgvStages.MultiSelect = false;
+            this.dgvStages.Name = "dgvStages";
+            this.dgvStages.RowHeadersVisible = false;
+            this.dgvStages.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvStages.Size = new System.Drawing.Size(296, 150);
+            this.dgvStages.TabIndex = 4;
+            this.dgvStages.SelectionChanged += new System.EventHandler(this.dgvStages_SelectionChanged);
+            // 
+            // clStage
+            // 
+            this.clStage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.clStage.HeaderText = "Этап";
+            this.clStage.Name = "clStage";
+            this.clStage.ReadOnly = true;
+            // 
+            // clUsage
+            // 
+            this.clUsage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.clUsage.FillWeight = 200F;
+            this.clUsage.HeaderText = "Состояние";
+            this.clUsage.Name = "clUsage";
+            this.clUsage.ReadOnly = true;
+            // 
             // btnTeamShowLog
             // 
             this.btnTeamShowLog.Location = new System.Drawing.Point(86, 290);
@@ -397,40 +477,6 @@
             this.btnStagePass.Text = "Пропустить";
             this.btnStagePass.UseVisualStyleBackColor = true;
             this.btnStagePass.Click += new System.EventHandler(this.btnStagePass_Click);
-            // 
-            // dgvStages
-            // 
-            this.dgvStages.AllowUserToAddRows = false;
-            this.dgvStages.AllowUserToDeleteRows = false;
-            this.dgvStages.AllowUserToResizeColumns = false;
-            this.dgvStages.AllowUserToResizeRows = false;
-            this.dgvStages.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvStages.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.clStage,
-            this.clUsage});
-            this.dgvStages.Location = new System.Drawing.Point(10, 72);
-            this.dgvStages.MultiSelect = false;
-            this.dgvStages.Name = "dgvStages";
-            this.dgvStages.RowHeadersVisible = false;
-            this.dgvStages.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvStages.Size = new System.Drawing.Size(296, 150);
-            this.dgvStages.TabIndex = 4;
-            this.dgvStages.SelectionChanged += new System.EventHandler(this.dgvStages_SelectionChanged);
-            // 
-            // clStage
-            // 
-            this.clStage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.clStage.HeaderText = "Этап";
-            this.clStage.Name = "clStage";
-            this.clStage.ReadOnly = true;
-            // 
-            // clUsage
-            // 
-            this.clUsage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.clUsage.FillWeight = 200F;
-            this.clUsage.HeaderText = "Состояние";
-            this.clUsage.Name = "clUsage";
-            this.clUsage.ReadOnly = true;
             // 
             // lbTeamGroup
             // 
@@ -704,20 +750,10 @@
             this.btnGroupOk.UseVisualStyleBackColor = true;
             this.btnGroupOk.Click += new System.EventHandler(this.btnGroupOk_Click);
             // 
-            // miProperties
+            // RefreshTimer
             // 
-            this.miProperties.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.miChangeTextSizeToolStripMenuItem});
-            this.miProperties.Name = "miProperties";
-            this.miProperties.Size = new System.Drawing.Size(70, 20);
-            this.miProperties.Text = "Свойства";
-            // 
-            // miChangeTextSizeToolStripMenuItem
-            // 
-            this.miChangeTextSizeToolStripMenuItem.Name = "miChangeTextSizeToolStripMenuItem";
-            this.miChangeTextSizeToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.miChangeTextSizeToolStripMenuItem.Text = "Изменить шрифт";
-            this.miChangeTextSizeToolStripMenuItem.Click += new System.EventHandler(this.miChangeTextSizeToolStripMenuItem_Click);
+            this.RefreshTimer.Interval = 500;
+            this.RefreshTimer.Tick += new System.EventHandler(this.RefreshTimer_Tick);
             // 
             // MainForm
             // 
@@ -811,6 +847,9 @@
         private System.Windows.Forms.Button btnTeamShowLog;
         private System.Windows.Forms.ToolStripMenuItem miProperties;
         private System.Windows.Forms.ToolStripMenuItem miChangeTextSizeToolStripMenuItem;
+        private System.Windows.Forms.Timer RefreshTimer;
+        private System.Windows.Forms.ListBox lbLog;
+        private System.Windows.Forms.ToolStripMenuItem логToolStripMenuItem;
     }
 }
 

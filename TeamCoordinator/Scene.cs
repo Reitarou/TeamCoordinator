@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 using Stg;
 
 namespace TeamCoordinator
 {
-    
+
 
     public class Scene : Item
     {
@@ -60,18 +58,32 @@ namespace TeamCoordinator
         {
         }
 
-        public int GetState()
+        public int State
         {
-            if (!IsReady)
+            get
             {
-                return -1;
+                if (!IsReady)
+                {
+                    return -1;
+                }
+                foreach (var team in AI.Teams)
+                {
+                    var lr = team.LastRecord;
+                    if (lr.Location == ID && (lr.State == TeamState.CallToBase || lr.State == TeamState.SentToScene || lr.State == TeamState.StartWork))
+                        return 0;
+                }
+                return 1;
             }
-            foreach (var team in AI.Teams)
+        }
+
+        public string Name
+        {
+            get
             {
-                if (team.Log.Last().Location == ID)
-                    return 0;
+                var stage = AI.GetStageByID(StageID);
+                var stageName = (stage.ShortName == "") ? stage.Name : stage.ShortName;
+                return (Number == "") ? stageName : string.Format("{0} - {1}", stageName, Number);
             }
-            return 1;
         }
 
         #region IStgSerializable Members

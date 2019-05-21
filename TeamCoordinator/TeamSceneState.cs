@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TeamCoordinator
+﻿namespace TeamCoordinator
 {
-    public enum TeamSceneState
+    public enum TeamState
     {
         Pass = -100,
         Pause = -50,
         Incomplete = 0,
-        OtherSame = 5,
-        Sent = 10,
-        OnWork = 50,
-        OnBack = 90,
+        AtOtherScene = 5,
+        CallToBase = 10,
+        SentToScene = 20,
+        StartWork = 50,
+        MoveBack = 90,
         Completed = 100,
         Ready = 200,
         Unknown = -1000,

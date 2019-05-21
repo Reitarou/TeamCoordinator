@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using TeamCoordinator.Properties;
-using System.Xml.Linq;
-using System.IO;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+using System.Xml.Linq;
+using TeamCoordinator.Properties;
 
 namespace TeamCoordinator
 {
@@ -28,8 +23,8 @@ namespace TeamCoordinator
         //private const int c_RowHeight = 35;
         //private const int c_ColHeadersHeight = 50;
 
-        private const int c_ColWidth = 54;
-        private const int c_RowHeadersWidth = 60;
+        //private const int c_ColWidth = 54;
+        //private const int c_RowHeadersWidth = 60;
 
         private float m_FontSize = 6f;
 
@@ -41,7 +36,6 @@ namespace TeamCoordinator
                 return (int)(m_FontSize * rows + m_FontSize * (rows + 2) * 0.8);
             }
         }
-
         private int ColHeadersHeight
         {
             get
@@ -50,10 +44,26 @@ namespace TeamCoordinator
                 return (int)(m_FontSize * rows + m_FontSize * (rows + 2) * 0.8);
             }
         }
+        private int ColWidth
+        {
+            get
+            {
+                return (int)m_FontSize * 9;
+            }
+        }
+        private int RowHeadersWidth
+        {
+            get
+            {
+                var add = 6;
+                return (int)m_FontSize * 9 + add;
+            }
+        }
 
-        private Color c_Green = Color.FromArgb(120, 255, 120);
-        private Color c_Yellow = Color.FromArgb(255, 160, 0);
-        private Color c_Red = Color.FromArgb(255, 120, 120);
+        private Color c_Green = Color.FromArgb(128, 255, 128);
+        private Color c_Yellow = Color.FromArgb(255, 255, 128);
+        private Color c_Red = Color.FromArgb(255, 174, 201);
+        private Color c_Blue = Color.FromArgb(0, 128, 255);
         private Color c_Violet = Color.FromArgb(230, 100, 230);
         private Color c_Gray = Color.FromArgb(180, 180, 180);
 
@@ -105,27 +115,27 @@ namespace TeamCoordinator
             dgvGrid.Rows.Clear();
 
             dgvGrid.ColumnHeadersHeight = ColHeadersHeight;
-            dgvGrid.RowHeadersWidth = c_RowHeadersWidth;
+            dgvGrid.RowHeadersWidth = RowHeadersWidth;
 
             foreach (var scene in m_AI.Scenes)
             {
                 var col = new DataGridViewTextBoxColumn();
-                //col.Name = scene.ID;
                 col.Tag = scene.ID;
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
                 col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                col.Width = c_ColWidth;
+                col.Width = ColWidth;
                 dgvGrid.Columns.Add(col);
             }
-            foreach (var team in m_AI.Teams)
+            if (dgvGrid.ColumnCount > 0)
             {
-                var row = new DataGridViewRow();
-                row.Tag = team.ID;
-                //row.Tag = team;
+                foreach (var team in m_AI.Teams)
+                {
+                    var row = new DataGridViewRow();
+                    row.Tag = team.ID;
+                    row.Height = RowHeight;
+                    dgvGrid.Rows.Add(row);
 
-                row.Height = RowHeight;
-                dgvGrid.Rows.Add(row);
-
+                }
             }
             dgvGrid.ClearSelection();
             //if (selectedCell.X != -1 && selectedCell.Y != -1)
@@ -143,9 +153,9 @@ namespace TeamCoordinator
 
         private void UpdateGridData()
         {
-            for (int i = 1; i < dgvGrid.ColumnCount; i++)
+            for (int c = 0; c < dgvGrid.ColumnCount; c++)
             {
-                var col = dgvGrid.Columns[i];
+                var col = dgvGrid.Columns[c];
                 var sceneID = col.Tag.ToString();
                 var scene = m_AI.GetSceneByID(sceneID);
 
@@ -155,18 +165,12 @@ namespace TeamCoordinator
                     Debug.Fail("How?");
                     continue;
                 }
-                var stageName = (stage.ShortName == "") ? stage.Name : stage.ShortName;
-                string sceneName = (scene.Number == "") ? stageName : string.Format("{0} - {1}", stageName, scene.Number);
-
-                var sceneTime = scene.ChangeStateTime;
-                var lastMins = Math.Truncate((DateTime.Now - scene.ChangeStateTime).TotalMinutes);
-                var lastSecs = Math.Truncate((DateTime.Now - scene.ChangeStateTime).TotalSeconds) - (60 * lastMins);
-
-                col.HeaderText = string.Format("{0}\n{1}\n{2}\n(+{3}:{4})", sceneName, scene.Coach,
-                    sceneTime.ToShortTimeString(), lastMins, lastSecs);
+                
+                col.HeaderText = string.Format("{0}\r\n{1}\r\n{2}\r\n(+{3})", scene.Name, scene.Coach,
+                    scene.ChangeStateTime.ToShortTimeString(), GetDiffFromNow(scene.ChangeStateTime));
 
                 Color color = Color.Teal;
-                switch (scene.GetState())
+                switch (scene.State)
                 {
                     case -1:
                         color = c_Red;
@@ -181,103 +185,105 @@ namespace TeamCoordinator
                 col.HeaderCell.Style.BackColor = color;
             }
 
-            //foreach (var scene in m_AI.Scenes)
-            //{
-            //    var stage = m_AI.GetStageByID(scene.StageID);
-            //    if (stage == null)
-            //        continue;
-            //    var stageName = (stage.ShortName == "") ? stage.Name : stage.ShortName;
-            //    string sceneName = (scene.Number == "") ? stageName : string.Format("{0} - {1}", stageName, scene.Number);
+            for (int r = 0; r < dgvGrid.RowCount; r++)
+            {
+                var row = dgvGrid.Rows[r];
+                var team = m_AI.GetTeamByID(row.Tag.ToString());
+                row.HeaderCell.Value = string.Format("{0}\r\n{1} - {2}\r\n({3})", team.Name, team.CompleteStagesCount, team.IncompleteStagesCount, GetDiffFromNow(team.LastRecord.Time));
+                row.Height = RowHeight;
 
-            //    var col = new DataGridViewTextBoxColumn();
-            //    col.Name = scene.ID;
-            //    col.Tag = scene;
-            //    col.SortMode = DataGridViewColumnSortMode.NotSortable;
-            //    var sceneTime = scene.ChangeStateTime;
-            //    var lastMins = Math.Truncate((DateTime.Now - scene.ChangeStateTime).TotalMinutes);
-            //    var lastSecs = Math.Truncate((DateTime.Now - scene.ChangeStateTime).TotalSeconds) - (60 * lastMins);
+                switch (team.State)
+                {
+                    case TeamState.Ready:
+                        row.HeaderCell.Style.BackColor = c_Green;
+                        break;
 
-            //    col.HeaderText = string.Format("{0}\n{1}\n{2}\n(+{3}:{4})", sceneName, scene.Coach,
-            //        sceneTime.ToShortTimeString(), lastMins, lastSecs);
+                    case TeamState.Pause:
+                        row.HeaderCell.Style.BackColor = c_Red;
+                        break;
 
-            //    col.HeaderCell.Style.BackColor = (scene.IsReady) ? c_Green : c_Red;
-            //    foreach (var team in m_AI.Teams)
-            //    {
-            //        if (team.State == scene.ID)
-            //        {
-            //            col.HeaderCell.Style.BackColor = c_Yellow;
-            //            break;
-            //        }
-            //    }
-            //    col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            //    col.Width = c_ColWidth;
-            //    dgvGrid.Columns.Add(col);
-            //}
-            //if (dgvGrid.Columns.Count > 0)
-            //{
-            //    foreach (var team in m_AI.Teams)
-            //    {
-            //        var row = new DataGridViewRow();
-            //        row.Tag = team;
+                    case TeamState.MoveBack:
+                        row.HeaderCell.Style.BackColor = c_Blue;
+                        break;
 
-            //        var lastMins = Math.Truncate((DateTime.Now - team.ChangeStateTime).TotalMinutes);
-            //        var lastSecs = Math.Truncate((DateTime.Now - team.ChangeStateTime).TotalSeconds) - (60 * lastMins);
+                    default:
+                        row.HeaderCell.Style.BackColor = c_Yellow;
+                        break;
+                }
 
-            //        row.HeaderCell.Value = string.Format("{0}\n{1} - {2}\n({3}:{4})", team.Name, team.CompleteStages, team.IncompleteStages, lastMins, lastSecs);
-            //        row.Height = RowHeight;
+                for (int c = 0; c < dgvGrid.Columns.Count; c++)
+                {
+                    var col = dgvGrid.Columns[c];
+                    var scene = m_AI.GetSceneByID(col.Tag.ToString());
+                    if (scene != null)
+                    {
+                        var cell = row.Cells[c];
+                        string state = "";
+                        switch (team.GetStateByScene(scene.ID))
+                        {
+                            case TeamState.Pass:
+                                cell.Style.BackColor = c_Gray;
+                                break;
+                            case TeamState.Incomplete:
+                                cell.Style.BackColor = c_Red;
+                                break;
+                            case TeamState.CallToBase:
+                                state = "Вызвана";
+                                cell.Style.BackColor = c_Yellow;
+                                break;
+                            case TeamState.SentToScene:
+                                state = "Отправлена";
+                                cell.Style.BackColor = c_Yellow;
+                                break;
+                            case TeamState.StartWork:
+                                state = "Работает";
+                                cell.Style.BackColor = c_Yellow;
+                                break;
+                            case TeamState.Completed:
+                                cell.Style.BackColor = c_Green;
+                                break;
+                        }
+                        if (state != "")
+                        {
+                            cell.Value = string.Format("{0}\r\n{1}", state, GetDiffFromNow(team.LastRecord.Time));
+                        }
+                        else
+                        {
+                            cell.Value = state;
+                        }
+                    }
+                }
 
-            //        switch (team.State)
-            //        {
-            //            case TeamLogRecord.c_Ready:
-            //                row.HeaderCell.Style.BackColor = c_Green;
-            //                break;
+            }
+        }
 
-            //            case TeamLogRecord.c_NotReady:
-            //                row.HeaderCell.Style.BackColor = c_Red;
-            //                break;
+        private string GetDiffFromNow(DateTime time)
+        {
+            var lastMins = Math.Truncate((DateTime.Now - time).TotalMinutes);
+            var lastSecs = Math.Truncate((DateTime.Now - time).TotalSeconds) - (60 * lastMins);
+            return string.Format("{0}:{1}", lastMins, lastSecs);
+        }
 
-            //            default:
-            //                row.HeaderCell.Style.BackColor = c_Yellow;
-            //                break;
-            //        }
+        private void FillLog()
+        {
+            lbLog.Items.Clear();
+            var cc = dgvGrid.CurrentCell;
+            if (cc != null && cc.RowIndex >= 0)
+            {
+                var row = dgvGrid.Rows[cc.RowIndex];
+                var team = m_AI.GetTeamByID(row.Tag.ToString());
+                if (team != null)
+                {
+                    foreach (var record in team.Records)
+                    {
+                        var time = record.Time.ToShortTimeString();
+                        var location = (record.Location == "") ? "База" : (m_AI.GetSceneByID(record.Location)).Name;
+                        var action = record.State.ToString();
+                        lbLog.Items.Add(string.Format("{0} - {1} {2}", time, location, action));
+                    }
+                }
+            }
 
-            //        dgvGrid.Rows.Add(row);
-
-            //        for (int i = 0; i < dgvGrid.Columns.Count; i++)
-            //        {
-            //            var col = dgvGrid.Columns[i];
-            //            var scene = col.Tag as Scene;
-            //            if (scene != null)
-            //            {
-            //                switch (m_AI.GetState(team, scene))
-            //                {
-            //                    case TeamSceneState.Pass:
-            //                        row.Cells[i].Style.BackColor = c_Gray;
-            //                        break;
-            //                    case TeamSceneState.Incomplete:
-            //                        row.Cells[i].Style.BackColor = c_Red;
-            //                        break;
-            //                    case TeamSceneState.OnWork:
-            //                        row.Cells[i].Style.BackColor = c_Yellow;
-            //                        break;
-            //                    case TeamSceneState.Completed:
-            //                        row.Cells[i].Style.BackColor = c_Green;
-            //                        break;
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
-            //dgvGrid.ClearSelection();
-            ////if (selectedCell.X != -1 && selectedCell.Y != -1)
-            ////{
-            ////    dgvGrid.CurrentCell = dgvGrid.Rows[selectedCell.X].Cells[selectedCell.Y];
-            ////    dgvGrid.CurrentCell.Selected = false;
-            ////}
-
-            //if (firstRow != -1)
-            //    dgvGrid.FirstDisplayedScrollingRowIndex = firstRow;
-            //dgvGrid.HorizontalScrollingOffset = horizontalScroll;
         }
 
         private void UpdateData()
@@ -288,16 +294,32 @@ namespace TeamCoordinator
                 return;
             }
 
-            if (m_AI.RebuildGrid)
+            if (tabControl.SelectedIndex == 0)
             {
-                UpdateGridCells();
+                if (m_AI.RebuildGrid)
+                {
+                    UpdateGridCells();
+                }
+                UpdateGridData();
             }
-            UpdateGridData();
 
             //m_AI.CheckTeams();
-
             #region Props
 
+            if (tabControl.SelectedIndex == 1)
+            {
+                RefreshTreeView();
+                RefreshPropsPnl();
+            }
+            #endregion
+
+            FillLog();
+
+            m_AI.SaveToStg();
+        }
+
+        private void RefreshTreeView()
+        {
             var teamsExpanded = (tvList.Nodes[c_Teams] != null) ? tvList.Nodes[c_Teams].IsExpanded : false;
             var scenesExpanded = (tvList.Nodes[c_Scenes] != null) ? tvList.Nodes[c_Scenes].IsExpanded : false;
             var groupsExpanded = (tvList.Nodes[c_Groups] != null) ? tvList.Nodes[c_Groups].IsExpanded : false;
@@ -324,7 +346,7 @@ namespace TeamCoordinator
                 coreNode.Nodes.Add(node);
             }
             tvList.Nodes.Add(coreNode);
-            
+
             coreNode = new TreeNode(c_Scenes);
             coreNode.Name = c_Scenes;
             coreNode.Tag = c_Scenes;
@@ -342,7 +364,7 @@ namespace TeamCoordinator
                 coreNode.Nodes.Add(node);
             }
             tvList.Nodes.Add(coreNode);
-            
+
             coreNode = new TreeNode(c_Groups);
             coreNode.Name = c_Groups;
             coreNode.Tag = c_Groups;
@@ -354,7 +376,7 @@ namespace TeamCoordinator
                 coreNode.Nodes.Add(node);
             }
             tvList.Nodes.Add(coreNode);
-            
+
             coreNode = new TreeNode(c_Stages);
             coreNode.Name = c_Stages;
             coreNode.Tag = c_Stages;
@@ -367,10 +389,14 @@ namespace TeamCoordinator
             }
             tvList.Nodes.Add(coreNode);
 
-            if (teamsExpanded) tvList.Nodes[c_Teams].Expand();
-            if (scenesExpanded) tvList.Nodes[c_Scenes].Expand();
-            if (groupsExpanded) tvList.Nodes[c_Groups].Expand();
-            if (stagesExpanded) tvList.Nodes[c_Stages].Expand();
+            if (teamsExpanded)
+                tvList.Nodes[c_Teams].Expand();
+            if (scenesExpanded)
+                tvList.Nodes[c_Scenes].Expand();
+            if (groupsExpanded)
+                tvList.Nodes[c_Groups].Expand();
+            if (stagesExpanded)
+                tvList.Nodes[c_Stages].Expand();
 
             if (m_SelectedItem != null)
             {
@@ -380,12 +406,6 @@ namespace TeamCoordinator
                     tvList.SelectedNode = nodes[0];
                 }
             }
-
-            RefreshPropsPnl();
-
-            #endregion
-
-            m_AI.SaveToStg();
         }
 
         private void RefreshPropsPnl()
@@ -505,7 +525,7 @@ namespace TeamCoordinator
             }
         }
 
-        #region Menu
+        #region MainMenu
 
         private void miCreate_Click(object sender, EventArgs e)
         {
@@ -564,7 +584,6 @@ namespace TeamCoordinator
             UpdateData();
         }
 
-
         private void miChangeTextSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var sFontSize = m_FontSize.ToString();
@@ -616,14 +635,14 @@ namespace TeamCoordinator
             {
                 ContextMenu m = new ContextMenu();
                 MenuItem mi;
-
+                var spacer = "---------";
                 if (hitTest.ColumnIndex == -1 && hitTest.RowIndex == -1)
                 {
                     mi = new MenuItem("Обновить");
                     mi.Click += new EventHandler(refresh_Click);
                     m.MenuItems.Add(mi);
 
-                    mi = new MenuItem("--------");
+                    mi = new MenuItem(spacer);
                     m.MenuItems.Add(mi);
 
                     mi = new MenuItem("Добавить команду");
@@ -640,13 +659,38 @@ namespace TeamCoordinator
                 {
                     if (hitTest.ColumnIndex == -1)
                     {
-                        var team = dgvGrid.Rows[hitTest.RowIndex].Tag;
+                        var team = m_AI.GetTeamByID(dgvGrid.Rows[hitTest.RowIndex].Tag.ToString());
                         if (team != null)
                         {
-                            mi = new MenuItem("Ready/Wait");
-                            mi.Click += new EventHandler(changeReadyState_Click);
-                            mi.Tag = team;
-                            m.MenuItems.Add(mi);
+                            var teamReady = new MenuItem("Команда готова");
+                            teamReady.Click += new EventHandler(teamReady_Click);
+                            teamReady.Tag = team;
+
+                            var teamPause = new MenuItem("Команда на паузе");
+                            teamPause.Click += new EventHandler(teamPause_Click);
+                            teamPause.Tag = team;
+
+                            if (team.State == TeamState.MoveBack)
+                            {
+                                m.MenuItems.Add(teamReady);
+                                m.MenuItems.Add(teamPause);
+                            }
+                            else if (team.State == TeamState.Pause)
+                            {
+                                m.MenuItems.Add(teamReady);
+                            }
+                            else if (team.State == TeamState.Ready)
+                            {
+                                m.MenuItems.Add(teamPause);
+                            }
+                            else
+                            {
+                                m.MenuItems.Add(spacer);
+                                m.MenuItems.Add(teamReady);
+                                m.MenuItems.Add(teamPause);
+                            }
+
+                            m.MenuItems.Add(spacer);
 
                             var editTeam = new MenuItem("Редактировать команду");
                             editTeam.Click += new EventHandler(editTeam_Click);
@@ -658,35 +702,54 @@ namespace TeamCoordinator
                             mi.Tag = team;
                             m.MenuItems.Add(mi);
 
-                            m.MenuItems.Add("-------");
+                            m.MenuItems.Add(spacer);
 
                             mi = new MenuItem("Добавить команду");
                             mi.Click += new EventHandler(addItem_Click);
                             mi.Tag = new Team(m_AI);
                             m.MenuItems.Add(mi);
+
+                            m.MenuItems.Add(spacer);
+
+                            foreach (var stage in team.IncompletedStages)
+                            {
+                                foreach (var scene in m_AI.Scenes)
+                                {
+                                    if (scene.StageID == stage.ID && scene.State == 1)
+                                    {
+                                        mi = new MenuItem(string.Format("Вызвать на этап {0}", scene.Name));
+                                        mi.Click += new EventHandler(teamCalled_Click);
+                                        mi.Tag = new object[2] { team, scene };
+                                        m.MenuItems.Add(mi);
+                                    }
+                                }
+                            }
                         }
                     }
                     else if (hitTest.RowIndex == -1)
                     {
-                        var stage = dgvGrid.Columns[hitTest.ColumnIndex].Tag;
-                        if (stage != null)
+                        var scene = m_AI.GetSceneByID(dgvGrid.Columns[hitTest.ColumnIndex].Tag.ToString());
+                        if (scene != null)
                         {
-                            mi = new MenuItem("Open/Close");
-                            mi.Click += new EventHandler(changeReadyState_Click);
-                            mi.Tag = stage;
+                            var s = (scene.IsReady) ? "На паузу" : "Открыть";
+                            mi = new MenuItem(s);
+                            mi.Click += new EventHandler(sceneChangeReady_Click);
+                            mi.Tag = scene;
                             m.MenuItems.Add(mi);
+
+                            m.MenuItems.Add(spacer);
 
                             var editStage = new MenuItem("Редактировать сцену");
                             editStage.Click += new EventHandler(editStage_Click);
-                            editStage.Tag = stage;
+                            editStage.Tag = scene;
                             m.MenuItems.Add(editStage);
 
                             mi = new MenuItem("Удалить сцену");
                             mi.Click += new EventHandler(removeItem_Click);
-                            mi.Tag = stage;
+                            mi.Tag = scene;
                             m.MenuItems.Add(mi);
 
-                            m.MenuItems.Add("-------");
+                            m.MenuItems.Add(spacer);
 
                             mi = new MenuItem("Добавить сцену");
                             mi.Click += new EventHandler(addItem_Click);
@@ -696,30 +759,34 @@ namespace TeamCoordinator
                     }
                     else
                     {
-                        var team = dgvGrid.Rows[hitTest.RowIndex].Tag as Team;
-                        var scene = dgvGrid.Columns[hitTest.ColumnIndex].Tag as Scene;
+                        var team = m_AI.GetTeamByID(dgvGrid.Rows[hitTest.RowIndex].Tag.ToString());
+                        var scene = m_AI.GetSceneByID(dgvGrid.Columns[hitTest.ColumnIndex].Tag.ToString());
                         if (team != null && scene != null)
                         {
                             var tag = new object[2] { team, scene };
 
+                            var callTeam = new MenuItem("Вызвать команду");
+                            callTeam.Tag = tag;
+                            callTeam.Click += new EventHandler(teamCalled_Click);
+
                             var sendTeam = new MenuItem("Отправить команду");
                             sendTeam.Tag = tag;
-                            sendTeam.Click += new EventHandler(sendTeam_Click);
+                            sendTeam.Click += new EventHandler(teamSent_Click);
 
-                            var stageReady = new MenuItem("Этап свободен");
-                            stageReady.Tag = tag;
-                            stageReady.Click += new EventHandler(stageReady_Click);
+                            var teamArrived = new MenuItem("Команда прибыла");
+                            teamArrived.Tag = tag;
+                            teamArrived.Click += new EventHandler(teamArrived_Click);
 
-                            var teamReturned = new MenuItem("Команда вернулась");
-                            teamReturned.Tag = tag;
-                            teamReturned.Click += new EventHandler(teamReturned_Click);
 
-                            var stageteamBusy = new MenuItem("Команда ушла, пауза");
-                            stageteamBusy.Tag = tag;
-                            stageteamBusy.Click += new EventHandler(stageSentTeamAndPause);
 
-                            var spacer = new MenuItem("--------");
+                            var teamFinishStageReady = new MenuItem("Команда ушла, этап готов");
+                            teamFinishStageReady.Tag = tag;
+                            teamFinishStageReady.Click += new EventHandler(teamFinishedAndSceneReady_Click);
 
+                            var teamFinishStagePause = new MenuItem("Команда ушла, этап на паузе");
+                            teamFinishStagePause.Tag = tag;
+                            teamFinishStagePause.Click += new EventHandler(teamFinishedAndScenePause_Click);
+                            
                             var stagePass = new MenuItem("Пропустить");
                             stagePass.Tag = tag;
                             stagePass.Click += new EventHandler(stagePass_Click);
@@ -732,36 +799,65 @@ namespace TeamCoordinator
                             stageCompleted.Tag = tag;
                             stageCompleted.Click += new EventHandler(stageCompleted_Click);
 
-                            //switch(m_AI.GetState(team, scene))
-                            //{
-                            //    case TeamSceneState.Pass:
-                            //        m.MenuItems.Add(stageIncomplete);
-                            //        m.MenuItems.Add(stageCompleted);
-                            //        break;
-                            //    case TeamSceneState.Incomplete:
-                            //        if (scene.IsReady && team.State == TeamLogRecord.c_Ready)
-                            //        {
-                            //            m.MenuItems.Add(sendTeam);
-                            //            m.MenuItems.Add(spacer);
-                            //        }
-                            //        m.MenuItems.Add(stagePass);
-                            //        m.MenuItems.Add(stageCompleted);
-                            //        break;
-                            //    case TeamSceneState.OnWork:
-                            //        m.MenuItems.Add(stageReady);
-                            //        m.MenuItems.Add(teamReturned);
-                            //        m.MenuItems.Add(stageteamBusy);
-                            //        m.MenuItems.Add(spacer);
-                            //        m.MenuItems.Add(stagePass);
-                            //        m.MenuItems.Add(stageIncomplete);
-                            //        m.MenuItems.Add(stageCompleted);
-                            //        break;
-                            //    case TeamSceneState.Completed:
-                            //        m.MenuItems.Add(stagePass);
-                            //        m.MenuItems.Add(stageIncomplete);
-                            //        break;
+                            switch (team.GetStateByScene(scene.ID))
+                            {
+                                case TeamState.Pass:
+                                    m.MenuItems.Add(spacer);
+                                    m.MenuItems.Add(stageIncomplete);
+                                    m.MenuItems.Add(stageCompleted);
+                                    break;
+                                case TeamState.Incomplete:
+                                    if (scene.State == 1 && team.State == TeamState.Ready)
+                                    {
+                                        m.MenuItems.Add(callTeam);
+                                        m.MenuItems.Add(spacer);
+                                        m.MenuItems.Add(sendTeam);
+                                        m.MenuItems.Add(teamArrived);
+                                        m.MenuItems.Add(teamFinishStageReady);
+                                        m.MenuItems.Add(teamFinishStagePause);
+                                    }
+                                    m.MenuItems.Add(spacer);
+                                    m.MenuItems.Add(stagePass);
+                                    m.MenuItems.Add(stageCompleted);
+                                    break;
+                                case TeamState.CallToBase:
+                                    m.MenuItems.Add(sendTeam);
+                                    m.MenuItems.Add(spacer);
+                                    m.MenuItems.Add(teamArrived);
+                                    m.MenuItems.Add(teamFinishStageReady);
+                                    m.MenuItems.Add(teamFinishStagePause);
 
-                            //}
+                                    m.MenuItems.Add(spacer);
+                                    m.MenuItems.Add(stagePass);
+                                    m.MenuItems.Add(stageIncomplete);
+                                    m.MenuItems.Add(stageCompleted);
+                                    break;
+                                case TeamState.SentToScene:
+                                    m.MenuItems.Add(teamArrived);
+                                    m.MenuItems.Add(spacer);
+                                    m.MenuItems.Add(teamFinishStageReady);
+                                    m.MenuItems.Add(teamFinishStagePause);
+
+                                    m.MenuItems.Add(spacer);
+                                    m.MenuItems.Add(stagePass);
+                                    m.MenuItems.Add(stageIncomplete);
+                                    m.MenuItems.Add(stageCompleted);
+                                    break;
+                                case TeamState.StartWork:
+                                    m.MenuItems.Add(teamFinishStageReady);
+                                    m.MenuItems.Add(teamFinishStagePause);
+
+                                    m.MenuItems.Add(spacer);
+                                    m.MenuItems.Add(stagePass);
+                                    m.MenuItems.Add(stageIncomplete);
+                                    m.MenuItems.Add(stageCompleted);
+                                    break;
+                                case TeamState.Completed:
+                                    m.MenuItems.Add(spacer);
+                                    m.MenuItems.Add(stagePass);
+                                    m.MenuItems.Add(stageIncomplete);
+                                    break;
+                            }
                         }
                     }
                 }
@@ -804,6 +900,287 @@ namespace TeamCoordinator
             //}
         }
 
+        #endregion
+
+        #region DgvActions
+
+        void refresh_Click(object sender, EventArgs e)
+        {
+            UpdateData();
+        }
+
+        void addItem_Click(object sender, EventArgs e)
+        {
+            var mi = sender as MenuItem;
+            if (mi != null)
+            {
+                var item = mi.Tag as Item;
+                if (item == null)
+                {
+                    return;
+                }
+
+                if (mi.Tag is Team)
+                {
+                    m_SelectedItem = m_AI.AddTeam();
+                }
+                if (mi.Tag is Scene)
+                {
+                    m_SelectedItem = m_AI.AddScene();
+                }
+                if (mi.Tag is Group)
+                {
+                    m_SelectedItem = m_AI.AddGroup();
+                }
+                if (mi.Tag is Stage)
+                {
+                    m_SelectedItem = m_AI.AddStage();
+                }
+
+                UpdateData();
+
+                if (tabControl.SelectedIndex == 0)
+                {
+                    tabControl.SelectedIndex = 1;
+                }
+            }
+        }
+
+        void removeItem_Click(object sender, EventArgs e)
+        {
+            var mi = sender as MenuItem;
+            if (mi != null)
+            {
+                var item = mi.Tag as Item;
+                if (item == null)
+                    return;
+
+                if (item is Team)
+                {
+                    m_AI.RemoveTeam(item.ID);
+                }
+                if (item is Scene)
+                {
+                    m_AI.RemoveScene(item.ID);
+                }
+                if (item is Group)
+                {
+                    m_AI.RemoveGroup(item.ID);
+                }
+                if (item is Stage)
+                {
+                    m_AI.RemoveStage(item.ID);
+                }
+                m_SelectedItem = null;
+                UpdateData();
+            }
+        }
+
+        void sceneChangeReady_Click(object sender, EventArgs e)
+        {
+            var mi = sender as MenuItem;
+            if (mi != null)
+            {
+                var scene = mi.Tag as Scene;
+                if (scene != null)
+                {
+                    scene.IsReady = !scene.IsReady;
+                    scene.ChangeStateTime = DateTime.Now;
+                    UpdateData();
+                }
+            }
+        }
+
+        void teamReady_Click(object sender, EventArgs e)
+        {
+            Team team;
+            Scene scene;
+            if (GetPairFromTag(sender, out team, out scene))
+            {
+                team.NewState("", TeamState.Ready);
+                UpdateData();
+            }
+        }
+
+        void teamPause_Click(object sender, EventArgs e)
+        {
+            Team team;
+            Scene scene;
+            if (GetPairFromTag(sender, out team, out scene))
+            {
+                team.NewState("", TeamState.Pause);
+                UpdateData();
+            }
+        }
+
+        /// <summary>
+        /// Вызвать команду на этап
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void teamCalled_Click(object sender, EventArgs e)
+        {
+            Team team;
+            Scene scene;
+            if (GetPairFromTag(sender, out team, out scene))
+            {
+                team.NewState(scene.ID, TeamState.CallToBase);
+                scene.ChangeStateTime = DateTime.Now;
+                UpdateData();
+            }
+        }
+
+        /// <summary>
+        /// Отправить команду на этап
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void teamSent_Click(object sender, EventArgs e)
+        {
+            Team team;
+            Scene scene;
+            if (GetPairFromTag(sender, out team, out scene))
+            {
+                team.NewState(scene.ID, TeamState.SentToScene);
+                scene.ChangeStateTime = DateTime.Now;
+                UpdateData();
+            }
+        }
+
+        /// <summary>
+        /// Команда прибыла на этап
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void teamArrived_Click(object sender, EventArgs e)
+        {
+            Team team;
+            Scene scene;
+            if (GetPairFromTag(sender, out team, out scene))
+            {
+                team.NewState(scene.ID, TeamState.StartWork);
+                scene.ChangeStateTime = DateTime.Now;
+                UpdateData();
+            }
+        }
+
+        /// <summary>
+        /// Команда покинула этап, этап готов к новой команде
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void teamFinishedAndSceneReady_Click(object sender, EventArgs e)
+        {
+            Team team;
+            Scene scene;
+            if (GetPairFromTag(sender, out team, out scene))
+            {
+                team.CompleteStage(scene.StageID);
+                team.NewState("", TeamState.MoveBack);
+                scene.IsReady = true;
+                scene.ChangeStateTime = DateTime.Now;
+                UpdateData();
+            }
+        }
+
+        /// <summary>
+        /// Команда покинула этап, этап закрыт на паузу
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void teamFinishedAndScenePause_Click(object sender, EventArgs e)
+        {
+            Team team;
+            Scene scene;
+            if (GetPairFromTag(sender, out team, out scene))
+            {
+                team.CompleteStage(scene.StageID);
+                team.NewState("", TeamState.MoveBack);
+                scene.IsReady = false;
+                scene.ChangeStateTime = DateTime.Now;
+                UpdateData();
+            }
+        }
+
+        /// <summary>
+        /// Пропустить этап (тех.)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void stagePass_Click(object sender, EventArgs e)
+        {
+            Team team;
+            Scene scene;
+            if (GetPairFromTag(sender, out team, out scene))
+            {
+                team.PassStage(scene.StageID);
+                UpdateData();
+            }
+        }
+
+        /// <summary>
+        /// Этап не выполнен (тех.)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void stageIncomplete_Click(object sender, EventArgs e)
+        {
+            Team team;
+            Scene scene;
+            if (GetPairFromTag(sender, out team, out scene))
+            {
+                team.IncompleteStage(scene.StageID);
+                UpdateData();
+            }
+        }
+
+        /// <summary>
+        /// Этап выполнен (тех.)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void stageCompleted_Click(object sender, EventArgs e)
+        {
+            Team team;
+            Scene scene;
+            if (GetPairFromTag(sender, out team, out scene))
+            {
+                team.CompleteStage(scene.StageID);
+                UpdateData();
+            }
+        }
+
+        private bool GetPairFromTag(object sender, out Team team, out Scene scene)
+        {
+            team = null;
+            scene = null;
+            var mi = sender as MenuItem;
+            if (mi != null)
+            {
+                if (mi.Tag is Team)
+                {
+                    team = mi.Tag as Team;
+                    return true;
+                }
+                if (mi.Tag is Scene)
+                {
+                    scene = mi.Tag as Scene;
+                    return true;
+                }
+                var tag = mi.Tag as object[];
+                if (tag != null && tag.Length == 2)
+                {
+                    team = tag[0] as Team;
+                    scene = tag[1] as Scene;
+
+                    if (team != null && scene != null)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
         #endregion
 
         #region tvList_MouseClick
@@ -1009,251 +1386,7 @@ namespace TeamCoordinator
 
         #endregion
 
-        #region actions
-
-        void refresh_Click(object sender, EventArgs e)
-        {
-            UpdateData();
-        }
-
-        void addItem_Click(object sender, EventArgs e)
-        {
-            var mi = sender as MenuItem;
-            if (mi != null)
-            {
-                var item = mi.Tag as Item;
-                if (item == null)
-                {
-                    return;
-                }
-
-                if (mi.Tag is Team)
-                {
-                    m_SelectedItem = m_AI.AddTeam();
-                }
-                if (mi.Tag is Scene)
-                {
-                    m_SelectedItem = m_AI.AddScene();
-                }
-                if (mi.Tag is Group)
-                {
-                    m_SelectedItem = m_AI.AddGroup();
-                }
-                if (mi.Tag is Stage)
-                {
-                    m_SelectedItem = m_AI.AddStage();
-                }
-
-                UpdateData();
-                if (tabControl.SelectedIndex == 0)
-                {
-                    tabControl.SelectedIndex = 1;
-                }
-            }
-        }
-
-        void removeItem_Click(object sender, EventArgs e)
-        {
-            var mi = sender as MenuItem;
-            if (mi != null)
-            {
-                var item = mi.Tag as Item;
-                if (item == null)
-                    return;
-
-                if (item is Team)
-                {
-                    m_AI.RemoveTeam(item.ID);
-                }
-                if (item is Scene)
-                {
-                    m_AI.RemoveScene(item.ID);
-                }
-                if (item is Group)
-                {
-                    m_AI.RemoveGroup(item.ID);
-                }
-                if (item is Stage)
-                {
-                    m_AI.RemoveStage(item.ID);
-                }
-                m_SelectedItem = null;
-                UpdateData();
-            }
-        }
-
-        void changeReadyState_Click(object sender, EventArgs e)
-        {
-            var mi = sender as MenuItem;
-            if (mi != null)
-            {
-                var team = mi.Tag as Team;
-                if (team != null)
-                {
-                    var st = team.GetState();
-                    if (st == -1)
-                        team.Log.Add(new TeamLogRecord("", TeamSceneState.Ready));
-                    else if (st == 1)
-                    {
-                        team.Log.Add(new TeamLogRecord("", TeamSceneState.Pause));
-                    }
-                    UpdateData();
-                }
-                var scene = mi.Tag as Scene;
-                if (scene != null)
-                {
-                    scene.IsReady = !scene.IsReady;
-                    scene.ChangeStateTime = DateTime.Now;
-                    UpdateData();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Отправить команду на этап
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void sendTeam_Click(object sender, EventArgs e)
-        {
-            Team team;
-            Scene scene;
-            if (GetPairFromTag(sender, out team, out scene))
-            {
-                team.State = scene.ID;
-                scene.ChangeStateTime = DateTime.Now;
-                UpdateData();
-            }
-        }
-
-        /// <summary>
-        /// Этап открыт, а команда ещё не вернулась
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void stageReady_Click(object sender, EventArgs e)
-        {
-            Team team;
-            Scene scene;
-            if (GetPairFromTag(sender, out team, out scene))
-            {
-                team.Stages[scene.StageID] = 1;
-                team.State = TeamLogRecord.c_NotReady;
-                scene.IsReady = true;
-                scene.ChangeStateTime = DateTime.Now;
-                UpdateData();
-            }
-        }
-
-        /// <summary>
-        /// Команда вернулась, а этап ещё закрыт
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void teamReturned_Click(object sender, EventArgs e)
-        {
-            Team team;
-            Scene scene;
-            if (GetPairFromTag(sender, out team, out scene))
-            {
-                team.Stages[scene.StageID] = 1;
-                team.State = TeamLogRecord.c_Ready;
-                scene.IsReady = false;
-                scene.ChangeStateTime = DateTime.Now;
-                UpdateData();
-            }
-        }
-
-        /// <summary>
-        /// Команда ушла с этапа, но этап закрыт на паузу
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void stageSentTeamAndPause(object sender, EventArgs e)
-        {
-            Team team;
-            Scene scene;
-            if (GetPairFromTag(sender, out team, out scene))
-            {
-                team.Stages[scene.StageID] = 1;
-                team.State = TeamLogRecord.c_NotReady;
-                scene.IsReady = false;
-                scene.ChangeStateTime = DateTime.Now;
-                UpdateData();
-            }
-        }
-
-        /// <summary>
-        /// Пропустить этап (тех.)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void stagePass_Click(object sender, EventArgs e)
-        {
-            Team team;
-            Scene scene;
-            if (GetPairFromTag(sender, out team, out scene))
-            {
-                team.Stages[scene.StageID] = -1;
-                UpdateData();
-            }
-        }
-
-        /// <summary>
-        /// Этап не выполнен (тех.)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void stageIncomplete_Click(object sender, EventArgs e)
-        {
-            Team team;
-            Scene scene;
-            if (GetPairFromTag(sender, out team, out scene))
-            {
-                team.Stages[scene.StageID] = 0;
-                UpdateData();
-            }
-        }
-
-        /// <summary>
-        /// Этап выполнен (тех.)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void stageCompleted_Click(object sender, EventArgs e)
-        {
-            Team team;
-            Scene scene;
-            if (GetPairFromTag(sender, out team, out scene))
-            {
-                team.Stages[scene.StageID] = 1;
-                UpdateData();
-            }
-        }
-
-        private bool GetPairFromTag(object sender, out Team team, out Scene scene)
-        {
-            team = null;
-            scene = null;
-            var mi = sender as MenuItem;
-            if (mi != null)
-            {
-                var tag = mi.Tag as object[];
-                if (tag != null && tag.Length == 2)
-                {
-                    team = tag[0] as Team;
-                    scene = tag[1] as Scene;
-
-                    if (team != null && scene != null)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-        #endregion
-
+        #region PropsActions
 
         private void btnTeamOk_Click(object sender, EventArgs e)
         {
@@ -1417,11 +1550,7 @@ namespace TeamCoordinator
                 var row = dgvStages.Rows[index];
                 row.Cells[0].Value = stage.Name;
                 row.Tag = stage;
-                int res = -1;
-                if (team.IncompleteStages.Contains(stage.ID))
-                    res = 0;
-                if (team.CompleteStages.Contains(stage.ID))
-                    res = 1;
+                var res = team.StageState(stage.ID);
 
                 string stageState;
                 switch (res)
@@ -1463,12 +1592,7 @@ namespace TeamCoordinator
                 var row = dgvStages.SelectedRows[0];
                 var stage = row.Tag as Stage;
                 if (stage != null)
-                {
-                    if (team.IncompleteStages.Contains(stage.ID))
-                        team.IncompleteStages.Remove(stage.ID);
-                    if (team.CompleteStages.Contains(stage.ID))
-                        team.CompleteStages.Remove(stage.ID);
-                }
+                    team.PassStage(stage.ID);
                 RefreshTeamStages();
                 UpdateButtons();
             }
@@ -1485,12 +1609,7 @@ namespace TeamCoordinator
                 var row = dgvStages.SelectedRows[0];
                 var stage = row.Tag as Stage;
                 if (stage != null)
-                {
-                    if(!team.IncompleteStages.Contains(stage.ID))
-                        team.IncompleteStages.Add(stage.ID);
-                    if (team.CompleteStages.Contains(stage.ID))
-                        team.CompleteStages.Remove(stage.ID);
-                }
+                    team.IncompleteStage(stage.ID);
                 RefreshTeamStages();
                 UpdateButtons();
             }
@@ -1508,10 +1627,7 @@ namespace TeamCoordinator
                 var stage = row.Tag as Stage;
                 if (stage != null)
                 {
-                    if (team.IncompleteStages.Contains(stage.ID))
-                        team.IncompleteStages.Remove(stage.ID);
-                    if (!team.CompleteStages.Contains(stage.ID))
-                        team.CompleteStages.Add(stage.ID);
+                    team.CompleteStage(stage.ID);
                 }
                 RefreshTeamStages();
                 UpdateButtons();
@@ -1524,12 +1640,11 @@ namespace TeamCoordinator
             var team = m_SelectedItem as Team;
             if (team == null) return;
 
-            team.CompleteStages.Clear();
-            team.IncompleteStages.Clear();
+            team.ClearStages();
             foreach (var stage in m_AI.Stages)
             {
                 if (stage.AvailableGroups.Contains(team.GroupID))
-                    team.IncompleteStages.Add(stage.ID);
+                    team.IncompleteStage(stage.ID);
             }
 
             RefreshTeamStages();
@@ -1578,5 +1693,16 @@ namespace TeamCoordinator
 
         }
 
+        #endregion
+
+        private void RefreshTimer_Tick(object sender, EventArgs e)
+        {
+            UpdateData();
+        }
+
+        private void miLog_Click(object sender, EventArgs e)
+        {
+            lbLog.Visible = !lbLog.Visible;
+        }
     }
 }

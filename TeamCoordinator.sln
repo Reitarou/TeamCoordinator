@@ -1,9 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamCoordinator", "TeamCoordinator\TeamCoordinator.csproj", "{0F332C48-BC77-4237-8840-0A1B35DCE199}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CC23A1DE-4A3F-488A-91B2-F3801233EAE6} = {CC23A1DE-4A3F-488A-91B2-F3801233EAE6}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stg", "..\Storage\Stg.csproj", "{CC23A1DE-4A3F-488A-91B2-F3801233EAE6}"
 EndProject
