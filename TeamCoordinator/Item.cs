@@ -6,12 +6,12 @@ namespace TeamCoordinator
     public abstract class Item : IStgSerializable
     {
         private AI m_AI;
-        private string m_ID;
+        private Guid m_ID;
 
         public Item(AI ai)
         {
             m_AI = ai;
-            m_ID = Guid.NewGuid().ToString();
+            m_ID = Guid.NewGuid();
         }
 
         public AI AI
@@ -22,7 +22,7 @@ namespace TeamCoordinator
             }
         }
 
-        public string ID
+        public Guid ID
         {
             get
             {
@@ -36,7 +36,7 @@ namespace TeamCoordinator
 
         public void LoadFromStg(StgNode node)
         {
-            m_ID = node.GetString("ID");
+            m_ID = Tools.CreateFromString(node.GetString("ID"));
             OnLoad(node);
         }
 
@@ -44,7 +44,7 @@ namespace TeamCoordinator
 
         public void SaveToStg(StgNode node)
         {
-            node.AddString("ID", m_ID);
+            node.AddString("ID", m_ID.ToString());
             OnSave(node);
         }
 

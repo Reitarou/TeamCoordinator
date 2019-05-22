@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Stg;
 
 namespace TeamCoordinator
@@ -19,9 +20,9 @@ namespace TeamCoordinator
 
         #endregion
 
-        public string Name = "";
+        public string Name = "Этап";
         public string ShortName = "";
-        public List<string> AvailableGroups = new List<string>();
+        public List<Guid> AvailableGroups = new List<Guid>();
 
         public Stage(AI ai)
             : base(ai)
@@ -40,7 +41,7 @@ namespace TeamCoordinator
                 var s = array[i] as string;
                 if (s != string.Empty)
                 {
-                    AvailableGroups.Add(s);
+                    AvailableGroups.Add(Tools.CreateFromString(s));
                 }
             }
         }
@@ -52,7 +53,7 @@ namespace TeamCoordinator
             var array = node.AddArray("AvailableGroups", StgType.String);
             foreach (var item in AvailableGroups)
             {
-                array.AddString(item);
+                array.AddString(item.ToString());
             }
         }
 

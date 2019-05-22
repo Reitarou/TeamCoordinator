@@ -19,7 +19,7 @@ namespace TeamCoordinator
 
         #endregion
 
-        public string Name = "";
+        public string Name = "Группа";
         public string ShortName = "";
 
         public Group(AI ai)

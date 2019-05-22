@@ -127,12 +127,48 @@ namespace TeamCoordinator.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Добавить комментарий.
+        /// </summary>
+        internal static string sAddComment {
+            get {
+                return ResourceManager.GetString("sAddComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to База.
+        /// </summary>
+        internal static string sBase {
+            get {
+                return ResourceManager.GetString("sBase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Settings {
             get {
                 object obj = ResourceManager.GetObject("Settings", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Выключить таймер.
+        /// </summary>
+        internal static string sRefreshTimerSwitchOff {
+            get {
+                return ResourceManager.GetString("sRefreshTimerSwitchOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Включить таймер.
+        /// </summary>
+        internal static string sRefreshTimerSwitchOn {
+            get {
+                return ResourceManager.GetString("sRefreshTimerSwitchOn", resourceCulture);
             }
         }
         

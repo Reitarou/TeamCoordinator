@@ -10,6 +10,7 @@ namespace TeamCoordinator
             Form inputBox = new Form();
 
             inputBox.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            inputBox.ControlBox = false;
             inputBox.ClientSize = size;
             inputBox.Text = name;
 

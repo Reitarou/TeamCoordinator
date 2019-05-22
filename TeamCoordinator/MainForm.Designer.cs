@@ -39,11 +39,12 @@
             this.miExit = new System.Windows.Forms.ToolStripMenuItem();
             this.miProperties = new System.Windows.Forms.ToolStripMenuItem();
             this.miChangeTextSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.логToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiTimerSwitcher = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tpGrid = new System.Windows.Forms.TabPage();
-            this.lbLog = new System.Windows.Forms.ListBox();
+            this.scGridTabSplitter = new System.Windows.Forms.SplitContainer();
             this.dgvGrid = new System.Windows.Forms.DataGridView();
+            this.lbLog = new System.Windows.Forms.ListBox();
             this.tpLists = new System.Windows.Forms.TabPage();
             this.tvList = new System.Windows.Forms.TreeView();
             this.pnlProps = new System.Windows.Forms.Panel();
@@ -94,9 +95,13 @@
             this.tbGroupName = new System.Windows.Forms.TextBox();
             this.btnGroupOk = new System.Windows.Forms.Button();
             this.RefreshTimer = new System.Windows.Forms.Timer(this.components);
+            this.изменитьШиринуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tpGrid.SuspendLayout();
+            this.scGridTabSplitter.Panel1.SuspendLayout();
+            this.scGridTabSplitter.Panel2.SuspendLayout();
+            this.scGridTabSplitter.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvGrid)).BeginInit();
             this.tpLists.SuspendLayout();
             this.pnlProps.SuspendLayout();
@@ -152,7 +157,8 @@
             // 
             this.miProperties.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miChangeTextSizeToolStripMenuItem,
-            this.логToolStripMenuItem});
+            this.изменитьШиринуToolStripMenuItem,
+            this.tsmiTimerSwitcher});
             this.miProperties.Name = "miProperties";
             this.miProperties.Size = new System.Drawing.Size(70, 20);
             this.miProperties.Text = "Свойства";
@@ -160,16 +166,16 @@
             // miChangeTextSizeToolStripMenuItem
             // 
             this.miChangeTextSizeToolStripMenuItem.Name = "miChangeTextSizeToolStripMenuItem";
-            this.miChangeTextSizeToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.miChangeTextSizeToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.miChangeTextSizeToolStripMenuItem.Text = "Изменить шрифт";
             this.miChangeTextSizeToolStripMenuItem.Click += new System.EventHandler(this.miChangeTextSizeToolStripMenuItem_Click);
             // 
-            // логToolStripMenuItem
+            // tsmiTimerSwitcher
             // 
-            this.логToolStripMenuItem.Name = "логToolStripMenuItem";
-            this.логToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.логToolStripMenuItem.Text = "Лог";
-            this.логToolStripMenuItem.Click += new System.EventHandler(this.miLog_Click);
+            this.tsmiTimerSwitcher.Name = "tsmiTimerSwitcher";
+            this.tsmiTimerSwitcher.Size = new System.Drawing.Size(176, 22);
+            this.tsmiTimerSwitcher.Text = "Включить таймер";
+            this.tsmiTimerSwitcher.Click += new System.EventHandler(this.tsmiTimerSwitcher_Click);
             // 
             // tabControl
             // 
@@ -185,8 +191,7 @@
             // 
             // tpGrid
             // 
-            this.tpGrid.Controls.Add(this.lbLog);
-            this.tpGrid.Controls.Add(this.dgvGrid);
+            this.tpGrid.Controls.Add(this.scGridTabSplitter);
             this.tpGrid.Location = new System.Drawing.Point(4, 22);
             this.tpGrid.Name = "tpGrid";
             this.tpGrid.Size = new System.Drawing.Size(1120, 740);
@@ -194,14 +199,22 @@
             this.tpGrid.Text = "Сетка";
             this.tpGrid.UseVisualStyleBackColor = true;
             // 
-            // lbLog
+            // scGridTabSplitter
             // 
-            this.lbLog.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lbLog.FormattingEnabled = true;
-            this.lbLog.Location = new System.Drawing.Point(903, 0);
-            this.lbLog.Name = "lbLog";
-            this.lbLog.Size = new System.Drawing.Size(217, 740);
-            this.lbLog.TabIndex = 2;
+            this.scGridTabSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scGridTabSplitter.Location = new System.Drawing.Point(0, 0);
+            this.scGridTabSplitter.Name = "scGridTabSplitter";
+            // 
+            // scGridTabSplitter.Panel1
+            // 
+            this.scGridTabSplitter.Panel1.Controls.Add(this.dgvGrid);
+            // 
+            // scGridTabSplitter.Panel2
+            // 
+            this.scGridTabSplitter.Panel2.Controls.Add(this.lbLog);
+            this.scGridTabSplitter.Size = new System.Drawing.Size(1120, 740);
+            this.scGridTabSplitter.SplitterDistance = 899;
+            this.scGridTabSplitter.TabIndex = 3;
             // 
             // dgvGrid
             // 
@@ -220,7 +233,7 @@
             this.dgvGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -242,12 +255,24 @@
             this.dgvGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dgvGrid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dgvGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgvGrid.Size = new System.Drawing.Size(1120, 740);
+            this.dgvGrid.Size = new System.Drawing.Size(899, 740);
             this.dgvGrid.TabIndex = 1;
+            this.dgvGrid.SelectionChanged += new System.EventHandler(this.dgvGrid_SelectionChanged);
             this.dgvGrid.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dgvGrid_MouseClick);
             this.dgvGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dgvGrid_MouseDown);
             this.dgvGrid.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvGrid_MouseMove);
             this.dgvGrid.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dgvGrid_MouseUp);
+            // 
+            // lbLog
+            // 
+            this.lbLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbLog.Font = new System.Drawing.Font("Lucida Console", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lbLog.FormattingEnabled = true;
+            this.lbLog.ItemHeight = 12;
+            this.lbLog.Location = new System.Drawing.Point(0, 0);
+            this.lbLog.Name = "lbLog";
+            this.lbLog.Size = new System.Drawing.Size(217, 740);
+            this.lbLog.TabIndex = 2;
             // 
             // tpLists
             // 
@@ -495,6 +520,7 @@
             this.cmbTeamGroup.Name = "cmbTeamGroup";
             this.cmbTeamGroup.Size = new System.Drawing.Size(238, 21);
             this.cmbTeamGroup.TabIndex = 3;
+            this.cmbTeamGroup.SelectedIndexChanged += new System.EventHandler(this.cmbTeamGroup_SelectedIndexChanged);
             // 
             // btnTeamCancel
             // 
@@ -755,6 +781,13 @@
             this.RefreshTimer.Interval = 500;
             this.RefreshTimer.Tick += new System.EventHandler(this.RefreshTimer_Tick);
             // 
+            // изменитьШиринуToolStripMenuItem
+            // 
+            this.изменитьШиринуToolStripMenuItem.Name = "изменитьШиринуToolStripMenuItem";
+            this.изменитьШиринуToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.изменитьШиринуToolStripMenuItem.Text = "Изменить ширину";
+            this.изменитьШиринуToolStripMenuItem.Click += new System.EventHandler(this.изменитьШиринуToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -769,6 +802,9 @@
             this.menuStrip1.PerformLayout();
             this.tabControl.ResumeLayout(false);
             this.tpGrid.ResumeLayout(false);
+            this.scGridTabSplitter.Panel1.ResumeLayout(false);
+            this.scGridTabSplitter.Panel2.ResumeLayout(false);
+            this.scGridTabSplitter.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvGrid)).EndInit();
             this.tpLists.ResumeLayout(false);
             this.pnlProps.ResumeLayout(false);
@@ -849,7 +885,9 @@
         private System.Windows.Forms.ToolStripMenuItem miChangeTextSizeToolStripMenuItem;
         private System.Windows.Forms.Timer RefreshTimer;
         private System.Windows.Forms.ListBox lbLog;
-        private System.Windows.Forms.ToolStripMenuItem логToolStripMenuItem;
+        private System.Windows.Forms.SplitContainer scGridTabSplitter;
+        private System.Windows.Forms.ToolStripMenuItem tsmiTimerSwitcher;
+        private System.Windows.Forms.ToolStripMenuItem изменитьШиринуToolStripMenuItem;
     }
 }
 

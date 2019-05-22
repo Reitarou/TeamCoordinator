@@ -8,5 +8,12 @@ namespace TeamCoordinator
         {
             InitializeComponent();
         }
+
+        public void SetTeam(Team team)
+        {
+            this.Text = team.Name;
+            foreach (var record in team.RecordsLog)
+                this.lbLog.Items.Add(record);
+        }
     }
 }

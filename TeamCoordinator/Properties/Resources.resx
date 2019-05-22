@@ -158,4 +158,16 @@
   <data name="sStagePass" xml:space="preserve">
     <value>Пропускается</value>
   </data>
+  <data name="sBase" xml:space="preserve">
+    <value>База</value>
+  </data>
+  <data name="sRefreshTimerSwitchOff" xml:space="preserve">
+    <value>Выключить таймер</value>
+  </data>
+  <data name="sRefreshTimerSwitchOn" xml:space="preserve">
+    <value>Включить таймер</value>
+  </data>
+  <data name="sAddComment" xml:space="preserve">
+    <value>Добавить комментарий</value>
+  </data>
 </root>

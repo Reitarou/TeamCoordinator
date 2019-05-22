@@ -1,40 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using Stg;
+using TeamCoordinator.Properties;
 
 namespace TeamCoordinator
 {
     public class TeamLogRecord
     {
         public DateTime Time;
-        public string Location;
+        public Guid Location = Guid.Empty;
+        public string LocationName;
         public TeamState State;
 
-        public TeamLogRecord(string location, TeamState state)
+        public TeamLogRecord(Scene scene, TeamState state)
         {
             Time = DateTime.Now;
-            Location = location;
+            if (scene != null)
+            {
+                Location = scene.ID;
+                LocationName = scene.Name;
+            }
+            else
+            {
+                Location = Guid.Empty;
+                LocationName = Resources.sBase;
+            }
             State = state;
+        }
+
+        public TeamLogRecord(string comment, TeamLogRecord prev, bool setTimeStamp)
+        {
+            Time = setTimeStamp ? DateTime.Now : prev.Time;
+            Location = prev.Location;
+            LocationName = comment;
+            State = prev.State;
         }
 
         public TeamLogRecord(StgNode node)
         {
-            var time = node.GetString("Time", "");
+            var time = node.GetString("Time", string.Empty);
             if (!DateTime.TryParse(time, out Time))
             {
                 Debug.Fail("How?");
                 Time = DateTime.Now;
             }
-            Location = node.GetString("Location", "");
+            Location = Tools.CreateFromString(node.GetString("Location", string.Empty));
+            LocationName = node.GetString("LocationName", string.Empty);
             State = (TeamState)node.GetInt32("State", (int)TeamState.Unknown);
         }
 
         public void SaveToStg(StgNode node)
         {
             node.AddString("Time", Time.ToShortTimeString());
-            node.AddString("Location", Location);
+            node.AddString("Location", Location.ToString());
+            node.AddString("LocationName", LocationName);
             node.AddInt32("State", (int)State);
         }
     }
@@ -55,17 +77,17 @@ namespace TeamCoordinator
 
         #endregion
 
-        public string Name = "";
-        public string GroupID = "";
-        private List<string> m_IncompleteStages = new List<string>();
-        private List<string> m_CompleteStages = new List<string>();
+        public string Name = "Команда";
+        public Guid GroupID = Guid.Empty;
+        private List<Guid> m_IncompleteStages = new List<Guid>();
+        private List<Guid> m_CompleteStages = new List<Guid>();
         private List<TeamLogRecord> m_Log;
 
         public Team(AI ai)
-            :base(ai)
+            : base(ai)
         {
             m_Log = new List<TeamLogRecord>();
-            m_Log.Add(new TeamLogRecord("", TeamState.Pause));
+            m_Log.Add(new TeamLogRecord(null, TeamState.Pause));
         }
 
         public TeamLogRecord LastRecord
@@ -80,7 +102,7 @@ namespace TeamCoordinator
         {
             get
             {
-                foreach (var stage in AI.Stages)
+                foreach (var stage in AI.Stages.All)
                 {
                     if (m_IncompleteStages.Contains(stage.ID))
                         yield return stage;
@@ -95,6 +117,42 @@ namespace TeamCoordinator
                 foreach (var record in m_Log)
                 {
                     yield return record;
+                }
+            }
+        }
+
+        public IEnumerable<string> RecordsLog
+        {
+            get
+            {
+                yield return string.Format("=== {0} ===", Name);
+                foreach (var record in Records)
+                {
+                    var time = record.Time.ToShortTimeString();
+                    var location = record.LocationName;
+
+                    #region подгрузка старых данных
+                    if (location.Length == 0)
+                    {
+                        if (record.Location == Guid.Empty)
+                            location = Resources.sBase;
+                        else
+                        {
+                            var scene = AI.Scenes[record.Location];
+                            if (scene != null)
+                            {
+                                location = scene.Name;
+                            }
+                        }
+                    }
+                    #endregion
+
+                    while (location.Length < 8)
+                        location += " ";
+                    var action = string.Empty;
+                    if (record.State != TeamState.Comment)
+                        action = TeamStateEnumConverter.Current.ConvertToString(record.State);
+                    yield return string.Format("{0}  {1} [{2}]", time, location, action);
                 }
             }
         }
@@ -115,9 +173,23 @@ namespace TeamCoordinator
             }
         }
 
-        public void NewState(string location, TeamState state)
+        public void NewState(Scene scene, TeamState state)
         {
-            m_Log.Add(new TeamLogRecord(location, state));
+            m_Log.Add(new TeamLogRecord(scene, state));
+        }
+
+        public void AddComment(string comment, bool setTimeStamp)
+        {
+            m_Log.Add(new TeamLogRecord(comment, m_Log.Last(), setTimeStamp));
+        }
+
+        public Scene CurrentScene
+        {
+            get
+            {
+                var record = m_Log.Last();
+                return AI.Scenes[record.Location];
+            }
         }
 
         public TeamState State
@@ -128,9 +200,9 @@ namespace TeamCoordinator
             }
         }
 
-        public TeamState GetStateByScene(string sceneId)
+        public TeamState GetStateByScene(Guid sceneId)
         {
-            var scene = AI.GetSceneByID(sceneId);
+            var scene = AI.Scenes[sceneId];
             if (scene == null)
             {
                 Debug.Fail("How??");
@@ -143,9 +215,9 @@ namespace TeamCoordinator
                 return lastLog.State;
             }
 
-            if (lastLog.Location != "")
+            if (lastLog.Location != Guid.Empty)
             {
-                var lastLogScene = AI.GetSceneByID(lastLog.Location);
+                var lastLogScene = AI.Scenes[lastLog.Location];
                 if (lastLogScene == null)
                 {
                     Debug.Fail("How??");
@@ -169,7 +241,7 @@ namespace TeamCoordinator
             return TeamState.Pass;
         }
 
-        public int StageState(string id)
+        public int StageState(Guid id)
         {
             if (m_IncompleteStages.Contains(id))
             {
@@ -182,7 +254,7 @@ namespace TeamCoordinator
             return -1;
         }
 
-        public void PassStage(string id)
+        public void PassStage(Guid id)
         {
             if (m_IncompleteStages.Contains(id))
             {
@@ -194,7 +266,7 @@ namespace TeamCoordinator
             }
         }
 
-        public void IncompleteStage(string id)
+        public void IncompleteStage(Guid id)
         {
             if (!m_IncompleteStages.Contains(id))
             {
@@ -206,7 +278,7 @@ namespace TeamCoordinator
             }
         }
 
-        public void CompleteStage(string id)
+        public void CompleteStage(Guid id)
         {
             if (m_IncompleteStages.Contains(id))
             {
@@ -229,15 +301,15 @@ namespace TeamCoordinator
         protected override void OnLoad(StgNode node)
         {
             Name = node.GetString("Name", "");
-            GroupID = node.GetString("GroupID", "");
+            GroupID = Tools.CreateFromString(node.GetString("GroupID", string.Empty));
 
             m_IncompleteStages.Clear();
             var array = node.GetArray("IncompleteStages", StgType.Node);
             for (int i = 0; i < array.Count; i++)
             {
                 var n = array.GetNode(i);
-                var id = n.GetString("ID", "");
-                if (id != "")
+                var id = Tools.CreateFromString(n.GetString("ID", string.Empty));
+                if (id != Guid.Empty)
                 {
                     m_IncompleteStages.Add(id);
                 }
@@ -248,8 +320,8 @@ namespace TeamCoordinator
             for (int i = 0; i < array.Count; i++)
             {
                 var n = array.GetNode(i);
-                var id = n.GetString("ID", "");
-                if (id != "")
+                var id = Tools.CreateFromString(n.GetString("ID", string.Empty));
+                if (id != Guid.Empty)
                 {
                     m_CompleteStages.Add(id);
                 }
@@ -267,21 +339,21 @@ namespace TeamCoordinator
         protected override void OnSave(StgNode node)
         {
             node.AddString("Name", Name);
-            node.AddString("GroupID", GroupID);
+            node.AddString("GroupID", GroupID.ToString());
             var array = node.AddArray("IncompleteStages", StgType.Node);
             foreach (var stage in m_IncompleteStages)
             {
                 var n = array.AddNode();
-                n.AddString("ID", stage);
+                n.AddString("ID", stage.ToString());
             }
             array = node.AddArray("CompleteStages", StgType.Node);
             foreach (var stage in m_CompleteStages)
             {
                 var n = array.AddNode();
-                n.AddString("ID", stage);
+                n.AddString("ID", stage.ToString());
             }
             array = node.AddArray("Log", StgType.Node);
-            foreach(var record in m_Log)
+            foreach (var record in m_Log)
             {
                 var n = array.AddNode();
                 record.SaveToStg(n);

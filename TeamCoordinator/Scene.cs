@@ -5,7 +5,12 @@ using Stg;
 
 namespace TeamCoordinator
 {
-
+    public enum SceneState
+    {
+        NotReady = -1,
+        Occuped = 0,
+        Ready = 1
+    }
 
     public class Scene : Item
     {
@@ -17,8 +22,8 @@ namespace TeamCoordinator
             {
                 var ai = x.AI;
 
-                var xStage = ai.GetStageByID(x.StageID);
-                var yStage = ai.GetStageByID(y.StageID);
+                var xStage = ai.Stages[x.StageID];
+                var yStage = ai.Stages[y.StageID];
 
                 if (xStage == null && yStage == null)
                 {
@@ -47,32 +52,32 @@ namespace TeamCoordinator
 
         #endregion
 
-        public string StageID = "";
-        public string Number = "";
+        public Guid StageID = Guid.Empty;
+        public string Number = "Сцена";
         public string Coach = "";
         public bool IsReady = true;
         public DateTime ChangeStateTime = DateTime.Now;
 
         public Scene(AI ai)
-            :base(ai)
+            : base(ai)
         {
         }
 
-        public int State
+        public SceneState State
         {
             get
             {
                 if (!IsReady)
                 {
-                    return -1;
+                    return SceneState.NotReady;
                 }
-                foreach (var team in AI.Teams)
+                foreach (var team in AI.Teams.All)
                 {
                     var lr = team.LastRecord;
                     if (lr.Location == ID && (lr.State == TeamState.CallToBase || lr.State == TeamState.SentToScene || lr.State == TeamState.StartWork))
-                        return 0;
+                        return SceneState.Occuped;
                 }
-                return 1;
+                return SceneState.Ready;
             }
         }
 
@@ -80,8 +85,12 @@ namespace TeamCoordinator
         {
             get
             {
-                var stage = AI.GetStageByID(StageID);
-                var stageName = (stage.ShortName == "") ? stage.Name : stage.ShortName;
+                string stageName = "N/A";
+                var stage = AI.Stages[StageID];
+                if (stage != null)
+                {
+                    stageName = (stage.ShortName == "") ? stage.Name : stage.ShortName;
+                }
                 return (Number == "") ? stageName : string.Format("{0} - {1}", stageName, Number);
             }
         }
@@ -90,7 +99,7 @@ namespace TeamCoordinator
 
         protected override void OnLoad(StgNode node)
         {
-            StageID = node.GetString("StageID", "");
+            StageID = Tools.CreateFromString(node.GetString("StageID", string.Empty));
             Number = node.GetString("Number", "");
             Coach = node.GetString("Coach", "");
             IsReady = node.GetBoolean("IsReady", true);
@@ -104,7 +113,7 @@ namespace TeamCoordinator
 
         protected override void OnSave(StgNode node)
         {
-            node.AddString("StageID", StageID);
+            node.AddString("StageID", StageID.ToString());
             node.AddString("Number", Number);
             node.AddString("Coach", Coach);
             node.AddBoolean("IsReady", IsReady);
